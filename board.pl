@@ -1,8 +1,41 @@
 :- use_module(library(lists)).
 % :- consult(data).
-% :- consult(utils).
+:- consult(utils).
 
 t(empty, X):- X='   '.
+
+t(T, X):-
+    length(T, L),
+    write(L), nl,
+    length_to_letter(L, C),
+    write(C), nl,
+    tower_top(T, Top),
+    write(Top), nl,
+    check_color(Top, C, X).
+
+
+length_to_letter(1, p).
+length_to_letter(2, r).
+length_to_letter(3, n).
+length_to_letter(4, b).
+length_to_letter(5, q).
+length_to_letter(6, k).
+
+check_color(o, C, X):-
+    X = C.
+check_color(x, C, X):-
+    lowercase_to_uppercase(C, X).
+
+% o -> pretas, lower case
+% x -> brancas, upper case
+
+% !WARNING: Apenas para testar
+print_piece :-
+    T = [o, x],
+    t(T, X),
+    write(X).
+
+
 
 %print matrix
 p_m([]) :- p_hl(5).
@@ -65,7 +98,7 @@ board(5, [
     [empty, empty, empty, empty, empty]
 ]).
 
-print_board (Size, Board):-
+print_board(Size, Board):-
     % write('  1   2   3   4   5'), nl,
     p_h(1, Size),
     % board(Size, B),

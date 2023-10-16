@@ -1,3 +1,4 @@
+:- use_module(library(lists)).
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
 get_name(Player):-
@@ -42,3 +43,23 @@ read_number_aux(X,Acc):-
     Acc1 is 10*Acc + (C - 48),
     read_number_aux(X,Acc1).
 read_number_aux(X,X).
+
+
+
+% === GUI ===
+split_list(List, Part1, Part2Length, Part2) :-
+    length(Part1, N),
+    length(Part2, Part2Length),
+    append(Part1, Part2, List),
+    length(List, ListLength),
+    ListLength =:= N + Part2Length.
+  
+tower_top(Tower, Top) :-
+  last(Tower, Top).
+
+  % Convert lowercase atom to uppercase atom
+lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
+  atom_chars(LowercaseAtom, [LowercaseChar]),
+  char_code(LowercaseChar, LowercaseCode),
+  UppercaseCode is LowercaseCode - 32,
+  char_code(UppercaseChar, UppercaseCode),

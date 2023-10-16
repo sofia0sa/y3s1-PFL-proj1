@@ -10,5 +10,5 @@
 % Starts the game and clears data when it ends 
 play :-
     main_menu(GameState), !,
-    game_cycle(GameState),
+    %game_cycle(GameState),
     clear_data.

@@ -1,14 +1,16 @@
 % FILE TO PRINT MENUS AND GET USER INPUT (at the beginning of the game)
 % also with the use_modules necessary
 
-
 :- use_module(library(lists)).
 :- use_module(library(between)).
 :- use_module(library(system), [now/1]).
 :- consult(utils).
 :- consult(data).
+:- consult(board).
 :- use_module(library(lists)).
 :- use_module(library(random)).
+:- use_module(library(charsio)).
+
 
 % choose_difficulty(+Computer)
 % Choose Computer difficulty (1 or 2)
@@ -22,11 +24,11 @@ choose_difficulty(Computer) :-
 % option(+N)
 % Main menu options. Each represents a game mode.
 option(1):-
-    write('Human vs. Human\n'),
+    write('Player vs. Player\n'),
     get_name(player1), get_name(player2).
 
 option(2):-
-    write('Human vs. Computer\n'),
+    write('Player vs. Computer\n'),
     get_name(player1),
     asserta((name_of(player2, 'Computer'))), !, 
     choose_difficulty(player2).
@@ -38,6 +40,7 @@ option(3):-
     choose_difficulty(player1),
     choose_difficulty(player2).
 
+% BUF ==> nao aceita opçao 0 no menu inicial
 option(0):-
     write('Sorry to see you go!!...\n\n'),
     write('  _______________________________________________________________________ \n'),
@@ -51,13 +54,17 @@ option(0):-
     write('  _______________________________________________________________________ \n').
 
 
+
 % choose_player(-Player)
 % Unifies player with the player who will start the game
 choose_player(Player):-
     name_of(player1, Name1),
     name_of(player2, Name2),
-    format('Who starts playing?\n1 - ~a being White player \n2 - ~a being Black player\n', [Name1, Name2]),
-    get_option(1, 2, 'Select', Index),
+    % string_codes(Name1Str, Name1),
+    % string_codes(Name2Str, Name2),
+    %format('Who starts playing?\n1 - ~s being White player \n2 - ~s being Black player\n', [Name1Str, Name2Str]),
+    format('Who starts playing?\n1 - ~s being White player \n2 - ~s being Black player\n', [Name1, Name2]),
+    choose_number(1, 2, 'Select', Index),
     nth1(Index, [player1, player2], Player).
 
 
