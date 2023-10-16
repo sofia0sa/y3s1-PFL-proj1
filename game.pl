@@ -1,19 +1,14 @@
+% DICHEIRO DE STARTING POINT -> aqui se começa o jogo com play.
+
 :- consult('game_logic.pl').
 :- consult('game_logic_computer.pl').
+:- consult('menu.pl'). %ficheiro com os includes
+:- consult('utils.pl').
 
-% Predicate used for the user's turn. The user will choose which N pieces and in what direction
-% they will move.
-% +Gamestate -> Current board
-% +Player
-% -NewGamestate -> New Board
-move(Gamestate,Player,NewGamestate) :-
-
-    format('\nPLAYER ~d -\n',[Player]),
-
-    get_direction(Dir),
-    get_number_plays(Player,N),
-    choose_pieces(Gamestate,Player,Dir,[],NewPieces,NewGamestate1,N),
-    move_pieces(NewGamestate1,Player,NewPieces,NewGamestate,N),
-    check_attacks(Player,NewPieces,N),
-
-    write('---------------------------------------------------------\n'),skip_line,!.
+% FUNCTION THAT STARTS THE GAME!!
+% play/0
+% Starts the game and clears data when it ends 
+play :-
+    main_menu(GameState), !,
+    game_cycle(GameState),
+    clear_data.

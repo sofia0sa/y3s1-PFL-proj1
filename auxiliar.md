@@ -20,6 +20,10 @@ ONDE PODEMOS DAR STEP UP:
 - algoritmo qlqr mas isso é extra (minimax no trabalho deles)
 
 
+CHATGPT
+asserta/1 is a built-in predicate in Prolog that adds a new fact to the knowledge base as the first clause of the predicate. In the case of the get_name/1 predicate, asserta/1 is used to add a new fact to the knowledge base that associates the given Player with the Name that was entered by the user.
+
+The asserta/1 predicate takes a single argument, which is a Prolog term representing the fact to be added to the knowledge base. In this case, the fact being added is name_of(Player, Name), which associates the given Player with the Name that was entered by the user.
 -----
 
 

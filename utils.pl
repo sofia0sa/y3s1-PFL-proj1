@@ -2,5 +2,43 @@
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
 get_name(Player):-
     format('Hello ~a, what is your name? ', [Player]),
-    get_line(Name, []),
+    read_line(Name),
     asserta(name_of(Player, Name)).
+
+print_heart :-
+    write('  /\\  /\\  '), nl,
+    write(' /  \\/  \\ '), nl,
+    write(' \\      / '), nl,
+    write('  \\    /  '), nl,
+    write('   \\  /   '), nl,
+    write('    \\/    ').
+
+chess_pieces :-
+    write(' K  Q  R  B  N  P'), nl,
+    write(' k  q  r  b  n  p').
+    
+% init_random_state/0
+% Initialize the random module
+init_random_state :-
+    now(X),
+    setrand(X).
+
+% get_option(+Min,+Max,+Context,-Value)
+% Unifies Value with the value given by user input between Min and Max when asked about Context
+choose_number(Min,Max,Context,Value):-
+    format('~a between ~d and ~d: ', [Context, Min, Max]),
+    repeat,
+    read_number(Value),
+    between(Min, Max, Value), !.
+
+
+% read_number(-Number)
+% Unifies Number with input number from console
+read_number(X):-
+    read_number_aux(X,0).
+read_number_aux(X,Acc):- 
+    get_code(C),
+    between(48, 57, C), !,
+    Acc1 is 10*Acc + (C - 48),
+    read_number_aux(X,Acc1).
+read_number_aux(X,X).
