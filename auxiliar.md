@@ -1,4 +1,9 @@
-DISTRIBUIÇAO ENTRE FICHEIROS
+## REGRAS
+
+[https://www.boardspace.net/sixmaking/english/Six-MaKING-rules-Eng-Ger-Fra-Ro-Hu.pdf]
+
+
+## DISTRIBUIÇAO ENTRE FICHEIROS
 
 Board -> funções para o tabuleiro, desenhar, translate e movimentos e alteraçoes de acordo com as jogadas
 Menu -> opçoes de menu e flow
@@ -55,3 +60,8 @@ guardar sempre o board deste momento e o board anterior
 
 estado final 
 percorrer peças todas e ver se tem algum com tamanho 6
+
+
+---
+replace(B,X,Y,O,H,NB)
+change_human(H,NH)

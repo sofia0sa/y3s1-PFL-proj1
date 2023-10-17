@@ -47,12 +47,43 @@ read_number_aux(X,X).
 
 
 % === GUI ===
+
+% split_list(+List, -Part1, -Part2Length, -Part2)
+% Splits a list into two parts, Part1 and Part2, where Part2 has length Part2Length
 split_list(List, Part1, Part2Length, Part2) :-
     length(Part1, N),
     length(Part2, Part2Length),
     append(Part1, Part2, List),
     length(List, ListLength),
     ListLength =:= N + Part2Length.
+
+% !DELETE: apenas para testes
+test_split_list :-
+    split_list([1,2,3,4,5,6,7,8,9], Part1, 3, Part2),
+    write('Part1: '), write(Part1), nl,
+    write('Part2: '), write(Part2), nl.
+
+% join_list(+Part1, +Part2, -List)
+% Joins two lists into one
+join_list(Part1, Part2, List) :-
+    append(Part1, Part2, List).
+
+% !DELETE: apenas para testes
+test_join_list :-
+    List1 = [1,2,3],
+    List2 = [4,5,6],
+    write('List1: '), write(List1), nl,
+    write('List2: '), write(List2), nl,
+    join_list(List1, List2, List),
+    write('List: '), write(List), nl.
+
+% !WARNING: not used
+% print_list(+List)
+% Prints the elements of List to the console
+print_list([]).
+print_list([H|T]) :-
+    write(H), nl,
+    print_list(T).
   
 tower_top(Tower, Top) :-
   last(Tower, Top).
@@ -63,3 +94,4 @@ lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
   char_code(LowercaseChar, LowercaseCode),
   UppercaseCode is LowercaseCode - 32,
   char_code(UppercaseChar, UppercaseCode),
+  atom_chars(UppercaseAtom, [UppercaseChar]).

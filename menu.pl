@@ -45,7 +45,7 @@ option(0):-
     write('Sorry to see you go!!...\n\n'),
     write('  _______________________________________________________________________ \n'),
     write(' |       LEAVING                                                         |\n'),
-    write(' |                                                                       |\n') 
+    write(' |                                                                       |\n'), 
     write(' |                         ***                                           |\n'),
     write(' |                        *                                              |\n'),
     write(' |                        ****                                           |\n'),
