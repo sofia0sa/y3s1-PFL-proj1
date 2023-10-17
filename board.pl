@@ -38,11 +38,11 @@ print_piece :-
 
 
 %print matrix
-p_m([]) :- p_hl(5).
-p_m([L|T]):-
-    p_hl(5),
+p_m(Len, []) :- p_hl(Len).
+p_m(Len, [L|T]):-
+    p_hl(Len),
     p_l(L), nl,
-    p_m(T).
+    p_m(Len, T).
 
 %print line
 p_l([]) :- write('|').
@@ -102,7 +102,7 @@ print_board(Size, Board):-
     % write('  1   2   3   4   5'), nl,
     p_h(1, Size),
     % board(Size, B),
-    p_m(Board).
+    p_m(Size, Board).
 
 
 %---------------------------------%
