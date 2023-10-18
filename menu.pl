@@ -106,7 +106,7 @@ choose_difficulty(Computer) :-
     format('\nPlease select ~a difficulty:\n', [Computer]),
     write('1 - Easy\n'),
     write('2 - Hard\n'),
-    get_option(1, 2, '\nType a number', Option), !,
+    choose_number(1, 2, '\nType a number', Option), !,
     asserta((difficulty(Computer, Option))).
 
 

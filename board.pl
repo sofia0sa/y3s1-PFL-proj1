@@ -88,7 +88,7 @@ test_empty_cell :-
     empty_cell(Board, 1, 3).
 
 
-% can onçy place a new piece if the cell is empty
+% can only place a new piece if the cell is empty
 % place_piece(+Board, +X, +Y, +Player, -NewBoard)
 % Places a pawn from white or black depending on the player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_pawn(Board, X, Y, Player, NewBoard) :-
