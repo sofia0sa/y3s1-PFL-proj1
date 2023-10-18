@@ -29,6 +29,22 @@ CHATGPT
 asserta/1 is a built-in predicate in Prolog that adds a new fact to the knowledge base as the first clause of the predicate. In the case of the get_name/1 predicate, asserta/1 is used to add a new fact to the knowledge base that associates the given Player with the Name that was entered by the user.
 
 The asserta/1 predicate takes a single argument, which is a Prolog term representing the fact to be added to the knowledge base. In this case, the fact being added is name_of(Player, Name), which associates the given Player with the Name that was entered by the user.
+
+
+_______________________________________________________
+
+The last fact main_menu(_). is used to handle the case where the user leaves the game without making a selection from the main menu.
+
+In Prolog, a predicate can have multiple clauses with different patterns of arguments. When a predicate is called, Prolog will try to match the arguments with the patterns of the clauses in the order they are defined. If a match is found, Prolog will execute the corresponding clause.
+
+In the case of the main_menu/1 predicate, the first clause defines the behavior when the user selects an option from the main menu. The second clause defines the behavior when the user leaves the game without making a selection.
+
+The second clause has a single underscore (_) as its argument, which is a wildcard that matches any value. This means that the second clause will match any argument, regardless of its value.
+
+When the user leaves the game without making a selection, the main_menu/1 predicate will fail to match the argument with the first clause, and Prolog will continue searching for a matching clause. Since the second clause matches any argument, it will be selected as the next clause to execute.
+
+The second clause does not perform any actions, but it prevents the program from crashing or producing unexpected behavior when the user leaves the game without making a selection. Instead, the program will simply fail and exit gracefully.
+
 -----
 
 

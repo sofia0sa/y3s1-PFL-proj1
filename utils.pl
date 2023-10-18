@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
 get_name(Player):-
@@ -95,3 +96,18 @@ lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
   UppercaseCode is LowercaseCode - 32,
   char_code(UppercaseChar, UppercaseCode),
   atom_chars(UppercaseAtom, [UppercaseChar]).
+
+
+% ================== CLEARING ==================
+
+
+% clear_data/0
+% removes all waters, names and difficul from the fact base for the next game
+clear_data :-
+    retractall(difficulty(_, _)),
+    retractall(name_of(_, _)).
+
+% clear_console/0
+% Clears the console
+clear_console :-
+    write('\33\[2J').

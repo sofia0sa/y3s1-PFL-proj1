@@ -75,24 +75,24 @@ test_get_piece :-
     t(Piece, X),
     write(X).
 
-% check_empty_cell(+Board, +X, +Y)
+% empty_cell(+Board, +X, +Y)
 % Checks if the cell at the specified X and Y coordinates on the Board is empty
-check_empty_cell(Board, X, Y) :-
+empty_cell(Board, X, Y) :-
     get_piece(Board, X, Y, Piece),
     Piece = empty.
 
 % !DELETE: Apenas para testar
-test_check_empty_cell :-
+test_empty_cell :-
     board(5, Board),
     print_board(5, Board),
-    check_empty_cell(Board, 1, 3).
+    empty_cell(Board, 1, 3).
 
 
 % can onçy place a new piece if the cell is empty
 % place_piece(+Board, +X, +Y, +Player, -NewBoard)
 % Places a pawn from white or black depending on the player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_pawn(Board, X, Y, Player, NewBoard) :-
-    check_empty_cell(Board, X, Y),
+    empty_cell(Board, X, Y),
     %check which player is playing
     (Player = player1 -> place_piece(Board, X, Y, [x], NewBoard);
     Player = player2 -> place_piece(Board, X, Y, [o], NewBoard)).
@@ -175,6 +175,7 @@ board(5, [
 ]).
 
 print_board(Size, Board):-
+    clear_console,
     % write('  1   2   3   4   5'), nl,
     p_h(1, Size),
     % board(Size, B),
@@ -191,6 +192,24 @@ clear_board(Board):-
     get_board_size(Board, Size),
     board(Size, Board).
 
+% inside_board(+Board, +X, +Y)
+% Checks if the coordinates X and Y are inside the Board
+inside_board(Board, X, Y) :-
+    get_board_size(Board, Size),
+    X > 0, X =< Size,
+    Y > 0, Y =< Size.
+
+% !DELETE: Apenas para testar
+test_inside_board :-
+    board(4, Board),
+    print_board(4, Board),
+    inside_board(Board, 1, 1),
+    inside_board(Board, 4, 4),
+    inside_board(Board, 2, 3),
+    \+ inside_board(Board, 0, 0),
+    \+ inside_board(Board, 5, 5),
+    \+ inside_board(Board, 1, 5),
+    \+ inside_board(Board, 5, 1).
 
 
 
