@@ -176,8 +176,8 @@ print_modes :-
 % =============== MAIN MENU (called by play.) ========================== %
 
 % main_menu(-GameState)
-% Initialize GameState with Board, first Player, empty FearList and TotalMoves
-main_menu([Board,Player,[],0]):-
+% Initialize GameState with Board, first Player
+main_menu([Board,Player]):-
     print_header,
     print_main_menu,
     init_random_state,

@@ -49,7 +49,7 @@ read_number_aux(X,X).
 
 % === GUI ===
 
-% split_list(+List, -Part1, -Part2Length, -Part2)
+% split_list(+List, -Part1, +Part2Length, -Part2)
 % Splits a list into two parts, Part1 and Part2, where Part2 has length Part2Length
 split_list(List, Part1, Part2Length, Part2) :-
     length(Part1, N),

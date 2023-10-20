@@ -4,6 +4,7 @@
 
 t(empty, X):- X=' '.
 
+% t is a list
 t(T, X):-
     length(T, L),
     % write(L), nl,
@@ -39,6 +40,7 @@ print_piece :-
 % place_piece(+Board, +X, +Y, +Piece, -NewBoard)
 % Places a piece of type Piece on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_piece(Board, X, Y, Piece, NewBoard) :-
+    write('place_piece'), nl,
     nth1(Y, Board, Row),
     replace_nth1(X, Row, Piece, NewRow),
     replace_nth1(Y, Board, NewRow, NewBoard).
@@ -52,12 +54,7 @@ replace_nth1(N, [H|T], Value, [H|NewT]) :-
     replace_nth1(M, T, Value, NewT).
 
 
-% !DELETE: Apenas para testar
-test_place_piece :-
-    board(4, Board),
-    print_board(4, Board),
-    place_piece(Board, 3, 3, [x], NewBoard),
-    print_board(4, NewBoard).
+
 
 
 % get_piece(+Board, +X, +Y, -Piece)
@@ -67,42 +64,68 @@ get_piece(Board, X, Y, Piece) :-
     nth1(X, Row, Piece),
     Piece \= empty.
 
-% !DELETE: Apenas para testar
-test_get_piece :-
-    board(5, Board),
-    print_board(5, Board),
-    get_piece(Board, 1, 3, Piece),
-    t(Piece, X),
-    write(X).
+
 
 % empty_cell(+Board, +X, +Y)
 % Checks if the cell at the specified X and Y coordinates on the Board is empty
 empty_cell(Board, X, Y) :-
-    get_piece(Board, X, Y, Piece),
-    Piece = empty.
+    nth1(Y, Board, Row),
+    nth1(X, Row, Piece),
+    Piece == empty.
+    % Piece is empty.
 
-% !DELETE: Apenas para testar
-test_empty_cell :-
-    board(5, Board),
-    print_board(5, Board),
-    empty_cell(Board, 1, 3).
 
+% % in_bounds(+X, +Y)
+% % Checks if the specified X and Y coordinates are within the bounds of the board
+% in_bounds(Board, X, Y) :-
+%     get_board_size(Board, Size),
+%     between(1, Size, X),
+%     between(1, Size, Y).
+
+% % !DELETE: Apenas para testar
+% test_in_bounds :-
+%     board(4, Board),
+%     print_board(4, Board),
+%     in_bounds(Board, 1, 1),
+%     in_bounds(Board, 4, 4),
+%     in_bounds(Board, 2, 3),
+%     \+ in_bounds(Board, 0, 0),
+%     \+ in_bounds(Board, 5, 5),
+%     \+ in_bounds(Board, 1, 5),
+%     \+ in_bounds(Board, 5, 1).
+
+
+place_pawn(Board, X, Y, player1, NewBoard) :-
+    empty_cell(Board, X, Y),
+    write('empty cell'),
+    place_piece(Board, X, Y, [x], NewBoard).
+
+place_pawn(Board, X, Y, player2, NewBoard) :-
+    empty_cell(Board, X, Y),
+    place_piece(Board, X, Y, [o], NewBoard).
 
 % can only place a new piece if the cell is empty
 % place_piece(+Board, +X, +Y, +Player, -NewBoard)
 % Places a pawn from white or black depending on the player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-place_pawn(Board, X, Y, Player, NewBoard) :-
-    empty_cell(Board, X, Y),
-    %check which player is playing
-    (Player = player1 -> place_piece(Board, X, Y, [x], NewBoard);
-    Player = player2 -> place_piece(Board, X, Y, [o], NewBoard)).
+% place_pawn(Board, X, Y, Player, NewBoard) :-
+%     empty_cell(Board, X, Y), 
+%     %check which player is playing
+%     (Player == player1 -> place_piece(Board, X, Y, [x], NewBoard);
+%     Player == player2 -> place_piece(Board, X, Y, [o], NewBoard)).
+
+
+move_piece(Board, X, Y, NewX, NewY, NewBoard) :-
+    % !TODO:
+    place_piece(Board, NewX, NewY, Piece, NewBoard).
 
 % !DELETE: Apenas para testar
-test_place_pawn(X,Y,P):-
+test_move_piece :-
     board(4, Board),
     print_board(4, Board),
-    place_pawn(Board, X, Y, P, NewBoard),
+    place_pawn(Board, 1, 1, player1, NewBoard),
     print_board(4, NewBoard).
+    % move_piece(Board, 1, 1, 2, 2, NewBoard),
+    % print_board(4, NewBoard).
 
 %---------------------------------%
 %print matrix
@@ -143,13 +166,10 @@ p_hl(N):-
 
 
 %print header
-p_h(X, Y) :-
-    X =:= 1,
-    write('  '),
-    format('  ~d  ', [1] ),
-    X1 is X+1,
-    p_h(X1, Y).
-
+p_h(1, Y) :-
+    write('\n'),
+    format('    ~d  ', [1] ), !,
+    p_h(2, Y).
 p_h(X, X) :-
     format(' ~d \n', [X] ), !.
 p_h(X, Y) :-
@@ -175,7 +195,7 @@ board(5, [
 ]).
 
 print_board(Size, Board):-
-    clear_console,
+    % clear_console,
     % write('  1   2   3   4   5'), nl,
     p_h(1, Size),
     % board(Size, B),
@@ -196,8 +216,11 @@ clear_board(Board):-
 % Checks if the coordinates X and Y are inside the Board
 inside_board(Board, X, Y) :-
     get_board_size(Board, Size),
-    X > 0, X =< Size,
-    Y > 0, Y =< Size.
+    between(1, Size, X),
+    between(1, Size, Y).
+
+    % X > 0, X =< Size,
+    % Y > 0, Y =< Size.
 
 % !DELETE: Apenas para testar
 test_inside_board :-
