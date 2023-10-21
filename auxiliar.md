@@ -47,6 +47,14 @@ The second clause does not perform any actions, but it prevents the program from
 
 -----
 
+1 - pawn (1 cell horizontal or vertical)
+2 - rook (any number of cells horizontal or vertical, until finding another piece)
+3 - knight (2 cells horizontal or vertical, then 1 cell in the other direction)
+4 - bishop (any number of cells diagonal, until finding another piece)
+5 - queen (any number of cells horizontal, vertical or diagonal, until finding another piece)
+6 - king (wins) 
+
+
 
 torres da forma 
 o-o

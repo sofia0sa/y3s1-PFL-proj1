@@ -4,7 +4,7 @@
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
-  get_piece(Board, X, Y, [Piece]),
+  get_piece(Board, X, Y, Piece),
   findall([NewX, NewY], (
       valid_move(Board, X, Y, NewX, NewY, Piece)
   ), ValidMoves).
@@ -13,8 +13,8 @@ valid_moves(Board, X, Y, ValidMoves) :-
 % !DELETE: just for testing
 test_valid_moves:-
   Board = [
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
+    [[x,x,x], empty, empty, [pawn], empty, [pawn]],
+    [empty, [pawn], [x,x,x], [pawn], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
@@ -22,7 +22,7 @@ test_valid_moves:-
     [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]]
   ],
-  valid_moves(Board, 1, 1, ValidMoves),
+  valid_moves(Board, 3, 2, ValidMoves),
   write(ValidMoves).
   
 
@@ -34,28 +34,48 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   length(Piece, L), % Pawn
   write(L),
   write('\n'),
-  valid_piece_distance(X, Y, NewX, NewY, L).
+  get_board_size(Board, Size),
+  valid_piece_movement(Size, X, Y, NewX, NewY, L).
+  % falta verificar altura max da torre
 
-%pawn
+
+% valid_piece_movement(+Size, +X, +Y, -NewX, -NewY, +Piece)
+%pawn move
 %move 1 cell horizontally or vertically
-valid_piece_distance(X, Y, NewX, NewY, 1) :-
+valid_piece_movement(Size, X, Y, NewX, NewY, 1) :-
   (X =:= NewX; Y =:= NewY),
   (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
 
-% !DELETE: just for testing
-test_valid_piece_distance:-
-  valid_piece_distance(1, 1, 2, 1, 1),
-  valid_piece_distance(1, 1, 1, 2, 1),
-  valid_piece_distance(1, 1, 2, 2, 1),
-  valid_piece_distance(1, 1, 0, 1, 1),
-  valid_piece_distance(1, 1, 1, 0, 1),
-  valid_piece_distance(1, 1, 0, 0, 1),
-  \+ valid_piece_distance(1, 1, 3, 1, 1),
-  \+ valid_piece_distance(1, 1, 1, 3, 1),
-  \+ valid_piece_distance(1, 1, 3, 3, 1),
-  \+ valid_piece_distance(1, 1, 0, 2, 1),
-  \+ valid_piece_distance(1, 1, 2, 0, 1),
-  \+ valid_piece_distance(1, 1, 0, 0, 1).
+%rook move
+%move any number of cells horizontally or vertically, until it reaches the end of the board or another piece
+
+%knight move
+%move 2 cells horizontally or vertically and then 1 cell in the other direction
+valid_piece_movement(Size, X, Y, NewX, NewY, 3) :-
+  % (X =:= NewX + 2; X =:= NewX - 2; Y =:= NewY + 2; Y =:= NewY - 2),
+  % (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
+  (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
+    % in_bounds(Size, NewX, NewY).
+
+% bishop move
+% move any number of cells diagonally, until it reaches the end of the board or another piece
+
+% queen move
+% move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
+
+% % !DELETE: just for testing
+% test_valid_piece_distance:-
+%   valid_piece_distance(1, 1, 2, 1, 1),
+%   valid_piece_distance(1, 1, 1, 2, 1),
+%   \+ valid_piece_distance(1, 1, 2, 2, 1),
+%   valid_piece_distance(1, 1, 0, 1, 1),
+%   valid_piece_distance(1, 1, 1, 0, 1),
+%   \+ valid_piece_distance(1, 1, 3, 1, 1),
+%   \+ valid_piece_distance(1, 1, 1, 3, 1),
+%   \+ valid_piece_distance(1, 1, 3, 3, 1),
+%   \+ valid_piece_distance(1, 1, 0, 2, 1),
+%   \+ valid_piece_distance(1, 1, 2, 0, 1),
+%   \+ valid_piece_distance(1, 1, 0, 0, 1).
 
 %rook
 %move any number of cells horizontally or vertically, until it reaches the end of the board or another piece
