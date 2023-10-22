@@ -184,7 +184,7 @@ main_menu([Board,Player]):-
     choose_player(Player),
     choose_board(Size), 
     init_state(Size, Board),
-    get_move(Board, Player, Move),
+    get_move(Board, Player, Move).
 
 % main_menu
 % If user leaves the game, fail and exit
