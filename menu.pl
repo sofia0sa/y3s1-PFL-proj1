@@ -142,7 +142,7 @@ print_main_menu :-
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),                                                                                                                                            
-    write(' |                      Choose an option:                                |\n'),
+    write(' |                      What do you want to do?                          |\n'),
     write(' |                                                                       |\n'),
     write(' |                      1. Choose a game mode                            |\n'),
     write(' |                                                                       |\n'),
@@ -183,7 +183,8 @@ main_menu([Board,Player]):-
     init_random_state,
     choose_player(Player),
     choose_board(Size), 
-    init_state(Size, Board).
+    init_state(Size, Board),
+    get_move(Board, Player, Move),
 
 % main_menu
 % If user leaves the game, fail and exit

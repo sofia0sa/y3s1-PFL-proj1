@@ -40,16 +40,20 @@
 %     findall(Coordinates, member(Max-Coordinates, SortedPairs), MaxCoordinates),
 %     random_member(ColI-RowI-ColF-RowF, MaxCoordinates).
 
-%===================== GAME MOMENTS ====================
 
+
+% ================================== PRINT NEXT PLAYER =================================================================
 % print_turn(+GameState)
 % Prints a message declaring whose turn it is
-print_turn([_, Player, _, _]):-
+print_turn(Player):-
     name_of(Player, Name),
     format('It`s ~a`s turn!\n', [Name]), !.
 
 
+%===================== GAME HUMAN MOVES ====================
+
 get_move(GameState, NewGameState) :-
+    [Board, Player] = GameState,
     print_turn(Player),
     
     write('==============================\n'),
@@ -68,13 +72,16 @@ check_if_tower_exists(Board, X, Y) :-
     L>1,
     !.
 
-% move_option(+Board, -X, -Y, -+Player, -NewBoard)
+% move_option(+GameState, +Option, -NewGameState)
 % Unifies NewGameState with the new game state after the player chooses an option
 move_option(GameState, 1, NewGameState) :-
+    [Board, Player] = GameState,
     write('\n==============================\n'),
     write('Where do you want to place the piece?\n'),
-    get_coordinate(GameState, X, Y),
-    place_pawn(Board, X, Y, Player, NewBoard).
+    get_coordinate(Board, X, Y),
+    place_pawn(Board, X, Y, Player, NewBoard),
+    change_player(Player, NewPlayer),
+    NewGameState = [NewBoard, NewPlayer].
 
 move_option(GameState, 2, NewGameState) :-
     write('\n==============================\n'),
@@ -82,14 +89,18 @@ move_option(GameState, 2, NewGameState) :-
     get_coordinate(Board, X, Y),
     get_piece(Board, X, Y, Piece),
     print_possible_moves(Board, X, Y), %prints and lets choose the move
-    move_piece(Board, X, Y, X1, Y1, NewBoard).
+    move_piece(Board, X, Y, X1, Y1, NewBoard),
+    change_player(Player, NewPlayer),
+    NewGameState = [NewBoard, NewPlayer].
 
 move_option(GameState, 3, NewGameState) :-
     write('\n==============================\n'),
     write('Which tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
     check_if_tower_exists(Board, X, Y), %
-    separate_tower(Board, X, Y, Player, NewBoard).
+    separate_tower(Board, X, Y, Player, NewBoard),
+    change_player(Player, NewPlayer),
+    NewGameState = [NewBoard, NewPlayer].
 
 % get_coordinate(+Board,-X, -Y)
 % Unifies Coordinate with a valid coordinate given by input within the Board
@@ -136,10 +147,9 @@ show_winner([_,_,_,TotalMoves], Winner):-
 % game_cycle(+GameState)
 % Loop that keeps the game running
 game_cycle(GameState):- %IF GAME IS OVER because someone won
-    game_over(GameState, Winner), !,
+    game_over(GameState, Winner), !, %verifica se alguem ganhou (lenght tower = 6)
 
-    %get board and size from Gamestate to be sent to print_board
-    nth0(1, GameState, Board), %correct? get first element from list GameState = [Board, Player]
+    [Board, Player] = GameState,
     length(Board, Size),
 
     print_board(Board, Size),
@@ -148,13 +158,12 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
 
-    %get board and size from Gamestate to be sent to print_board
-    nth0(1, GameState, Board), %correct? get first element from list GameState = [Board, Player]
+    [Board, _] = GameState, 
     length(Board, Size),
 
     print_board(GameState),
-    print_turn(GameState),
-    choose_move(GameState, Move),
+    print_turn(Player),
+    get_move(GameState, Move), %para player humano
     move(GameState, Move, NewGameState), !,
     game_cycle(NewGameState).
 

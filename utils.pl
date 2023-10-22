@@ -1,5 +1,13 @@
 :- use_module(library(lists)).
 
+
+% === GAME RELATED ===
+
+change_player(player1, NewPlayer) :-
+    NewPlayer = player2.
+change_player(player2, NewPlayer) :-
+    NewPlayer = player1.
+
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
 get_name(Player):-
