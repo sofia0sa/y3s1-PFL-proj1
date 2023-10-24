@@ -89,3 +89,15 @@ percorrer peças todas e ver se tem algum com tamanho 6
 ---
 replace(B,X,Y,O,H,NB)
 change_human(H,NH)
+
+
+---
+
+
+DUVIDAS PARA AULA:
+
+- game cycle, ver se esta bem, e ver como lidar com as varias formas de jogo aqui
+- com as varias formas de jogo, como fazer as funcoes? dar nomes diferentes? nao reutilizasmos nada da primeira versao humanoVShumano?
+e chamamos onde essas funcoes? temos que fazer um gamecyle para cada modo de jogo? se nao, como incorporamos no mesmo?
+
+- duvidas do GUI em relacao ao movimento de algumas peças

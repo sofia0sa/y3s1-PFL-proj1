@@ -150,18 +150,19 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
     game_over(GameState, Winner), !, %verifica se alguem ganhou (lenght tower = 6)
 
     [Board, Player] = GameState,
+    
     length(Board, Size),
+    print_board(Size, Board),
 
-    print_board(Board, Size),
     show_winner(GameState, Winner).
 
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
 
-    [Board, _] = GameState, 
+    [Board, Player] = GameState, 
     length(Board, Size),
 
-    print_board(GameState),
+    print_board(Size, Board),
     print_turn(Player),
     get_move(GameState, Move), %para player humano
     move(GameState, Move, NewGameState), !,
