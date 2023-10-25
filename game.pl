@@ -88,8 +88,9 @@ move_option(GameState, 1, NewGameState) :-
 move_option(GameState, 2, NewGameState) :-
     write('\n====================================\n'),
     write('Which piece do you want to move?\n'),
+    [Board, Player, GameMode] = GameState,
     get_coordinate(Board, X, Y),
-    get_piece(Board, X, Y, Piece),
+    % get_piece(Board, X, Y, Piece),
     print_possible_moves(Board, X, Y), %prints and lets choose the move
     move_piece(Board, X, Y, X1, Y1, NewBoard),
     change_player(Player, NewPlayer),
@@ -103,6 +104,24 @@ move_option(GameState, 3, NewGameState) :-
     separate_tower(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
+
+
+print_possible_moves(Board, X, Y) :-
+    valid_moves(Board, X, Y, ListOfMoves),
+    length(ListOfMoves, L),
+    L>0,
+
+    get_coordinate(Board, X1, Y1),
+    move_piece(Board, X, Y, X1, Y1, NewBoard),
+    print_board(Board, NewBoard).
+
+
+% print_list(+List)
+% Prints the elements of List to the console
+print_list(0, []).
+print_list([H|T]) :-
+    write(H), write(' '),
+    print_list(T).
 
 % get_coordinate(+Board,-X, -Y)
 % Unifies Coordinate with a valid coordinate given by input within the Board

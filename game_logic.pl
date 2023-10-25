@@ -17,6 +17,7 @@ separate_tower(Board, X, Y, Player, NewBoard) :-
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
   get_piece(Board, X, Y, Piece),
+  \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
       valid_move(Board, X, Y, NewX, NewY, Piece)
   ), ValidMoves).
@@ -44,6 +45,7 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   % get_board_size(Board, Size),
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
   % falta verificar altura max da torre
+
 
 
 % valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +Piece)
