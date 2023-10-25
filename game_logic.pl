@@ -149,6 +149,42 @@ diagonal_occupied(Board, X1, Y1, X2, Y2) :-
 
 
 
+% ====================
+iterate_board(Board, Top):-
+  length(Board, Rows),
+  between(1, Rows, Row),
+  nth1(Row, Board, RowList),
+  length(RowList, Cols),
+  between(1, Cols, Col),
+  nth1(Col, RowList, Piece),
+  Piece \= empty,
+  length(Piece, L),
+  L =:= 6,
+  tower_top(Piece, Top).
+
+top_to_player(x, player1).
+top_to_player(o, player2).
+
+game_over(Board, Winner):-
+  iterate_board(Board, Top),
+  top_to_player(Top, Winner).
+
+% !DELETE: just for testing
+test_check_winner:-
+  Board = [
+    [[x,x,x], empty, empty, [pawn], empty],
+    [[pawn], [pawn], [x,x], [pawn], [pawn]],
+    [[pawn], [pawn], empty, [x,x,o,x,o], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]]
+  ],
+  check_winner(Board, Winner),
+  write(Winner).
+
+
+
+
+
 % choose_piece_and_move(+Board, -NewBoard)
 % Allows the user to select a piece to move and then choose a valid move for that piece.
 choose_piece_and_move(Board, NewBoard) :-

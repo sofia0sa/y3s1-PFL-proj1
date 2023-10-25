@@ -47,7 +47,7 @@
 print_turn(Player):-
     write('\n====================================\n'),
     name_of(Player, Name),
-    format('It`s ~a`s turn!\n\n', [Name]), !.
+    format('It`s ~a`s turn!\n', [Name]), !.
     % atom_string(NameAtom, Name)
     % format('It`s ~w`s turn!\n', [NameAtom]), !.
 
@@ -56,7 +56,6 @@ print_turn(Player):-
 
 get_move(GameState, NewGameState) :-
     [Board, Player, GameMode] = GameState,
-    % print_turn(Player),
     write('\n====================================\n'),
     write('What move do you want to make?\n'),
     write('1 - Add piece\n'),
@@ -117,8 +116,9 @@ get_coordinate(Board, X, Y):-
 
 % game_over(+GameState, +Winner)
 % Checks if the game is over
-game_over([Board,OtherPlayer,_, _], Winner):-
-    other_player(OtherPlayer, Winner).
+% game_over([Board,OtherPlayer,_, _], Winner):-
+%     check_winner(Board, Winner).
+    % other_player(OtherPlayer, Winner).
     %funcoes para verificar ganhar ou perder
 
 
@@ -139,9 +139,9 @@ game(FinalGamestate,N,FinalGamestate) :-
 
 % show_winner(+GameState, +Winner)
 % Prints the winner of the game and number of moves they made
-show_winner([_,_,_,TotalMoves], Winner):-
+show_winner(Winner):-
     name_of(Winner, Name),
-    winner_moves(TotalMoves, WinnerMoves),
+    winner_moves(TotalMoves, WinnerMoves), %isto não é nosso pois não?
     format('Winner is ~a with ~d moves!\n', [Name, WinnerMoves]).
 
 
@@ -150,14 +150,15 @@ show_winner([_,_,_,TotalMoves], Winner):-
 % game_cycle(+GameState)
 % Loop that keeps the game running
 game_cycle(GameState):- %IF GAME IS OVER because someone won
-    game_over(GameState, Winner), !, %verifica se alguem ganhou (lenght tower = 6)
+    7 =:= 3, !,
+    % game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
 
     [Board, Player, GameMode] = GameState,
     
     length(Board, Size),
     print_board(Size, Board),
 
-    show_winner(GameState, Winner).
+    show_winner(Winner).
 
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
