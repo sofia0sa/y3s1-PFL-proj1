@@ -13,14 +13,11 @@ valid_moves(Board, X, Y, ValidMoves) :-
 % !DELETE: just for testing
 test_valid_moves:-
   Board = [
-    [[x,x,x], empty, empty, [pawn], empty, [pawn]],
-    [empty, [pawn], [x,x], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]]
+    [[x,x,x], empty, empty, [pawn], empty],
+    [[pawn], [pawn], [x,x], [pawn], [pawn]],
+    [[pawn], [pawn], empty, [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]]
   ],
   valid_moves(Board, 3, 2, ValidMoves),
   write(ValidMoves).
@@ -32,7 +29,7 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Piece, L), % Pawn
-  get_board_size(Board, Size),
+  % get_board_size(Board, Size),
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
   % falta verificar altura max da torre
 
@@ -50,27 +47,6 @@ valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
   % (X =:= NewX + 2; X =:= NewX - 2; Y =:= NewY + 2; Y =:= NewY - 2),
   % (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
   (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
-    % in_bounds(Size, NewX, NewY).
-
-% rook move
-% move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
-valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
-  (X =:= NewX; Y =:= NewY),
-  \+ same_line_occupied(Board, X, Y, NewX, NewY).
-
-
-% !DELETE: just for testing
-test_valid_rook_move :-
-  Board = [
-    [[x,x,x], empty, empty, [pawn], empty, [pawn]],
-    [empty, empty, [x,x], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], empty, [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], empty, [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn], [pawn]]
-  ],
-  valid_piece_movement(Board, 3, 2, 3, 4, 2).
-
 
 % bishop move
 % move any number of cells diagonally, until it reaches another piece. Can only move to cells that are not empty.
@@ -86,20 +62,89 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   \+ (same_line_occupied(Board, X, Y, NewX, NewY) ; diagonal_occupied(Board, X, Y, NewX, NewY)).
   
 
-% same_line_occupied(+X1, +Y1, +X2, +Y2)
-% Checks if there are any occupied cells in the same line as (X1, Y1) to (X2, Y2)
-same_line_occupied(Board, X1, Y1, X2, Y2) :-
-  (X1 =:= X2 ->
-      X is X1,
-      MinY is min(Y1, Y2),
-      MaxY is max(Y1, Y2),
-      between(MinY, MaxY, Y),
-      \+ empty_cell(Board, X, Y);
-  Y is Y1,
-  MinX is min(X1, X2),
-  MaxX is max(X1, X2),
-  between(MinX, MaxX, X),
-  \+ empty_cell(Board, X, Y)).
+% rook move
+% move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
+valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
+  X = NewX,
+  vertical_up(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
+  X = NewX,
+  vertical_down(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
+  Y = NewY,
+  horizontal_left(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
+  Y = NewY,
+  horizontal_right(Board, X, Y, NewX, NewY).
+
+
+% !DELETE
+test_h_left:-
+  Board = [
+    [[x,x,x], empty, [x], [pawn], empty],
+    [[pawn], [pawn], [x,x], [pawn], [pawn]],
+    [[pawn], [pawn], [o,o], [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]]
+  ],
+  get_piece(Board, 3, 3, Piece),
+  write(Piece),
+  % horizontal_left(Board, 3, 2, X, Y), !,
+  vertical_up(Board, 3, 3, X, Y),
+  nl,
+  write(X), write(Y),
+  nl.
+
+between_rev(Lower, Upper, X) :- 
+  Upper >= Lower, 
+  X = Upper. 
+
+between_rev(Lower, Upper, X) :- 
+    Upper > Lower, 
+    NewUpper is Upper - 1, 
+    between_rev(Lower, NewUpper, X).
+
+% vertical_up(+Board, +X, +Y, -OccupiedX, -OccupiedY)
+% Checks if there are any occupied cells in the vertical line from (X, 1) to (X, Y)
+vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
+  Z is Y - 1,
+  between_rev(1, Z, Y1),
+  \+ empty_cell(Board, X, Y1), !,
+  % Y1 \= Y,
+  OccupiedX = X,
+  OccupiedY = Y1, !.
+
+
+vertical_down(Board, X, Y, OccupiedX, OccupiedY) :-
+  length(Board, Size),
+  Z is Y + 1,
+  between(Z, Size, Y1), 
+  write('Y1: '), write(Y1), nl,
+  \+ empty_cell(Board, X, Y1), !,
+  % Y1 \= Y,
+  OccupiedX = X,
+  OccupiedY = Y1, !.
+
+
+horizontal_left(Board, X, Y, OccupiedX, OccupiedY) :-
+  Z is X - 1,
+  between_rev(1, Z, X1),
+  \+ empty_cell(Board, X1, Y), !,
+  % X1 \= X,
+  OccupiedX = X1,
+  OccupiedY = Y, !.
+  
+
+
+horizontal_right(Board, X, Y, OccupiedX, OccupiedY) :-
+  length(Board, Size),
+  Z is X + 1,
+  between(Z, Size, X1),
+  \+ empty_cell(Board, X1, Y), !,
+  % X1 \= X,
+  OccupiedX = X1,
+  OccupiedY = Y, !.
+
 
 % diagonal_occupied(+X1, +Y1, +X2, +Y2)
 % Checks if there are any occupied cells in the diagonal line as (X1, Y1) to (X2, Y2)
