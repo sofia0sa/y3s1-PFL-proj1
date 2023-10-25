@@ -5,11 +5,11 @@
 :- use_module(library(between)).
 :- use_module(library(system), [now/1]).
 :- consult(utils).
-:- consult(data).
+% :- consult(data).
 :- consult(board).
 :- use_module(library(lists)).
 :- use_module(library(random)).
-:- use_module(library(charsio)).
+% :- use_module(library(charsio)).
 
 
 % =============== CHOOSE MAIN OPTION ========================== %
@@ -181,7 +181,8 @@ print_modes(GameMode) :-
 
 % main_menu(-GameState)
 % Initialize GameState with Board, first Player
-main_menu([Board, Player, GameMode]):-
+% main_menu([Board, Player, GameMode]):-
+main_menu(NewGameState):-
     print_header,
     print_main_menu(GameMode),
     init_random_state,

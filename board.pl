@@ -41,8 +41,6 @@ print_piece :-
 % place_piece(+Board, +X, +Y, +Piece, -NewBoard)
 % Places a piece of type Piece on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_piece(Board, X, Y, Piece, NewBoard) :-
-    write('HERE: Place_piece\n'),
-    write('Piece: '), write(Piece), nl,
     nth1(Y, Board, Row),
     replace_nth1(X, Row, Piece, NewRow),
     replace_nth1(Y, Board, NewRow, NewBoard).
@@ -87,9 +85,7 @@ empty_cell(Board, X, Y) :-
 
 place_pawn(Board, X, Y, player1, NewBoard) :-
     empty_cell(Board, X, Y),
-    write('HERE Place Pawn: empty cell \n'),
     place_piece(Board, X, Y, [x], NewBoard).
-
 place_pawn(Board, X, Y, player2, NewBoard) :-
     empty_cell(Board, X, Y),
     place_piece(Board, X, Y, [o], NewBoard).

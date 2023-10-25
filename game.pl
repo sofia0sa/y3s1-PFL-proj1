@@ -64,7 +64,7 @@ get_move(GameState, NewGameState) :-
     choose_number(1, 3, '\nType a number', Option), !,
 
     move_option(GameState, Option, NewGameState).
-    move(GameState, Coordinate, NewGameState).
+    % move(GameState, Coordinate, NewGameState).
 
 % check_if_tower_exists(+Board, +X, +Y)
 % Checks if there is a tower in the given coordinates to check if a player can separate it
@@ -165,11 +165,10 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
 
     [Board, Player, GameMode] = GameState, 
     length(Board, Size),
-
     print_board(Size, Board),
     print_turn(Player),
-    get_move(GameState, Move), %para player humano
-    move(GameState, Move, NewGameState), !,
+    get_move(GameState, NewGameState), %para player humano
+    % move(GameState, Move, NewGameState), !,  %this was giving errors
     game_cycle(NewGameState).
 
 
