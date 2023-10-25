@@ -1,6 +1,18 @@
 :- consult(utils).
 :- consult(board).
 
+% separate_tower(+Board, +X, +Y, +Player, -NewBoard)
+% Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
+separate_tower(Board, X, Y, Player, NewBoard) :-
+  get_piece(Board, X, Y, Piece),
+  length(Piece, L),
+  L > 1,
+  get_board_size(Board, Size),
+  get_piece(Board, X, Y, Piece),
+  delete_piece(Board, X, Y, BoardWithoutPiece),
+  add_piece(BoardWithoutPiece, X, Y, [Player], NewBoard).
+
+
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
@@ -34,7 +46,7 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   % falta verificar altura max da torre
 
 
-% valid_piece_movement(+Size, +X, +Y, -NewX, -NewY, +Piece)
+% valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +Piece)
 %pawn move
 %move 1 cell horizontally or vertically
 valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
@@ -54,14 +66,12 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
   abs(X - NewX) =:= abs(Y - NewY),
   \+ diagonal_occupied(Board, X, Y, NewX, NewY).
 
-
 % queen move
 % move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
 valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   (X =:= NewX; Y =:= NewY ; abs(X - NewX) =:= abs(Y - NewY)),
   \+ (same_line_occupied(Board, X, Y, NewX, NewY) ; diagonal_occupied(Board, X, Y, NewX, NewY)).
   
-
 % rook move
 % move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
 valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
