@@ -78,23 +78,6 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
   horizontal_right(Board, X, Y, NewX, NewY).
 
 
-% !DELETE
-test_h_left:-
-  Board = [
-    [[x,x,x], empty, [x], [pawn], empty],
-    [[pawn], [pawn], [x,x], [pawn], [pawn]],
-    [[pawn], [pawn], [o,o], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]]
-  ],
-  get_piece(Board, 3, 3, Piece),
-  write(Piece),
-  % horizontal_left(Board, 3, 2, X, Y), !,
-  vertical_up(Board, 3, 3, X, Y),
-  nl,
-  write(X), write(Y),
-  nl.
-
 between_rev(Lower, Upper, X) :- 
   Upper >= Lower, 
   X = Upper. 
