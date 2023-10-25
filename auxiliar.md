@@ -101,3 +101,7 @@ DUVIDAS PARA AULA:
 e chamamos onde essas funcoes? temos que fazer um gamecyle para cada modo de jogo? se nao, como incorporamos no mesmo?
 
 - duvidas do GUI em relacao ao movimento de algumas peças
+
+NOTAS:
+
+- nao esquecer de fazer repeat para error handling de inputs errados 

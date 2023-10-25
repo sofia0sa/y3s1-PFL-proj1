@@ -23,10 +23,12 @@ other_player(player2, player1).
 
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
-get_name(Player):-
-    format('Hello ~a, what is your name? ', Player),
-    read_line(Name),
+get_name(Player) :-
+    format('Hello ~a, what is your name? ', [Player]),
+    read_line(Codes),
+    atom_codes(Name, Codes),
     asserta(name_of(Player, Name)).
+
 
 print_heart :-
     write('  /\\  /\\  '), nl,

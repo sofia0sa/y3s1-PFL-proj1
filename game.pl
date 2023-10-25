@@ -45,18 +45,19 @@
 % print_turn(+Player)
 % Prints a message declaring whose turn it is
 print_turn(Player):-
+    write('\n====================================\n'),
     name_of(Player, Name),
-    atom_string(NameAtom, Name)
-    format('It`s ~w`s turn!\n', [NameAtom]), !.
+    format('It`s ~a`s turn!\n\n', [Name]), !.
+    % atom_string(NameAtom, Name)
+    % format('It`s ~w`s turn!\n', [NameAtom]), !.
 
 
 %===================== GAME HUMAN MOVES ====================
 
 get_move(GameState, NewGameState) :-
     [Board, Player, GameMode] = GameState,
-    print_turn(Player),
-    
-    write('==============================\n'),
+    % print_turn(Player),
+    write('\n====================================\n'),
     write('What move do you want to make?\n'),
     write('1 - Add piece\n'),
     write('2 - Move piece\n'),
@@ -66,6 +67,8 @@ get_move(GameState, NewGameState) :-
     move_option(GameState, Option, NewGameState).
     move(GameState, Coordinate, NewGameState).
 
+% check_if_tower_exists(+Board, +X, +Y)
+% Checks if there is a tower in the given coordinates to check if a player can separate it
 check_if_tower_exists(Board, X, Y) :-
     get_piece(Board, X, Y, Piece),
     length(Piece, L),
@@ -76,15 +79,15 @@ check_if_tower_exists(Board, X, Y) :-
 % Unifies NewGameState with the new game state after the player chooses an option
 move_option(GameState, 1, NewGameState) :-
     [Board, Player, GameMode] = GameState,
-    write('\n==============================\n'),
-    write('Where do you want to place the piece?\n'),
+    write('\n====================================\n'),
+    write('Where do you want to place the piece?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 2, NewGameState) :-
-    write('\n==============================\n'),
+    write('\n====================================\n'),
     write('Which piece do you want to move?\n'),
     get_coordinate(Board, X, Y),
     get_piece(Board, X, Y, Piece),
@@ -94,10 +97,10 @@ move_option(GameState, 2, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 3, NewGameState) :-
-    write('\n==============================\n'),
+    write('\n====================================\n'),
     write('Which tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
-    check_if_tower_exists(Board, X, Y), %
+    check_if_tower_exists(Board, X, Y), %checks if there is a tower to separate in the given coordinates
     separate_tower(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
@@ -149,7 +152,7 @@ show_winner([_,_,_,TotalMoves], Winner):-
 game_cycle(GameState):- %IF GAME IS OVER because someone won
     game_over(GameState, Winner), !, %verifica se alguem ganhou (lenght tower = 6)
 
-    [Board, Player] = GameState,
+    [Board, Player, GameMode] = GameState,
     
     length(Board, Size),
     print_board(Size, Board),

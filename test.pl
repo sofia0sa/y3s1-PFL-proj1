@@ -24,9 +24,6 @@ test_empty_cell :-
   empty_cell(Board, 1, 3).
 
 % !DELETE: Apenas para testar
-
-
-
 test_place_pawn(X,Y,P):-
   board(4, Board),
   print_board(4, Board),

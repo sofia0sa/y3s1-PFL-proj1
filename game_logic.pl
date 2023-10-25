@@ -1,6 +1,18 @@
 :- consult(utils).
 :- consult(board).
 
+% separate_tower(+Board, +X, +Y, +Player, -NewBoard)
+% Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
+separate_tower(Board, X, Y, Player, NewBoard) :-
+  get_piece(Board, X, Y, Piece),
+  length(Piece, L),
+  L > 1,
+  get_board_size(Board, Size),
+  get_piece(Board, X, Y, Piece),
+  delete_piece(Board, X, Y, BoardWithoutPiece),
+  add_piece(BoardWithoutPiece, X, Y, [Player], NewBoard).
+
+
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-

@@ -62,16 +62,19 @@ choose_mode(GameMode) :-
 % option(+N)
 % Main menu options. Each represents a game mode.
 mode_option(1):-
+    write('\n====================================\n'),
     write('\nPlayer vs. Player\n\n'),
     get_name(player1), get_name(player2).
 
 mode_option(2):-
+    write('\n====================================\n'),
     write('\nPlayer vs. Computer\n\n'),
     get_name(player1),
     asserta((name_of(player2, 'Computer'))), !, 
     choose_difficulty(player2).
 
 mode_option(3):-
+    write('\n====================================\n'),
     write('Computer vs. Computer\n'),
     asserta((name_of(player1, 'Computer1'))),
     asserta((name_of(player2, 'Computer2'))), !,
@@ -178,13 +181,13 @@ print_modes(GameMode) :-
 
 % main_menu(-GameState)
 % Initialize GameState with Board, first Player
-main_menu([Board,Player, GameMode]):-
+main_menu([Board, Player, GameMode]):-
     print_header,
     print_main_menu(GameMode),
     init_random_state,
     choose_player(Player),
     choose_board(Size), 
-    init_state(Size, Board),
+    init_state(Size, Board), %estado inicial da board
     GameState = [Board, Player, GameMode],
     get_move(GameState, NewGameState).
 
