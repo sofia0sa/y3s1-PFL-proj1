@@ -13,14 +13,14 @@
 
 
 % =============== CHOOSE MAIN OPTION ========================== %
-choose_main_option :-
+choose_main_option(GameMode) :-
     choose_number(1, 3, '\nType a number', Option), !,
-    main_option(Option).
+    main_option(Option, GameMode).
 
-main_option(1):- 
-    print_modes.
+main_option(1, GameMode):- 
+    print_modes(GameMode).
 
-main_option(2) :-
+main_option(2, GameMode) :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
     write(' |       RULES:                                                          |\n'),
@@ -33,11 +33,12 @@ main_option(2) :-
     write(' |_______________________________________________________________________|\n'),
     write(' \n Type 0 to go back: '),
     read_number(Value),
-    (Value =:= 0 -> clear_console, print_main_menu; main_option(2)).
+    (Value =:= 0 -> clear_console, print_main_menu(GameMode); main_option(2)).
 
 
-main_option(3):-
+main_option(3, GameMode):-
     clear_console,
+    GameMode = 0,
     write('Sorry to see you go!!...\n\n'),
     write('  _______________________________________________________________________ \n'),
     write(' |       LEAVING                                                         |\n'),
@@ -54,9 +55,9 @@ main_option(3):-
 
 % menu/0
 % Main menu
-choose_mode :-  
-    choose_number(0, 3, '\nType a number', Option), !,
-    mode_option(Option).
+choose_mode(GameMode) :-  
+    choose_number(0, 3, '\nType a number', GameMode), !,
+    mode_option(GameMode).
 
 % option(+N)
 % Main menu options. Each represents a game mode.
@@ -79,7 +80,7 @@ mode_option(3):-
 
 mode_option(0):-
     clear_console,
-    print_main_menu.
+    print_main_menu(GameMode).
 
 
 % =============== CHOOSE PLAYER ========================== %
@@ -138,7 +139,7 @@ print_header :-
     write(' |_______________________________________________________________________|\n\n').
 
 
-print_main_menu :-
+print_main_menu(GameMode) :-
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),                                                                                                                                            
@@ -151,10 +152,10 @@ print_main_menu :-
     write(' |                      3. Leave game                                    |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n\n'),
-    choose_main_option.
+    choose_main_option(GameMode).
 
 
-print_modes :-
+print_modes(GameMode) :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
@@ -170,21 +171,22 @@ print_modes :-
     write(' |                      0. Go back to main menu                          |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n\n'),
-    choose_mode.
+    choose_mode(GameMode).
 
 
 % =============== MAIN MENU (called by play.) ========================== %
 
 % main_menu(-GameState)
 % Initialize GameState with Board, first Player
-main_menu([Board,Player]):-
+main_menu([Board,Player, GameMode]):-
     print_header,
-    print_main_menu,
+    print_main_menu(GameMode),
     init_random_state,
     choose_player(Player),
     choose_board(Size), 
     init_state(Size, Board),
-    get_move(Board, Player, Move).
+    GameState = [Board, Player, GameMode],
+    get_move(GameState, NewGameState).
 
 % main_menu
 % If user leaves the game, fail and exit

@@ -1,5 +1,13 @@
 :- use_module(library(lists)).
 
+:- dynamic difficulty/2.
+
+:- dynamic name_of/2.
+
+% name_of(Player, Name) :-
+%     retract(name_of(Player, _)),
+%     string_codes(NameStr, Name),
+%     asserta(name_of(Player, NameStr)).
 
 % === GAME RELATED ===
 
@@ -16,7 +24,7 @@ other_player(player2, player1).
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
 get_name(Player):-
-    format('Hello ~a, what is your name? ', [Player]),
+    format('Hello ~a, what is your name? ', Player),
     read_line(Name),
     asserta(name_of(Player, Name)).
 

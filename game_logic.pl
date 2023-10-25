@@ -31,13 +31,13 @@ test_valid_moves:-
 valid_move(Board, X, Y, NewX, NewY, Piece) :-
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
-  length(Piece, L), % Pawn
+  length(Piece, L),
   get_board_size(Board, Size),
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
   % falta verificar altura max da torre
 
 
-% valid_piece_movement(+Size, +X, +Y, -NewX, -NewY, +Piece)
+% valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +Piece)
 %pawn move
 %move 1 cell horizontally or vertically
 valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
@@ -50,13 +50,22 @@ valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
   % (X =:= NewX + 2; X =:= NewX - 2; Y =:= NewY + 2; Y =:= NewY - 2),
   % (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
   (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
-    % in_bounds(Size, NewX, NewY).
 
 % rook move
 % move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
+% caso 1: Manter X, mudar Y, andar na vertical até encontrar uma peça
 valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
   (X =:= NewX; Y =:= NewY),
-  \+ same_line_occupied(Board, X, Y, NewX, NewY).
+  same_line_occupied(Board, X, Y, NewX, NewY).
+
+
+
+
+
+%dar o tabuleiro
+%veirifcar limite,
+%verificar o limite
+
 
 
 % !DELETE: just for testing

@@ -5,7 +5,6 @@
 :- consult('menu.pl'). %ficheiro com os includes
 :- consult('utils.pl').
 
-
 % ==================== GAME MOVES -> retirado do FS, ver como fica o nosso ====================
 % choose_move(+GameState,+Player,+Level,-Move)
 % Choose move a human player
@@ -43,17 +42,18 @@
 
 
 % ================================== PRINT NEXT PLAYER =================================================================
-% print_turn(+GameState)
+% print_turn(+Player)
 % Prints a message declaring whose turn it is
 print_turn(Player):-
     name_of(Player, Name),
-    format('It`s ~a`s turn!\n', [Name]), !.
+    atom_string(NameAtom, Name)
+    format('It`s ~w`s turn!\n', [NameAtom]), !.
 
 
 %===================== GAME HUMAN MOVES ====================
 
 get_move(GameState, NewGameState) :-
-    [Board, Player] = GameState,
+    [Board, Player, GameMode] = GameState,
     print_turn(Player),
     
     write('==============================\n'),
@@ -75,13 +75,13 @@ check_if_tower_exists(Board, X, Y) :-
 % move_option(+GameState, +Option, -NewGameState)
 % Unifies NewGameState with the new game state after the player chooses an option
 move_option(GameState, 1, NewGameState) :-
-    [Board, Player] = GameState,
+    [Board, Player, GameMode] = GameState,
     write('\n==============================\n'),
     write('Where do you want to place the piece?\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer].
+    NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 2, NewGameState) :-
     write('\n==============================\n'),
@@ -91,7 +91,7 @@ move_option(GameState, 2, NewGameState) :-
     print_possible_moves(Board, X, Y), %prints and lets choose the move
     move_piece(Board, X, Y, X1, Y1, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer].
+    NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 3, NewGameState) :-
     write('\n==============================\n'),
@@ -100,7 +100,7 @@ move_option(GameState, 3, NewGameState) :-
     check_if_tower_exists(Board, X, Y), %
     separate_tower(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer].
+    NewGameState = [NewBoard, NewPlayer, GameMode].
 
 % get_coordinate(+Board,-X, -Y)
 % Unifies Coordinate with a valid coordinate given by input within the Board
@@ -159,7 +159,7 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
 
-    [Board, Player] = GameState, 
+    [Board, Player, GameMode] = GameState, 
     length(Board, Size),
 
     print_board(Size, Board),
