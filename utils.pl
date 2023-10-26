@@ -101,13 +101,18 @@ test_join_list :-
     join_list(List1, List2, List),
     write('List: '), write(List), nl.
 
-% !WARNING: not used
 % print_list(+List)
-% Prints the elements of List to the console
-print_list([]).
-print_list([H|T]) :-
-    write(H), nl,
-    print_list(T).
+% Prints the elements of List to the console in the format "1 - Element1"
+print_list(List) :-
+    print_list(List, 1).
+
+% print_list(+List, +Index)
+% Prints the elements of List to the console in the format "Index - Element"
+print_list([], _).
+print_list([H|T], Index) :-
+    write(Index), write(' - '), write(H), nl,
+    NewIndex is Index + 1,
+    print_list(T, NewIndex).
   
 tower_top(Tower, Top) :-
   last(Tower, Top).

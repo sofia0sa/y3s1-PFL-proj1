@@ -45,7 +45,7 @@
 % print_turn(+Player)
 % Prints a message declaring whose turn it is
 print_turn(Player):-
-    write('\n====================================\n'),
+    write('\n=========================================\n'),
     name_of(Player, Name),
     format('It`s ~a`s turn!\n', [Name]), !.
     % atom_string(NameAtom, Name)
@@ -56,7 +56,7 @@ print_turn(Player):-
 
 get_move(GameState, NewGameState) :-
     [Board, Player, GameMode] = GameState,
-    write('\n====================================\n'),
+    write('\n=========================================\n'),
     write('What move do you want to make?\n'),
     write('1 - Add piece\n'),
     write('2 - Move piece\n'),
@@ -66,19 +66,28 @@ get_move(GameState, NewGameState) :-
     move_option(GameState, Option, NewGameState).
     % move(GameState, Coordinate, NewGameState).
 
-% check_if_tower_exists(+Board, +X, +Y)
+% check_if_tower_exists(+Board, +X, +Y, -L)
 % Checks if there is a tower in the given coordinates to check if a player can separate it
-check_if_tower_exists(Board, X, Y) :-
+check_if_tower_exists(Board, X, Y, L) :-
     get_piece(Board, X, Y, Piece),
     length(Piece, L),
     L>1,
+    !.
+
+%checks if the player can place the tower in the given coordinates
+% !DUVIDA: jogador so deve poder colocar em cima de peças dele, senao era facil ganhar (bastava ir somando ate uma torre = 6)?
+check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
+    get_piece(Board, X1, Y1, Piece),
+    length(Piece, L),
+    L1 is L+NPieces,
+    L1 =<6,
     !.
 
 % move_option(+GameState, +Option, -NewGameState)
 % Unifies NewGameState with the new game state after the player chooses an option
 move_option(GameState, 1, NewGameState) :-
     [Board, Player, GameMode] = GameState,
-    write('\n====================================\n'),
+    write('\n=========================================\n'),
     write('Where do you want to place the piece?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
@@ -86,42 +95,62 @@ move_option(GameState, 1, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 2, NewGameState) :-
-    write('\n====================================\n'),
+    write('\n=========================================\n'),
     write('Which piece do you want to move?\n'),
     [Board, Player, GameMode] = GameState,
     get_coordinate(Board, X, Y),
     % get_piece(Board, X, Y, Piece),
     print_possible_moves(Board, X, Y), %prints and lets choose the move
+    
     move_piece(Board, X, Y, X1, Y1, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
+
+% IN CONSTRUCTION!
 move_option(GameState, 3, NewGameState) :-
-    write('\n====================================\n'),
+    write('\n=========================================\n'),
     write('Which tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
-    check_if_tower_exists(Board, X, Y), %checks if there is a tower to separate in the given coordinates
+    check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
+
+    write('\nHow many pieces do you want to move from the tower?\n'),
+    choose_number(1, L-1, 'Type a number', N),
+
+    write('\nWhere do you want to place them?\n'),
+    get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, L), %possible moves para que nao aconteca um placement com length>6
+    choose_number(1, L, 'Type a number', N1),
+    nth1(N1, ListOfMoves, NMove),
     separate_tower(Board, X, Y, Player, NewBoard),
+
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 
-print_possible_moves(Board, X, Y) :-
+get_possible_moves(Board, X, Y, ListOfMoves, L) :-
     valid_moves(Board, X, Y, ListOfMoves),
     length(ListOfMoves, L),
     L>0,
-
-    get_coordinate(Board, X1, Y1),
-    move_piece(Board, X, Y, X1, Y1, NewBoard),
-    print_board(Board, NewBoard).
+    write('Structure: [X,Y]\n'),
+    print_list(ListOfMoves).
 
 
-% print_list(+List)
-% Prints the elements of List to the console
-print_list(0, []).
-print_list([H|T]) :-
-    write(H), write(' '),
-    print_list(T).
+    % get_coordinate(Board, X1, Y1),
+    % move_piece(Board, X, Y, X1, Y1, NewBoard),
+    % print_board(Board, NewBoard).
+
+
+% neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
+% print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
+get_possible_moves(Board, X, Y, NPieces, ValidMoves, L) :-
+    valid_moves(Board, X, Y, ListOfMoves, NPieces),
+    length(ListOfMoves, L),
+    L>0,
+    write('Structure: [X,Y]\n'),
+    print_list(ListOfMoves).
+
+
+
 
 % get_coordinate(+Board,-X, -Y)
 % Unifies Coordinate with a valid coordinate given by input within the Board

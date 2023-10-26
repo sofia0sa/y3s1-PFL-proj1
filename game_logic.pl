@@ -3,7 +3,8 @@
 
 % separate_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
-separate_tower(Board, X, Y, Player, NewBoard) :-
+separate_tower(Board, X, Y, Move, NewBoard) :-
+  [NewX, NewY] = Move,
   get_piece(Board, X, Y, Piece),
   length(Piece, L),
   L > 1,
@@ -20,6 +21,16 @@ valid_moves(Board, X, Y, ValidMoves) :-
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
       valid_move(Board, X, Y, NewX, NewY, Piece)
+  ), ValidMoves).
+
+% valid_moves(+Board, +X, +Y, +Player, -ValidMoves, +NPieces)
+% Calculates all the valid moves for the piece at position (X, Y) for the given player.
+valid_moves(Board, X, Y, ValidMoves, NPieces) :-
+  get_piece(Board, X, Y, Piece),
+  \+ empty_cell(Board, X, Y),
+  %check_if_can_place_tower(Board, X, Y, NPieces),
+  findall([NewX, NewY], (
+      valid_move(Board, X, Y, NewX, NewY, Piece, NPieces)
   ), ValidMoves).
 
 
@@ -43,9 +54,18 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   \+ empty_cell(Board, NewX, NewY),
   length(Piece, L), % Pawn
   % get_board_size(Board, Size),
+  L1 is L + 1,
+  L1=<6,
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
   % falta verificar altura max da torre
 
+valid_move(Board, X, Y, NewX, NewY, Piece, NPieces) :-
+  inside_board(Board, NewX, NewY),
+  \+ empty_cell(Board, NewX, NewY),
+  length(Piece, L), 
+  L1 is L + NPieces,
+  L1<=6,
+  valid_piece_movement(Board, X, Y, NewX, NewY, L).
 
 
 % valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +Piece)
