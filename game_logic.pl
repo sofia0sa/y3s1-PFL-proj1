@@ -3,34 +3,42 @@
 
 % separate_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
-separate_tower(Board, X, Y, Move, NewBoard) :-
-  [NewX, NewY] = Move,
-  get_piece(Board, X, Y, Piece),
-  length(Piece, L),
-  L > 1,
-  get_board_size(Board, Size),
-  get_piece(Board, X, Y, Piece),
-  delete_piece(Board, X, Y, BoardWithoutPiece),
-  add_piece(BoardWithoutPiece, X, Y, [Player], NewBoard).
+separate_tower(Board, X, Y, NMove, NPieces, NewBoard) :-
+  [NewX, NewY] = NMove,
+  get_tower(Board, X, Y, Tower),
+  split_list(Tower, Part1, NPieces, Part2),
+  place_tower(Board, X, Y, Part1, Board1),
+  move_pieces(Board1, NewX, NewY, Part2, NewBoard).
+
+move_tower(Board, X, Y, NewX, NewY, NewBoard) :-
+  get_tower(Board, X, Y, Tower),
+  place_tower(Board, X, Y, empty, Board1),
+  move_pieces(Board1, NewX, NewY, Tower, NewBoard).
+
+move_pieces(Board, X, Y, NPieces, NewBoard):-
+  get_tower(Board, X, Y, Tower),
+  append(Tower, NPieces, NewTower),
+  place_tower(Board, X, Y, NewTower, NewBoard).
+
 
 
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
-  get_piece(Board, X, Y, Piece),
+  get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
-      valid_move(Board, X, Y, NewX, NewY, Piece)
+      valid_move(Board, X, Y, NewX, NewY, Tower)
   ), ValidMoves).
 
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves, +NPieces)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves, NPieces) :-
-  get_piece(Board, X, Y, Piece),
+  get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   %check_if_can_place_tower(Board, X, Y, NPieces),
   findall([NewX, NewY], (
-      valid_move(Board, X, Y, NewX, NewY, Piece, NPieces)
+      valid_move(Board, X, Y, NewX, NewY, Tower, NPieces)
   ), ValidMoves).
 
 
@@ -213,13 +221,13 @@ choose_piece_and_move(Board, NewBoard) :-
   repeat,
   write('Select the piece you want to move (X, Y): '),
   get_coordinate(Board, X, Y),
-  get_piece(Board, X, Y, Piece),
+  get_tower(Board, X, Y, Piece),
   valid_moves(Board, X, Y, ValidMoves),
   print_valid_moves(ValidMoves),
   write('Choose a move (NewX, NewY): '),
   get_coordinate(Board, NewX, NewY),
   member([NewX, NewY], ValidMoves), % Ensure the selected move is valid
-  move_piece(Board, X, Y, NewX, NewY, NewBoard), !.
+  move_pieces(Board, X, Y, NewX, NewY, NewBoard), !.
 
 % print_valid_moves(+ValidMoves)
 % Prints the valid moves to the console for the user to choose from.

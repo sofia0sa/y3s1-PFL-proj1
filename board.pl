@@ -38,9 +38,9 @@ print_piece :-
     write(X).
 
 
-% place_piece(+Board, +X, +Y, +Piece, -NewBoard)
+% place_tower(+Board, +X, +Y, +Piece, -NewBoard)
 % Places a piece of type Piece on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-place_piece(Board, X, Y, Piece, NewBoard) :-
+place_tower(Board, X, Y, Piece, NewBoard) :-
     nth1(Y, Board, Row),
     replace_nth1(X, Row, Piece, NewRow),
     replace_nth1(Y, Board, NewRow, NewBoard).
@@ -57,9 +57,9 @@ replace_nth1(N, [H|T], Value, [H|NewT]) :-
 
 
 
-% get_piece(+Board, +X, +Y, -Piece)
+% get_tower(+Board, +X, +Y, -Piece)
 % Returns the piece at the specified X and Y coordinates on the Board
-get_piece(Board, X, Y, Piece) :-
+get_tower(Board, X, Y, Piece) :-
     nth1(Y, Board, Row),
     nth1(X, Row, Piece),
     Piece \= empty.
@@ -85,32 +85,32 @@ empty_cell(Board, X, Y) :-
 
 place_pawn(Board, X, Y, player1, NewBoard) :-
     empty_cell(Board, X, Y),
-    place_piece(Board, X, Y, [x], NewBoard).
+    place_tower(Board, X, Y, [x], NewBoard).
 place_pawn(Board, X, Y, player2, NewBoard) :-
     empty_cell(Board, X, Y),
-    place_piece(Board, X, Y, [o], NewBoard).
+    place_tower(Board, X, Y, [o], NewBoard).
 
 % can only place a new piece if the cell is empty
-% place_piece(+Board, +X, +Y, +Player, -NewBoard)
+% place_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Places a pawn from white or black depending on the player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 % place_pawn(Board, X, Y, Player, NewBoard) :-
 %     empty_cell(Board, X, Y), 
 %     %check which player is playing
-%     (Player == player1 -> place_piece(Board, X, Y, [x], NewBoard);
-%     Player == player2 -> place_piece(Board, X, Y, [o], NewBoard)).
+%     (Player == player1 -> place_tower(Board, X, Y, [x], NewBoard);
+%     Player == player2 -> place_tower(Board, X, Y, [o], NewBoard)).
 
 
-move_piece(Board, X, Y, NewX, NewY, NewBoard) :-
+move_pieces(Board, X, Y, NewX, NewY, NewBoard) :-
     % !TODO:
-    place_piece(Board, NewX, NewY, Piece, NewBoard).
+    place_tower(Board, NewX, NewY, Piece, NewBoard).
 
 % !DELETE: Apenas para testar
-test_move_piece :-
+test_move_pieces :-
     board(4, Board),
     print_board(4, Board),
     place_pawn(Board, 1, 1, player1, NewBoard),
     print_board(4, NewBoard).
-    % move_piece(Board, 1, 1, 2, 2, NewBoard),
+    % move_pieces(Board, 1, 1, 2, 2, NewBoard),
     % print_board(4, NewBoard).
 
 %---------------------------------%

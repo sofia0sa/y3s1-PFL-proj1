@@ -2,17 +2,17 @@
 :- consult(board).
 
 % !DELETE: Apenas para testar
-test_place_piece :-
+test_place_tower :-
   board(4, Board),
   print_board(4, Board),
-  place_piece(Board, 1, 1, [x], NewBoard),
+  place_tower(Board, 1, 1, [x], NewBoard),
   print_board(4, NewBoard).
 
 % !DELETE: Apenas para testar
-test_get_piece :-
+test_get_tower :-
   board(5, Board),
   print_board(5, Board),
-  get_piece(Board, 1, 2, Piece),
+  get_tower(Board, 1, 2, Piece),
   write(Piece),
   t(Piece, X),
   write(X).

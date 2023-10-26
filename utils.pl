@@ -87,20 +87,6 @@ test_split_list :-
     write('Part1: '), write(Part1), nl,
     write('Part2: '), write(Part2), nl.
 
-% join_list(+Part1, +Part2, -List)
-% Joins two lists into one
-join_list(Part1, Part2, List) :-
-    append(Part1, Part2, List).
-
-% !DELETE: apenas para testes
-test_join_list :-
-    List1 = [1,2,3],
-    List2 = [4,5,6],
-    write('List1: '), write(List1), nl,
-    write('List2: '), write(List2), nl,
-    join_list(List1, List2, List),
-    write('List: '), write(List), nl.
-
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"
 print_list(List) :-

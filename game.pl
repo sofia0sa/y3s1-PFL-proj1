@@ -69,7 +69,7 @@ get_move(GameState, NewGameState) :-
 % check_if_tower_exists(+Board, +X, +Y, -L)
 % Checks if there is a tower in the given coordinates to check if a player can separate it
 check_if_tower_exists(Board, X, Y, L) :-
-    get_piece(Board, X, Y, Piece),
+    get_tower(Board, X, Y, Piece),
     length(Piece, L),
     L>1,
     !.
@@ -77,7 +77,7 @@ check_if_tower_exists(Board, X, Y, L) :-
 %checks if the player can place the tower in the given coordinates
 % !DUVIDA: jogador so deve poder colocar em cima de peças dele, senao era facil ganhar (bastava ir somando ate uma torre = 6)?
 check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
-    get_piece(Board, X1, Y1, Piece),
+    get_tower(Board, X1, Y1, Piece),
     length(Piece, L),
     L1 is L+NPieces,
     L1 =<6,
@@ -99,10 +99,10 @@ move_option(GameState, 2, NewGameState) :-
     write('Which piece do you want to move?\n'),
     [Board, Player, GameMode] = GameState,
     get_coordinate(Board, X, Y),
-    % get_piece(Board, X, Y, Piece),
-    print_possible_moves(Board, X, Y), %prints and lets choose the move
-    
-    move_piece(Board, X, Y, X1, Y1, NewBoard),
+    % get_tower(Board, X, Y, Piece),
+    get_possible_moves(Board, X, Y), %prints and lets choose the move
+    %!TODO:
+    move_tower(Board, X, Y, NewBoard), %!FIX:
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
@@ -121,7 +121,7 @@ move_option(GameState, 3, NewGameState) :-
     get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, L), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, L, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
-    separate_tower(Board, X, Y, Player, NewBoard),
+    separate_tower(Board, X, Y, NMove, NPieces, NewBoard),
 
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
@@ -136,7 +136,7 @@ get_possible_moves(Board, X, Y, ListOfMoves, L) :-
 
 
     % get_coordinate(Board, X1, Y1),
-    % move_piece(Board, X, Y, X1, Y1, NewBoard),
+    % move_pieces(Board, X, Y, X1, Y1, NewBoard),
     % print_board(Board, NewBoard).
 
 
