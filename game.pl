@@ -101,7 +101,7 @@ move_option(GameState, 2, NewGameState) :-
 
     get_coordinate(Board, X, Y),
     % get_tower(Board, X, Y, Piece),
-    get_possible_moves(Board, X, Y), %prints and lets choose the move
+    get_possible_moves(Board, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
     %!TODO:
     move_tower(Board, X, Y, NewBoard), %!FIX:
     change_player(Player, NewPlayer),
@@ -126,7 +126,9 @@ move_option(GameState, 3, NewGameState) :-
     write('\nWhere do you want to place them?\n'),
     get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, NMoves, 'Type a number', N1),
+    write('ListOfMoves: '), write(ListOfMoves), nl,
     nth1(N1, ListOfMoves, NMove),
+    write('NMove: '), write(NMove), nl,
     separate_tower(Board, X, Y, NMove, NPieces, NewBoard),
 
     change_player(Player, NewPlayer),
@@ -149,7 +151,7 @@ get_possible_moves(Board, X, Y, ListOfMoves, L) :-
 
 % neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
-get_possible_moves(Board, X, Y, NPieces, ValidMoves, L) :-
+get_possible_moves(Board, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
     write('NPieces: '), write(NPieces), nl,
     valid_moves(Board, X, Y, ListOfMoves, NPieces),

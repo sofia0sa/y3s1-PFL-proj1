@@ -4,12 +4,22 @@
 % separate_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
 separate_tower(Board, X, Y, NMove, NPieces, NewBoard) :-
+  write('HERE IN separate_tower'), nl,
+  write('NMove: '), write(NMove), nl,
   [NewX, NewY] = NMove,
+  write('NewX: '), write(NewX), nl,
+  write('NewY: '), write(NewY), nl,
   get_tower(Board, X, Y, Tower),
+  write('Tower: '), write(Tower), nl,
   split_list(Tower, Part1, NPieces, Part2),
+  write('Part1: '), write(Part1), nl,
+  write('Part2: '), write(Part2), nl,
   place_tower(Board, X, Y, Part1, Board1),
-  move_pieces(Board1, NewX, NewY, Part2, NewBoard).
+  write('Board1: '), write(Board1), nl,
+  move_pieces(Board1, NewX, NewY, Part2, NewBoard),
+  write('NewBoard: '), write(NewBoard), nl.
 
+%move whole tower
 move_tower(Board, X, Y, NewX, NewY, NewBoard) :-
   get_tower(Board, X, Y, Tower),
   place_tower(Board, X, Y, empty, Board1),
@@ -26,6 +36,7 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
   write('HERE IN valid_moves'), nl,
+  write('Board: '), write(Board), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
