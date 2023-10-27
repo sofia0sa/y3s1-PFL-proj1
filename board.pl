@@ -172,7 +172,7 @@ board(4, [
 
 % 5x5 empty board
 board(5, [
-    [[x,x], [x], empty, empty, empty],
+    [[x,o], [x,o,o,x,o], empty, empty, empty],
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],

@@ -96,14 +96,18 @@ move_option(GameState, 1, NewGameState) :-
 move_option(GameState, 2, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
-    write('Which piece do you want to move?\n'),
+    write('Which tower do you want to move?\n'),
     repeat,
-
     get_coordinate(Board, X, Y),
+    \+ empty_cell(Board, X, Y),
     % get_tower(Board, X, Y, Piece),
+    repeat,
+    write('\nWhere do you want to move it?\n'),
     get_possible_moves(Board, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
-    %!TODO:
-    move_tower(Board, X, Y, NewBoard), %!FIX:
+    %!TEST:
+    choose_number(1, NMoves, 'Type a number', N1),
+    nth1(N1, ListOfMoves, NMove),
+    move_tower(Board, X, Y, NMove, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
@@ -124,9 +128,8 @@ move_option(GameState, 3, NewGameState) :-
 
     repeat,
     write('\nWhere do you want to place them?\n'),
-    get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
+    get_possible_moves(Board, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, NMoves, 'Type a number', N1),
-    write('ListOfMoves: '), write(ListOfMoves), nl,
     nth1(N1, ListOfMoves, NMove),
     write('NMove: '), write(NMove), nl,
     separate_tower(Board, X, Y, NMove, NPieces, NewBoard),
@@ -153,10 +156,10 @@ get_possible_moves(Board, X, Y, ListOfMoves, L) :-
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
 get_possible_moves(Board, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
-    write('NPieces: '), write(NPieces), nl,
     valid_moves(Board, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
     L>0,
+    write('ListOfMoves: '), write(ListOfMoves), nl,
     write('Structure: [X,Y]\n'),
     print_list(ListOfMoves).
 
@@ -221,7 +224,7 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
-
+    write('NEW GAME CYCLE\n'),
     [Board, Player, GameMode] = GameState, 
     length(Board, Size),
     print_board(Size, Board),
