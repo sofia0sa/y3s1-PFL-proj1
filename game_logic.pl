@@ -44,19 +44,6 @@ valid_moves(Board, X, Y, ValidMoves, NPieces) :-
   findall([NewX, NewY], (
       valid_move(Board, X, Y, NewX, NewY, Tower, NPieces)
   ), ValidMoves).
-
-
-% !DELETE: just for testing
-test_valid_moves:-
-  Board = [
-    [[x,x,x], [x,o], empty, [pawn], empty],
-    [[pawn], [pawn], [x,x], [pawn], [pawn]],
-    [[pawn], [pawn], empty, [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]]
-  ],
-  valid_moves(Board, 2, 1, ValidMoves),
-  write(ValidMoves).
   
 
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
@@ -101,12 +88,6 @@ valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
 %move 2 cells horizontally or vertically and then 1 cell in the other direction
 valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
   (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
-
-% bishop move
-% move any number of cells diagonally, until it reaches another piece. Can only move to cells that are not empty.
-valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
-  abs(X - NewX) =:= abs(Y - NewY),
-  \+ diagonal_occupied(Board, X, Y, NewX, NewY).
 
 % queen move
 % move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
@@ -175,6 +156,69 @@ horizontal_right(Board, X, Y, OccupiedX, OccupiedY) :-
   OccupiedX = X1,
   OccupiedY = Y, !.
 
+% bishop move
+% move any number of cells diagonally, until it reaches another piece. Can only move to cells that are not empty.
+valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
+  diagonal_down_right(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
+  diagonal_up_left(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
+  diagonal_up_right(Board, X, Y, NewX, NewY).
+
+
+diagonal_up_left(Board, X,  Y, OccupiedX, OccupiedY) :-
+  Min is min(X, Y),
+  Z is Min - 1, %desvio max até chegar à borda
+  % between(1, Z, D),
+  % OccupiedX is X - D,
+  % OccupiedY is Y - D,
+  ul_between(Z, X, Y, OccupiedX, OccupiedY), 
+  \+ empty_cell(Board, OccupiedX, OccupiedY), !.
+
+ul_between(Z, X, Y, NewX, NewY):- 
+  between(1, Z, D), !,
+  NewX is X - D,
+  NewY is Y - D.
+
+diagonal_up_right(Board, X, Y, OccupiedX, OccupiedY) :-
+  length(Board, Size),
+  % Z1 is Size-max(X, Y),
+  % Z2 is min(X, Y)-1,
+  Z1 is Size - X,
+  Z2 is Y - 1,
+  Z is min(Z1, Z2),
+  ur_between(Z, X, Y, OccupiedX, OccupiedY),
+  \+ empty_cell(Board, OccupiedX, OccupiedY), !.
+
+ur_between(Z, X, Y, NewX, NewY):- 
+  between(1, Z, D),
+  NewX is X + D,
+  NewY is Y - D.
+
+diagonal_down_right(Board, X, Y, OccupiedX, OccupiedY) :-
+  Max is max(X, Y),
+  length(Board, Size),
+  Z is Size - Max, %desvio max até chegar à borda
+  dr_between(Z, X, Y, OccupiedX, OccupiedY),
+  \+ empty_cell(Board, OccupiedX, OccupiedY), !.
+
+%down_right between
+dr_between(Z, X, Y, NewX, NewY) :-
+  between(1, Z, D), %!,
+  NewX is X + D,
+  NewY is Y + D.
+
+% !DELETE: just for testing
+test_valid_moves:-
+  Board = [
+    [[x,x], [x,o], empty, [pawn], [pawn]],
+    [[pawn], [pawn], empty, empty, [pawn]],
+    [[pawn], [pawn], [x,x,o,o], [pawn], [pawn]],
+    [[pawn], [pawn], [pawn], [x], [pawn]],
+    [[pawn], [pawn], [pawn], [pawn], [pawn]]
+  ],
+  valid_moves(Board, 3, 3, ValidMoves),
+  write(ValidMoves).
 
 % diagonal_occupied(+X1, +Y1, +X2, +Y2)
 % Checks if there are any occupied cells in the diagonal line as (X1, Y1) to (X2, Y2)
