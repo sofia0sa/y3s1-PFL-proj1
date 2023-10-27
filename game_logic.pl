@@ -28,8 +28,6 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
-  write('HERE IN valid_moves'), nl,
-  write('Board: '), write(Board), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
@@ -39,8 +37,6 @@ valid_moves(Board, X, Y, ValidMoves) :-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves, +NPieces)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves, NPieces) :-
-  write('HERE IN valid_moves with NPieces'), nl,
-  write('Board: '), write(Board), nl,
 
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
@@ -66,7 +62,6 @@ test_valid_moves:-
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, X, Y, NewX, NewY, Piece) :-
-  write('HERE IN valid_move'), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Piece, L), % Pawn
@@ -78,8 +73,6 @@ valid_move(Board, X, Y, NewX, NewY, Piece) :-
   % falta verificar altura max da torre
 
 valid_move(Board, X, Y, NewX, NewY, Piece, NPieces) :-
-  write('HERE IN valid_move with NPieces'), nl,
-  write('Piece: '), write(Piece), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Piece, L),
@@ -107,8 +100,6 @@ valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
 %knight move
 %move 2 cells horizontally or vertically and then 1 cell in the other direction
 valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
-  % (X =:= NewX + 2; X =:= NewX - 2; Y =:= NewY + 2; Y =:= NewY - 2),
-  % (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
   (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
 
 % bishop move
@@ -151,45 +142,36 @@ between_rev(Lower, Upper, X) :-
 % vertical_up(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, 1) to (X, Y)
 vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
-  write('HERE IN vertical_up'), nl,
   Z is Y - 1,
   between_rev(1, Z, Y1),
   \+ empty_cell(Board, X, Y1), !,
-  % Y1 \= Y,
   OccupiedX = X,
   OccupiedY = Y1, !.
 
 
 vertical_down(Board, X, Y, OccupiedX, OccupiedY) :-
-  write('HERE IN vertical_down'), nl,
   length(Board, Size),
   Z is Y + 1,
   between(Z, Size, Y1), 
-  write('Y1: '), write(Y1), nl,
   \+ empty_cell(Board, X, Y1), !,
-  % Y1 \= Y,
   OccupiedX = X,
   OccupiedY = Y1, !.
 
 
 horizontal_left(Board, X, Y, OccupiedX, OccupiedY) :-
-  write('HERE IN horizontal_left'), nl,
   Z is X - 1,
   between_rev(1, Z, X1),
   \+ empty_cell(Board, X1, Y), !,
-  % X1 \= X,
   OccupiedX = X1,
   OccupiedY = Y, !.
   
 
 
 horizontal_right(Board, X, Y, OccupiedX, OccupiedY) :-
-  write('HERE IN horizontal_right'), nl,
   length(Board, Size),
   Z is X + 1,
   between(Z, Size, X1),
   \+ empty_cell(Board, X1, Y), !,
-  % X1 \= X,
   OccupiedX = X1,
   OccupiedY = Y, !.
 

@@ -54,9 +54,6 @@ replace_nth1(N, [H|T], Value, [H|NewT]) :-
     replace_nth1(M, T, Value, NewT).
 
 
-
-
-
 % get_tower(+Board, +X, +Y, -Piece)
 % Returns the piece at the specified X and Y coordinates on the Board
 get_tower(Board, X, Y, Piece) :-

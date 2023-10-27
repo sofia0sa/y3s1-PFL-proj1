@@ -47,7 +47,7 @@
 print_turn(Player):-
     write('\n=========================================\n'),
     name_of(Player, Name),
-    format('It`s ~a`s turn!\n', [Name]), !.
+    format('\nIt`s ~a`s turn!\n', [Name]), !.
     % atom_string(NameAtom, Name)
     % format('It`s ~w`s turn!\n', [NameAtom]), !.
 
@@ -56,10 +56,11 @@ print_turn(Player):-
 
 get_move(GameState, NewGameState) :-
     write('\n=========================================\n'),
-    write('What move do you want to make?\n'),
+    write('\nWhat move do you want to make?\n'),
     write('1 - Add piece\n'),
     write('2 - Move piece\n'),
     write('3 - Separate tower\n'),
+    repeat,
     choose_number(1, 3, '\nType a number', Option), !,
     move_option(GameState, Option, NewGameState).
 
@@ -86,8 +87,8 @@ check_if_can_place_tower(Board, X1, Y1, NPieces) :-
 move_option(GameState, 1, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
-    write('Where do you want to place the piece?\n\n'),
     repeat,
+    write('\nWhere do you want to place the piece?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
@@ -96,15 +97,13 @@ move_option(GameState, 1, NewGameState) :-
 move_option(GameState, 2, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
-    write('Which tower do you want to move?\n'),
     repeat,
+    write('\nWhich tower do you want to move?\n'),
     get_coordinate(Board, X, Y),
     \+ empty_cell(Board, X, Y),
-    % get_tower(Board, X, Y, Piece),
-    repeat,
-    write('\nWhere do you want to move it?\n'),
+
+    write('\nWhere do you want to place it?\n'),
     get_possible_moves(Board, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
-    %!TEST:
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     move_tower(Board, X, Y, NMove, NewBoard),
@@ -117,16 +116,14 @@ move_option(GameState, 3, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
     repeat,
-    write('Which tower do you want to separate?\n'),
+    write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
     check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
 
-    repeat,
     write('\nHow many pieces do you want to move from the tower?\n'),
     L1 is L-1,
     choose_number(1, L1, 'Type a number', NPieces),
 
-    repeat,
     write('\nWhere do you want to place them?\n'),
     get_possible_moves(Board, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, NMoves, 'Type a number', N1),
@@ -139,17 +136,13 @@ move_option(GameState, 3, NewGameState) :-
 
 
 get_possible_moves(Board, X, Y, ListOfMoves, L) :-
-    write('HERE IN get_possible_moves'), nl,
     valid_moves(Board, X, Y, ListOfMoves),
     length(ListOfMoves, L),
-    L>0,
+    ( L>0 -> 
     write('Structure: [X,Y]\n'),
-    print_list(ListOfMoves).
-
-
-    % get_coordinate(Board, X1, Y1),
-    % move_pieces(Board, X, Y, X1, Y1, NewBoard),
-    % print_board(Board, NewBoard).
+    print_list(ListOfMoves);
+    format('No possible moves for the tower in [~d, ~d]!\n', [X, Y]),
+    fail).
 
 
 % neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
@@ -158,10 +151,12 @@ get_possible_moves(Board, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
     valid_moves(Board, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
-    L>0,
+    ( L>0 ->
     write('ListOfMoves: '), write(ListOfMoves), nl,
     write('Structure: [X,Y]\n'),
-    print_list(ListOfMoves).
+    print_list(ListOfMoves);
+    format('It`s not possible to move ~d pieces of the tower in [~d, ~d]!\n', [NPieces, X, Y]),
+    fail).
 
 
 
@@ -172,6 +167,9 @@ get_coordinate(Board, X, Y):-
     length(Board, Size),
     choose_number(1, Size, 'Choose column', X),
     choose_number(1, Size, 'Choose row', Y).
+
+
+
 
 
 % ==================== GAME OVER ====================

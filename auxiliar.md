@@ -105,3 +105,14 @@ e chamamos onde essas funcoes? temos que fazer um gamecyle para cada modo de jog
 NOTAS:
 
 - nao esquecer de fazer repeat para error handling de inputs errados 
+
+TO DO:
+
+- error handling quando derem nomes vazios (ver se length>0)
+- limpar writes
+- podemos separar torres cujo topo nao seja nosso?
+
+BUGS:
+- quando se move uma peça para uma casa ocupada, dá loop infinito
+- quando se pede para mover algo cujo topo nao é nosso, loop infinito
+- quando damos letras no choose_number, ele passa-se e printa 3 vezes type a number

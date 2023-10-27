@@ -11,11 +11,6 @@
 
 % === GAME RELATED ===
 
-change_player(player1, NewPlayer) :-
-    NewPlayer = player2.
-change_player(player2, NewPlayer) :-
-    NewPlayer = player1.
-
 % other_player(+CurrentPlayer,-NextPlayer)
 % Change player turn
 other_player(player1, player2).
@@ -48,17 +43,17 @@ init_random_state :-
     now(X),
     setrand(X).
 
-% get_option(+Min,+Max,+Context,-Value)
+% choose_number(+Min,+Max,+Context,-Value) antes era get_option
 % Unifies Value with the value given by user input between Min and Max when asked about Context
 choose_number(SameN,SameN,Context,Value):-
+    % repeat,
     format('~a (can only be ~d): ', [Context, SameN]),
-    repeat,
     read_number(Value),
     Value == SameN, !.
 
 choose_number(Min,Max,Context,Value):-
+    % repeat,
     format('~a between ~d and ~d: ', [Context, Min, Max]),
-    repeat,
     read_number(Value),
     between(Min, Max, Value), !.
 

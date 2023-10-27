@@ -14,6 +14,7 @@
 
 % =============== CHOOSE MAIN OPTION ========================== %
 choose_main_option(GameMode) :-
+    repeat,
     choose_number(1, 3, '\nType a number', Option), !,
     main_option(Option, GameMode).
 
@@ -31,9 +32,13 @@ main_option(2, GameMode) :-
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n'),
+    repeat,
     write(' \n Type 0 to go back: '),
     read_number(Value),
-    (Value =:= 0 -> clear_console, print_main_menu(GameMode); main_option(2)).
+    Value =:= 0,
+    clear_console,
+    print_main_menu(GameMode). 
+    % (Value =:= 0 -> clear_console, print_main_menu(GameMode); main_option(2)).
 
 
 main_option(3, GameMode):-
@@ -56,6 +61,7 @@ main_option(3, GameMode):-
 % menu/0
 % Main menu
 choose_mode(GameMode) :-  
+    repeat,
     choose_number(0, 3, '\nType a number', GameMode), !,
     mode_option(GameMode).
 
@@ -63,6 +69,7 @@ choose_mode(GameMode) :-
 % Main menu options. Each represents a game mode.
 mode_option(1):-
     clear_console,
+    write('\nRemember \n'),
     write('\n=========================================\n'),
     write('\nPlayer vs. Player\n\n'),
     get_name(player1), get_name(player2).
@@ -99,7 +106,8 @@ choose_player(Player):-
     % string_codes(Name1Str, Name1),
     % string_codes(Name2Str, Name2),
     %format('Who starts playing?\n1 - ~s being White player \n2 - ~s being Black player\n', [Name1Str, Name2Str]),
-    format('\nWho starts playing?\n1 - ~s, with white pieces (uppercase) \n2 - ~s, with black pieces (lowercase) \n', [Name1, Name2]),
+    format('\nWho starts playing?\n1 - ~s, with white pieces (UPPERCASE) \n2 - ~s, with black pieces (lowercase) \n', [Name1, Name2]),
+    repeat,
     choose_number(1, 2, '\nSelect', Index),
     nth1(Index, [player1, player2], Player).
 
@@ -113,6 +121,7 @@ choose_difficulty(Computer) :-
     format('\nPlease select ~a difficulty:\n', [Computer]),
     write('1 - Easy\n'),
     write('2 - Hard\n'),
+    repeat,
     choose_number(1, 2, '\nType a number', Option), !,
     asserta((difficulty(Computer, Option))).
 
@@ -123,8 +132,8 @@ choose_difficulty(Computer) :-
 % choose_board(-Size)
 % Board size choice
 choose_board(Size):-
-    write('\nWhat board size do you want to choose: 4 or 5? '),
     repeat,
+    write('\nWhat board size do you want to choose: 4 or 5? '),
     read_number(Size),
     member(Size, [4, 5]), !. % Size must be some of the list 4 or 5
 
@@ -191,6 +200,7 @@ main_menu(NewGameState):-
     init_random_state,
     choose_player(Player),
     choose_board(Size), 
+    clear_console,
     init_state(Size, Board), %estado inicial da board
     GameState = [Board, Player, GameMode],
     get_move(GameState, NewGameState).
