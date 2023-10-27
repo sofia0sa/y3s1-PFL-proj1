@@ -55,30 +55,28 @@ print_turn(Player):-
 %===================== GAME HUMAN MOVES ====================
 
 get_move(GameState, NewGameState) :-
-    [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
     write('What move do you want to make?\n'),
     write('1 - Add piece\n'),
     write('2 - Move piece\n'),
     write('3 - Separate tower\n'),
     choose_number(1, 3, '\nType a number', Option), !,
-
     move_option(GameState, Option, NewGameState).
-    % move(GameState, Coordinate, NewGameState).
 
 % check_if_tower_exists(+Board, +X, +Y, -L)
 % Checks if there is a tower in the given coordinates to check if a player can separate it
 check_if_tower_exists(Board, X, Y, L) :-
-    get_tower(Board, X, Y, Piece),
-    length(Piece, L),
+    get_tower(Board, X, Y, Tower),
+    \+ empty_cell(Board, X, Y),
+    length(Tower, L),
     L>1,
     !.
 
 %checks if the player can place the tower in the given coordinates
 % !DUVIDA: jogador so deve poder colocar em cima de peças dele, senao era facil ganhar (bastava ir somando ate uma torre = 6)?
 check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
-    get_tower(Board, X1, Y1, Piece),
-    length(Piece, L),
+    get_tower(Board, X1, Y1, Tower),
+    length(Tower, L),
     L1 is L+NPieces,
     L1 =<6,
     !.
@@ -89,15 +87,18 @@ move_option(GameState, 1, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
     write('Where do you want to place the piece?\n\n'),
+    repeat,
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 move_option(GameState, 2, NewGameState) :-
+    [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
     write('Which piece do you want to move?\n'),
-    [Board, Player, GameMode] = GameState,
+    repeat,
+
     get_coordinate(Board, X, Y),
     % get_tower(Board, X, Y, Piece),
     get_possible_moves(Board, X, Y), %prints and lets choose the move
@@ -109,17 +110,22 @@ move_option(GameState, 2, NewGameState) :-
 
 % IN CONSTRUCTION!
 move_option(GameState, 3, NewGameState) :-
+    [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
+    repeat,
     write('Which tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
     check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
 
+    repeat,
     write('\nHow many pieces do you want to move from the tower?\n'),
-    choose_number(1, L-1, 'Type a number', N),
+    L1 is L-1,
+    choose_number(1, L1, 'Type a number', NPieces),
 
+    repeat,
     write('\nWhere do you want to place them?\n'),
-    get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, L), %possible moves para que nao aconteca um placement com length>6
-    choose_number(1, L, 'Type a number', N1),
+    get_possible_moves(Board, X1, Y1, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
+    choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     separate_tower(Board, X, Y, NMove, NPieces, NewBoard),
 
@@ -128,6 +134,7 @@ move_option(GameState, 3, NewGameState) :-
 
 
 get_possible_moves(Board, X, Y, ListOfMoves, L) :-
+    write('HERE IN get_possible_moves'), nl,
     valid_moves(Board, X, Y, ListOfMoves),
     length(ListOfMoves, L),
     L>0,
@@ -143,6 +150,8 @@ get_possible_moves(Board, X, Y, ListOfMoves, L) :-
 % neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
 get_possible_moves(Board, X, Y, NPieces, ValidMoves, L) :-
+    write('HERE IN get_possible_moves'), nl,
+    write('NPieces: '), write(NPieces), nl,
     valid_moves(Board, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
     L>0,

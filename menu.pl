@@ -62,11 +62,13 @@ choose_mode(GameMode) :-
 % option(+N)
 % Main menu options. Each represents a game mode.
 mode_option(1):-
+    clear_console,
     write('\n=========================================\n'),
     write('\nPlayer vs. Player\n\n'),
     get_name(player1), get_name(player2).
 
 mode_option(2):-
+    clear_console,
     write('\n=========================================\n'),
     write('\nPlayer vs. Computer\n\n'),
     get_name(player1),
@@ -74,6 +76,7 @@ mode_option(2):-
     choose_difficulty(player2).
 
 mode_option(3):-
+    clear_console,
     write('\n=========================================\n'),
     write('Computer vs. Computer\n'),
     asserta((name_of(player1, 'Computer1'))),

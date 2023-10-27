@@ -25,6 +25,7 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves) :-
+  write('HERE IN valid_moves'), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
@@ -34,6 +35,7 @@ valid_moves(Board, X, Y, ValidMoves) :-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves, +NPieces)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, X, Y, ValidMoves, NPieces) :-
+  write('HERE IN valid_moves with NPieces'), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   %check_if_can_place_tower(Board, X, Y, NPieces),
@@ -58,21 +60,24 @@ test_valid_moves:-
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, X, Y, NewX, NewY, Piece) :-
+  write('HERE IN valid_move'), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Piece, L), % Pawn
   % get_board_size(Board, Size),
-  L1 is L + 1,
+  L1 is L+1, %!DOUBT:
   L1=<6,
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
   % falta verificar altura max da torre
 
 valid_move(Board, X, Y, NewX, NewY, Piece, NPieces) :-
+  write('HERE IN valid_move with NPieces'), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
-  length(Piece, L), 
-  L1 is L + NPieces,
-  L1<=6,
+  length(Piece, L),
+  write('NPieces: '), write(NPieces), nl,
+  L1 is L+NPieces,
+  L1=<6,
   valid_piece_movement(Board, X, Y, NewX, NewY, L).
 
 
