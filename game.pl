@@ -55,7 +55,8 @@ print_turn(Player):-
 %===================== GAME HUMAN MOVES ====================
 
 get_move(GameState, NewGameState) :- % para o player humano escolher move
-    \+difficulty(Player, _), %verifica se o player é humano
+    [Board, Player, GameMode] = GameState,
+    \+difficulty(Player, _), !, %verifica se o player é humano
     write('\n=========================================\n'),
     write('\nWhat move do you want to make?\n'),
     write('1 - Add piece\n'),

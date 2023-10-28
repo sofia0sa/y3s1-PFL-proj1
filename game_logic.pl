@@ -362,7 +362,7 @@ iterate_board(Board, Top):-
 top_to_player(x, player1).
 top_to_player(o, player2).
 
-gameover(Board, Winner):-
+game_over(Board, Winner):-
   iterate_board(Board, Top),
   top_to_player(Top, Winner).
 

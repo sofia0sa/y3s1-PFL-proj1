@@ -36,6 +36,7 @@ get_moves_type_2(Board, Player, Moves) :-
       write('HERE: '), write(ListOfMoves), nl
       ), Moves).
 
+translate([x,y,1], [x,y,'Adicionar uma peça em:']).
 
 % !DELETE
 test_get_moves_type_2 :-
