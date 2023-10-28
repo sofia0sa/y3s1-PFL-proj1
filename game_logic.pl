@@ -193,21 +193,21 @@ iterate_board(Board, Top):-
   nth1(Row, Board, RowList),
   length(RowList, Cols),
   between(1, Cols, Col),
-  nth1(Col, RowList, Piece),
-  Piece \= empty,
-  length(Piece, L),
+  nth1(Col, RowList, Tower),
+  Tower \= empty,
+  length(Tower, L),
   L =:= 6,
-  tower_top(Piece, Top).
+  tower_top(Tower, Top).
 
 top_to_player(x, player1).
 top_to_player(o, player2).
 
-game_over(Board, Winner):-
+gameover(Board, Winner):-
   iterate_board(Board, Top),
   top_to_player(Top, Winner).
 
 % !DELETE: just for testing
-test_check_winner:-
+test_game_over:-
   Board = [
     [[x,x,x], empty, empty, [pawn], empty],
     [[pawn], [pawn], [x,x], [pawn], [pawn]],
@@ -215,7 +215,7 @@ test_check_winner:-
     [[pawn], [pawn], [pawn], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn]]
   ],
-  check_winner(Board, Winner),
+  game_over(Board, Winner),
   write(Winner).
 
 

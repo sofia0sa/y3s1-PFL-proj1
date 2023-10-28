@@ -103,7 +103,7 @@ move_option(GameState, 2, NewGameState) :-
     \+ empty_cell(Board, X, Y),
 
     write('\nWhere do you want to place it?\n'),
-    get_possible_moves(Board, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
+    get_possible_moves(Board, PLayer, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     move_tower(Board, X, Y, NMove, NewBoard),
@@ -125,7 +125,7 @@ move_option(GameState, 3, NewGameState) :-
     choose_number(1, L1, 'Type a number', NPieces),
 
     write('\nWhere do you want to place them?\n'),
-    get_possible_moves(Board, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
+    get_possible_moves(Board, PLayer, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     write('NMove: '), write(NMove), nl,
@@ -135,7 +135,7 @@ move_option(GameState, 3, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer, GameMode].
 
 
-get_possible_moves(Board, X, Y, ListOfMoves, L) :-
+get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     valid_moves(Board, X, Y, ListOfMoves),
     length(ListOfMoves, L),
     ( L>0 -> 
@@ -147,7 +147,7 @@ get_possible_moves(Board, X, Y, ListOfMoves, L) :-
 
 % neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
-get_possible_moves(Board, X, Y, NPieces, ListOfMoves, L) :-
+get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
     valid_moves(Board, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
@@ -201,8 +201,8 @@ game(FinalGamestate,N,FinalGamestate) :-
 % Prints the winner of the game and number of moves they made
 show_winner(Winner):-
     name_of(Winner, Name),
-    winner_moves(TotalMoves, WinnerMoves), %isto não é nosso pois não?
-    format('Winner is ~a with ~d moves!\n', [Name, WinnerMoves]).
+    format('Winner is ~a! Congrats!!\n', [Name]).
+    % fail.
 
 
 
@@ -210,10 +210,11 @@ show_winner(Winner):-
 % game_cycle(+GameState)
 % Loop that keeps the game running
 game_cycle(GameState):- %IF GAME IS OVER because someone won
-    7 =:= 3, !,
-    % game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
-
+    % 7 =:= 3, !,
     [Board, Player, GameMode] = GameState,
+    game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
+    write('GAME OVER\n'), nl,
+   
     
     length(Board, Size),
     print_board(Size, Board),

@@ -101,18 +101,108 @@ DUVIDAS PARA AULA:
 e chamamos onde essas funcoes? temos que fazer um gamecyle para cada modo de jogo? se nao, como incorporamos no mesmo?
 
 - duvidas do GUI em relacao ao movimento de algumas peças
+--
+- quando alguem ganha o jogo, podemos dar fail? e a pessoa diz play. para jogar outra vez?
 
 NOTAS:
 
 - nao esquecer de fazer repeat para error handling de inputs errados 
 
 TO DO:
-
-- error handling quando derem nomes vazios (ver se length>0)
-- limpar writes
-- podemos separar torres cujo topo nao seja nosso?
+- error handling quando derem nomes vazios (ver se length>0) - MAYBE
+- limpar writes (HERE IN)
+- podemos separar torres cujo topo nao seja nosso? - SIM
 
 BUGS:
 - quando se move uma peça para uma casa ocupada, dá loop infinito
 - quando se pede para mover algo cujo topo nao é nosso, loop infinito
 - quando damos letras no choose_number, ele passa-se e printa 3 vezes type a number
+
+
+---- LISTA ESTRUTURA MOVE PARA A GERAÇÃO DE TODAS AS MOVES POSSIVEIS ----
+
+[MoveFlag, Player, X, Y, NewX, NewY, NPieces]
+
+MoveFlag : 1 (add), 2 (move), 3 (separate)-> tipo de move escolhido no menu
+NPieces : -1 (add e move), 1 (separate) -> numero de peças a mover
+X e Y : 0 (add piece) e coordenadas atuais (move e separate)
+NewX e NewY : coordenadas novas (add, move e separate)
+
+---- 
+- Criar Moves to tipo 1
+- 
+
+
+
+------ REGRAS (texto corrido) ------
+
+Six MaKING
+Author: Dorsonczky József
+© 2o13 – Dorsonczky József
+© 2o13 – Mind Fitness Games (OVECo S.R.L.)
+
+Accessories: 1 game board, 32 wooden disks (24
+in case of 4x4 game board), 1 small bag for disks, 1
+rulebook.
+Like in Makarenko chess, the towers are built using
+the wooden disks, and regarding their height, each
+one represents a chess piece: 1 disk Pawn, 2 Rook, 3
+Knight, 4 Bishop, 5 Queen, 6 or more King
+
+Goal of the game
+Building a King using six or more disks with your
+own color on top.
+
+Gameplay
+Six MaKING is played on a 5x5 board, where each
+player holds 16 wooden disks (in case of a 4x4 board
+each player holds 12 disks). Players choose the color
+they play with and decide on the starting order.
+The game starts with an empty board, and players
+alternate turns. The player whose turn is, may choose
+whether to:
+
+l place a new disk (a Pawn) on the board;
+l or move one of the towers or a part of a tower.
+I., Placing a new disk on the board
+A player may place a single disk (a Pawn) on any
+empty square of the board.
+
+II., Moving the entire or a part of a tower
+ 1 A player may move the towers on the board
+regarding the movements of the corresponding chess
+pieces. A tower can only be moved on top of another,
+but not on empty squares (see Fig. 3.):
+1 disk (Pawn) – moves a single square in all four
+directions on top of an adjoining tower.
+2 disks (Rook) – moves any number of squares
+orthogonally on the first tower in its path.
+3 disks (Knight) – moves in L shape on top of
+another tower.
+4 disks (Bishop) – moves any number of squares
+diagonally on the first tower in its path.
+5 disks (Queen) – moves any number of squares in
+all eight directions on the first tower in its path.
+2 A player may move the entire tower, or only a part
+of it. In case of moving only a part of a tower, the disks
+are always taken from the top, and they move as the
+original tower, before being split (see Fig. 3.).
+ 3 A player may move with towers of both colors.
+The topmost disk of a tower only indicates the color of
+it, but not the player who controls it.
+ 4 Ko-rule: movements that lead to the same
+situation that was two turns before are considered
+illegal, that means undoing the opponents move is not
+allowed.
+
+End of the game
+The game ends when the first tower consisting of six
+or more disks (King) is built. The player who has its
+color on top is the winner.
+There is a more complex version, called
+Six MaKING, where every time a King is built, the
+tower is eliminated from the board and the disks that
+formed it are redistributed among the players. The
+player who had its color on top gets one winning
+point. The first player reaching 6 winning points wins
+the game.

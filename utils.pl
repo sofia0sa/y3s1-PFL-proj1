@@ -11,10 +11,10 @@
 
 % === GAME RELATED ===
 
-% other_player(+CurrentPlayer,-NextPlayer)
+% change_player(+CurrentPlayer,-NextPlayer)
 % Change player turn
-other_player(player1, player2).
-other_player(player2, player1).
+change_player(player1, player2).
+change_player(player2, player1).
 
 % get_name(+Player)
 % Asks player name. Dynamically adds the name_of/2 fact to the base fact
