@@ -98,12 +98,17 @@ move_option(GameState, 2, NewGameState) :-
     [Board, Player, GameMode] = GameState,
     write('\n=========================================\n'),
     repeat,
+    
+    write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
+    read_number(Value),
+    (Value =:= 1 -> get_move(GameState, NewGameState); true),   
+
     write('\nWhich tower do you want to move?\n'),
     get_coordinate(Board, X, Y),
     \+ empty_cell(Board, X, Y),
 
     write('\nWhere do you want to place it?\n'),
-    get_possible_moves(Board, PLayer, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
+    get_possible_moves(Board, Player, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     move_tower(Board, X, Y, NMove, NewBoard),
@@ -125,7 +130,7 @@ move_option(GameState, 3, NewGameState) :-
     choose_number(1, L1, 'Type a number', NPieces),
 
     write('\nWhere do you want to place them?\n'),
-    get_possible_moves(Board, PLayer, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
+    get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     write('NMove: '), write(NMove), nl,
@@ -136,7 +141,7 @@ move_option(GameState, 3, NewGameState) :-
 
 
 get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
-    valid_moves(Board, X, Y, ListOfMoves),
+    valid_moves(Board, Player, X, Y, ListOfMoves),
     length(ListOfMoves, L),
     ( L>0 -> 
     write('Structure: [X,Y]\n'),
@@ -149,7 +154,8 @@ get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
 get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
-    valid_moves(Board, X, Y, ListOfMoves, NPieces),
+    write('HERE Player: '), write(Player), nl,
+    valid_moves(Board, Player, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
     ( L>0 ->
     write('ListOfMoves: '), write(ListOfMoves), nl,

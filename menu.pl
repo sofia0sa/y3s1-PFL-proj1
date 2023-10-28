@@ -33,9 +33,9 @@ main_option(2, GameMode) :-
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n'),
     repeat,
-    write(' \n Type 0 to go back: '),
+    write(' \n Type 1 to go back: '),
     read_number(Value),
-    Value =:= 0,
+    Value =:= 1,
     clear_console,
     print_main_menu(GameMode). 
     % (Value =:= 0 -> clear_console, print_main_menu(GameMode); main_option(2)).
@@ -62,7 +62,7 @@ main_option(3, GameMode):-
 % Main menu
 choose_mode(GameMode) :-  
     repeat,
-    choose_number(0, 3, '\nType a number', GameMode), !,
+    choose_number(1, 4, '\nType a number', GameMode), !,
     mode_option(GameMode).
 
 % option(+N)
@@ -91,7 +91,7 @@ mode_option(3):-
     choose_difficulty(player1),
     choose_difficulty(player2).
 
-mode_option(0):-
+mode_option(4):-
     clear_console,
     print_main_menu(GameMode).
 
@@ -183,7 +183,7 @@ print_modes(GameMode) :-
     write(' |                                                                       |\n'),
     write(' |                      3. Computer vs Computer                          |\n'),
     write(' |                                                                       |\n'),
-    write(' |                      0. Go back to main menu                          |\n'),
+    write(' |                      4. Go back to main menu                          |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n\n'),
     choose_mode(GameMode).
