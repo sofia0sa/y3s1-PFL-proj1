@@ -54,7 +54,8 @@ print_turn(Player):-
 
 %===================== GAME HUMAN MOVES ====================
 
-get_move(GameState, NewGameState) :-
+get_move(GameState, NewGameState) :- % para o player humano escolher move
+    \+difficulty(Player, _), %verifica se o player é humano
     write('\n=========================================\n'),
     write('\nWhat move do you want to make?\n'),
     write('1 - Add piece\n'),
@@ -63,6 +64,14 @@ get_move(GameState, NewGameState) :-
     repeat,
     choose_number(1, 3, '\nType a number', Option), !,
     move_option(GameState, Option, NewGameState).
+
+get_move(GameState, NewGameState) :- % para o computador facil escolher move
+    difficulty(Player, 1), !,
+    move_computer(GameState, NewGameState, 1).
+
+get_move(GameState, NewGameState) :- % para o computador dificil escolher move
+    move_computer(GameState, NewGameState, 2).
+
 
 % check_if_tower_exists(+Board, +X, +Y, -L)
 % Checks if there is a tower in the given coordinates to check if a player can separate it

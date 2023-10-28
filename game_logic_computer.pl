@@ -48,3 +48,15 @@ test_get_moves_type_2 :-
 ],
   get_moves_type_2(Board, player1, Moves),
   write(Moves).
+
+
+%==================================================================================================
+
+% move_computer(+GameState, -NewGameState, +Level)
+move_computer(GameState, NewGameState, 1) :-
+    write('HERE IN move_computer EASY (to implement)') , nl,
+    fail.
+
+move_computer(GameState, NewGameState, 2) :-
+    write('HERE IN move_computer HARD (to implement)') , nl,
+    fail.
