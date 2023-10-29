@@ -131,6 +131,9 @@ move_option(GameState, 2, NewGameState) :-
 move_option(GameState, 3, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
+    write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
+    read_number(Value),
+    (Value =:= 1 -> get_move(GameState, NewGameState); true),   
     repeat,
     write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
@@ -153,6 +156,9 @@ move_option(GameState, 3, NewGameState) :-
 
 get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     valid_moves(Board, Player, X, Y, ListOfMoves),
+    write('HERE IN get_possible_moves'), nl,
+    write('HERE Player: '), write(Player), nl,
+    write('HERE ListOfMoves: '), write(ListOfMoves), nl,
     length(ListOfMoves, L),
     ( L>0 -> 
     write('Structure: [X,Y]\n'),

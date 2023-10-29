@@ -27,7 +27,7 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 valid_moves(Board, Player, X, Y, ValidMoves) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
-  setof([NewX, NewY], (
+  findall([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower)
   ), ValidMoves).
 
@@ -37,7 +37,7 @@ valid_moves(Board, Player, X, Y, ValidMoves, NPieces) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   %check_if_can_place_tower(Board, X, Y, NPieces),
-  setof([NewX, NewY], (
+  findall([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces)
   ), ValidMoves).
   
@@ -63,19 +63,25 @@ valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces) :-
 
 % !WARNING: needs to be cleaned up, ask gui
 check_possible_tower(Board, Player, NewX, NewY, L, Top):-
+  write('HERE IN check_possible_tower\n'),
   get_tower(Board, NewX, NewY, Tower),
   length(Tower, L1),
   L2 is L1+L,
-  (L2 > 6 ->
-    % If the tower height is greater than 6, the move is invalid
+  write('HERE L2: '), write(L2), nl,
+  % (L2 > 6 -> %KING with only 6
+  (L2 >= 6 ->
+    % If the tower height is greater than 6, the move is invalid %KING with only 6
+    write('HERE IN L2 >= 6\n'),
+    write('HERE Top: '), write(Top), nl,
+    write('HERE Player: '), write(Player), nl,
     top_to_player(Top, Player)
     % false %KING with only 6
   ;
     % If the tower height is less than 6, the move is valid regardless of the top
     L2 < 6
-  ;
+  % ; %KING with only 6
     % If the tower height is exactly 6, check if the top is the current player's color
-    top_to_player(Top, Player)
+    % top_to_player(Top, Player) %KING with only 6
   ).
   
 

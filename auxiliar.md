@@ -123,6 +123,8 @@ SE NÃO DER MINIMAX:
 - computador faz algo +/- inteligente: procura a torre mais alta, ve se existe alguma torre que possa separar e mover para cima dessa torre, desde que o topo seja do proprio computador
 
 
+
+
 ---- LISTA ESTRUTURA MOVE PARA A GERAÇÃO DE TODAS AS MOVES POSSIVEIS ----
 
 [MoveFlag, Player, X, Y, NewX, NewY, NPieces]
