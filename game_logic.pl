@@ -28,9 +28,10 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, Player, X, Y, ValidMoves) :-
+  write('HERE IN valid_moves'), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
-  findall([NewX, NewY], (
+  setof([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower)
   ), ValidMoves).
 
@@ -40,7 +41,7 @@ valid_moves(Board, Player, X, Y, ValidMoves, NPieces) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   %check_if_can_place_tower(Board, X, Y, NPieces),
-  findall([NewX, NewY], (
+  setof([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces)
   ), ValidMoves).
   
@@ -48,6 +49,7 @@ valid_moves(Board, Player, X, Y, ValidMoves, NPieces) :-
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, Player, X, Y, NewX, NewY, Tower) :-
+  write('HERE IN valid_move'), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Tower, L), % Pawn
@@ -71,15 +73,25 @@ check_possible_tower(Board, Player, NewX, NewY, L, Top):-
   get_tower(Board, NewX, NewY, Tower),
   length(Tower, L1),
   L2 is L1+L,
-  L2=<6,
-  (L2 =:= 6 ->write('HERE player: '), write(Player), nl, top_to_player(Top, Player)).
-
+  % L2=<6.
+  % (L2 =:= 6 ->write('HERE player: '), write(Player), nl, top_to_player(Top, Player)).
+  (L2 > 6 ->
+    % If the tower height is greater than 6, the move is invalid
+    false
+  ;
+    % If the tower height is less than 6, the move is valid regardless of the top
+    L2 < 6
+  ;
+    % If the tower height is exactly 6, check if the top is the current player's color
+    top_to_player(Top, Player)
+  ).
   
 
 % valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +Piece)
 %pawn move
 %move 1 cell horizontally or vertically
 valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
+  write('HERE IN valid_piece_movement 1'), nl,
   (X =:= NewX; Y =:= NewY),
   (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
 
@@ -90,9 +102,9 @@ valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
 
 % queen move
 % move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
-valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
-  (X =:= NewX; Y =:= NewY ; abs(X - NewX) =:= abs(Y - NewY)),
-  \+ (same_line_occupied(Board, X, Y, NewX, NewY) ; diagonal_occupied(Board, X, Y, NewX, NewY)).
+% valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
+%   (X =:= NewX; Y =:= NewY ; abs(X - NewX) =:= abs(Y - NewY)),
+%   \+ (same_line_occupied(Board, X, Y, NewX, NewY) ; diagonal_occupied(Board, X, Y, NewX, NewY)).
   
 % rook move
 % move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
@@ -279,6 +291,23 @@ dr_between(Z, X, Y, NewX, NewY) :-
   NewX is X + D,
   NewY is Y + D.
 
+
+%queen move
+% move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
+valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
+  X = NewX,
+  vertical_up(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
+  X = NewX,
+  vertical_down(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
+  Y = NewY,
+  horizontal_left(Board, X, Y, NewX, NewY).
+valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
+  Y = NewY,
+  horizontal_right(Board, X, Y, NewX, NewY).
+  
+
 % diagonal_down_right(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Finds the first non-empty cell in the diagonal line down and to the right of (X, Y)
 % diagonal_down_right(Board, X, Y, OccupiedX, OccupiedY) :-
@@ -327,13 +356,13 @@ dr_between(Z, X, Y, NewX, NewY) :-
 % !DELETE: just for testing
 test_valid_moves:-
   Board = [
-    [[x,x], [x,o], empty, [pawn], [pawn]],
-    [[pawn], [pawn], empty, empty, [pawn]],
-    [[pawn], [pawn], [x,x,o,o], [pawn], [pawn]],
+    [[x,o], [x], empty, [pawn], [pawn]],
+    [[o], empty, empty, empty, [pawn]],
+    [empty, [pawn], [x,x,o,o], [pawn], [pawn]],
     [[pawn], [pawn], [pawn], [x], [pawn]],
     [[pawn], [pawn], [pawn], [pawn], [pawn]]
   ],
-  valid_moves(Board, 3, 3, ValidMoves),
+  valid_moves(Board, player1, 2, 1, ValidMoves),
   write(ValidMoves).
 
 % diagonal_occupied(+X1, +Y1, +X2, +Y2)
