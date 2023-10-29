@@ -46,13 +46,13 @@ init_random_state :-
 % choose_number(+Min,+Max,+Context,-Value) antes era get_option
 % Unifies Value with the value given by user input between Min and Max when asked about Context
 choose_number(SameN,SameN,Context,Value):-
-    % repeat,
+    repeat,
     format('~a (can only be ~d): ', [Context, SameN]),
     read_number(Value),
     Value == SameN, !.
 
 choose_number(Min,Max,Context,Value):-
-    % repeat,
+    repeat,
     format('~a between ~d and ~d: ', [Context, Min, Max]),
     read_number(Value),
     between(Min, Max, Value), !.

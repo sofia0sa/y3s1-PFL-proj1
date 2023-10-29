@@ -57,13 +57,13 @@ print_turn(Player):-
 get_move(GameState, NewGameState) :- % para o player humano escolher move
     [Board, Player] = GameState,
     \+difficulty(Player, _), !, %verifica se o player é humano
+    repeat,
     write('\n=========================================\n'),
     write('\nWhat move do you want to make?\n'),
     write('1 - Add piece\n'),
     write('2 - Move piece\n'),
     write('3 - Separate tower\n'),
-    repeat,
-    choose_number(1, 3, '\nType a number', Option), !,
+    choose_number(1, 3, '\nType a number', Option), %!,
     move_option(GameState, Option, NewGameState).
 
 get_move(GameState, NewGameState) :- % para o computador facil escolher move
@@ -97,7 +97,6 @@ check_if_can_place_tower(Board, X1, Y1, NPieces) :-
 move_option(GameState, 1, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
-    repeat,
     write('\nWhere do you want to place the piece?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
@@ -106,12 +105,7 @@ move_option(GameState, 1, NewGameState) :-
 
 move_option(GameState, 2, NewGameState) :-
     [Board, Player] = GameState,
-    write('\n=========================================\n'),
-    repeat,
-    
-    write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
-    read_number(Value),
-    (Value =:= 1 -> get_move(GameState, NewGameState); true),   
+    write('\n=========================================\n'), 
 
     write('\nWhich tower do you want to move?\n'),
     get_coordinate(Board, X, Y),
@@ -131,10 +125,10 @@ move_option(GameState, 2, NewGameState) :-
 move_option(GameState, 3, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
-    write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
-    read_number(Value),
-    (Value =:= 1 -> get_move(GameState, NewGameState); true),   
-    repeat,
+    % write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
+    % read_number(Value),
+    % (Value =:= 1 -> get_move(GameState, NewGameState); true),   
+    
     write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
     check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
@@ -192,18 +186,6 @@ get_coordinate(Board, X, Y):-
 
 
 
-
-
-% ==================== GAME OVER ====================
-
-% game_over(+GameState, +Winner)
-% Checks if the game is over
-% game_over([Board,OtherPlayer,_, _], Winner):-
-%     check_winner(Board, Winner).
-    % other_player(OtherPlayer, Winner).
-    %funcoes para verificar ganhar ou perder
-
-
 % ==================== GAME WINNER - VER COMO FAZER ====================
 % Predicate of the player vs player game mode loop (player 1 won)
 game(FinalGamestate,N,FinalGamestate) :-
@@ -239,6 +221,7 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
    
     
     length(Board, Size),
+    print_short_rules,
     print_board(Size, Board),
 
     show_winner(Winner).
@@ -248,6 +231,7 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
     write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
     length(Board, Size),
+    print_short_rules,
     print_board(Size, Board),
     print_turn(Player),
     get_move(GameState, NewGameState), %para player humano

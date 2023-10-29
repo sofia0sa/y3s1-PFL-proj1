@@ -67,6 +67,21 @@ main_option(2) :-
     print_main_menu. 
     % (Value =:= 0 -> clear_console, print_main_menu; main_option(2)).
 
+% ==================== SHORT RULES BEFORE BOARD ====================
+
+print_short_rules :-
+    write('\n=========================================\n'),
+    write('\nREMEMBER:\n'),
+    write('   1  - pawn - 1 cell horizontal or vertical                 \n'),
+    write('   2  - rook - any number of cells horizontal or vertical,   \n'),
+    write('        until finding another piece                          \n'),
+    write('   3  - knight - 2 cells horizontal or vertical,             \n'),
+    write('        then 1 cell horizontal or vertical                   \n'),
+    write('   4  - bishop - any number of cells diagonal,               \n'),
+    write('        until finding another piece                          \n'),
+    write('   5  - queen - any number of cells horizontal, vertical or  \n'),
+    write('        diagonal, until finding another piece                \n'),
+    write('   6+ - king - wins                                          \n\n').
 
 main_option(3):-
     clear_console,
@@ -95,7 +110,6 @@ choose_mode :-
 % Main menu options. Each represents a game mode.
 mode_option(1):-
     clear_console,
-    write('\nRemember \n'),
     write('\n=========================================\n'),
     write('\nPlayer vs. Player\n\n'),
     get_name(player1), get_name(player2).
@@ -215,6 +229,7 @@ print_modes :-
     choose_mode.
 
 
+
 % =============== MAIN MENU (called by play.) ========================== %
 
 % main_menu(-GameState)
@@ -227,6 +242,7 @@ main_menu(NewGameState):-
     choose_player(Player),
     choose_board(Size), 
     clear_console,
+    print_short_rules,
     init_state(Size, Board), %estado inicial da board
     GameState = [Board, Player],
     get_move(GameState, NewGameState).

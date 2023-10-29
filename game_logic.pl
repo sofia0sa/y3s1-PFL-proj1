@@ -24,22 +24,24 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
-valid_moves(Board, Player, X, Y, ValidMoves) :-
+valid_moves(Board, Player, X, Y, ListOfMoves) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   findall([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower)
-  ), ValidMoves).
+  ), ValidMoves),
+  sort(ValidMoves, ListOfMoves).
 
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves, +NPieces)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
-valid_moves(Board, Player, X, Y, ValidMoves, NPieces) :-
+valid_moves(Board, Player, X, Y, ListOfMoves, NPieces) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   %check_if_can_place_tower(Board, X, Y, NPieces),
   findall([NewX, NewY], (
       valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces)
-  ), ValidMoves).
+  ), ValidMoves),
+  sort(ValidMoves, ListOfMoves).
   
 
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
