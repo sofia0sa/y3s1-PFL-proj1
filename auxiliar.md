@@ -113,6 +113,15 @@ TO DO:
 - limpar writes (HERE IN)
 - podemos separar torres cujo topo nao seja nosso? - SIM
 
+- MOVE BISHOP
+- AI HARD: 
+aplicar à lista as conversoes de move para board, 
+value() para avaliar boards obtidas, 
+avaliar todas essas boards, 
+para cada board calcular agora todos os moves possiveis para o outro jogador (depth=2), 
+avaliar novamente as boards resultantes
+ordenar a board do jogador atual ?
+
 BUGS:
 - quando se move uma peça para uma casa ocupada, dá loop infinito
 - quando se pede para mover algo cujo topo nao é nosso, loop infinito

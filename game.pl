@@ -221,7 +221,6 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
    
     
     length(Board, Size),
-    print_short_rules,
     print_board(Size, Board),
 
     show_winner(Winner).
@@ -231,7 +230,6 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
     write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
     length(Board, Size),
-    print_short_rules,
     print_board(Size, Board),
     print_turn(Player),
     get_move(GameState, NewGameState), %para player humano

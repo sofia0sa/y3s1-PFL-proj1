@@ -81,7 +81,8 @@ print_short_rules :-
     write('        until finding another piece                          \n'),
     write('   5  - queen - any number of cells horizontal, vertical or  \n'),
     write('        diagonal, until finding another piece                \n'),
-    write('   6+ - king - wins                                          \n\n').
+    write('   6+ - king - wins                                          \n'),
+    write('\nThese rules will stay here.\n\n').
 
 main_option(3):-
     clear_console,

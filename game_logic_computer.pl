@@ -145,8 +145,11 @@ move_computer(GameState, NewGameState, 2) :-
 
 %==================================================================================================
 
-value(GameState, Player, Value) :-
-  write('HERE IN value (to implement)') , nl.
+value(GameState, Value) :-
+  [Board, Player] = GameState,
+  write('HERE IN value (to implement)') , nl,
+  
+
   %soma das alturas das minhas torres - soma das alturas das torres do adversario
 
 
