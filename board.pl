@@ -230,4 +230,3 @@ test_inside_board :-
 init_state(Size, Board):-
     board(Size, Board),
     print_board(Size, Board). % !WARNING: Apenas para testar
-    %fill_water(Size).

@@ -125,32 +125,86 @@ test_get_all_moves:-
 
 % move_computer(+GameState, -NewGameState, +Level)
 move_computer(GameState, NewGameState, 1) :-
-    [Board, Player] = GameState,
-    write('HERE IN move_computer EASY (to implement)') , nl,
-    get_all_moves(Board, Player, Moves),
-    write('HERE Moves: '), write(Moves), nl,
-    random_member(Move, Moves),
-    write('HERE Move: '), write(Move), nl,
-    translate_move(Board, Move, NewBoard),
-    change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer].
+  [Board, Player] = GameState,
+  write('HERE IN move_computer EASY (to implement)') , nl,
+  get_all_moves(Board, Player, Moves),
+  write('HERE Moves: '), write(Moves), nl,
+  random_member(Move, Moves),
+  write('HERE Move: '), write(Move), nl,
+  translate_move(Board, Move, NewBoard),
+  change_player(Player, NewPlayer),
+  NewGameState = [NewBoard, NewPlayer].
 
 move_computer(GameState, NewGameState, 2) :-
-    write('HERE IN move_computer HARD (to implement)') , nl,
-    [Board, Player] = GameState,
-    change_player(Player, NewPlayer),
-    NewGameState = [Board, NewPlayer],
-    fail.
+  write('HERE IN move_computer HARD (to implement)') , nl,
+  [Board, Player] = GameState,
+  change_player(Player, NewPlayer),
+  NewGameState = [Board, NewPlayer],
+  fail.
 
 
 %==================================================================================================
 
+%value is board value for PLayer
 value(GameState, Value) :-
   [Board, Player] = GameState,
-  write('HERE IN value (to implement)') , nl,
+  iterate_board(Board, XValue, OValue),
+  (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
+
+
+
+test_value :-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  GameState = [Board, player2],
+  value(GameState, Value),
+  write('HERE Value: '), write(Value), nl.
   
 
-  %soma das alturas das minhas torres - soma das alturas das torres do adversario
+/* Calculates O and X Value based on tower heights and tops*/
+iterate_board(Board, FinalXValue, FinalOValue) :-
+  RowIndex is 1,
+  XValue is 0,
+  OValue is 0,
+  iterate_rows(Board, RowIndex, XValue, OValue, FinalXValue, FinalOValue).
+
+iterate_rows([], _, XValue, OValue, XValue, OValue).
+iterate_rows([Row|Rest], RowIndex, XValue, OValue, FinalXValue, FinalOValue) :-
+  iterate_columns(Row, RowIndex, 1, XValue, OValue, NewXValue, NewOValue),
+  NextRow is RowIndex + 1,
+  iterate_rows(Rest, NextRow, NewXValue, NewOValue, FinalXValue, FinalOValue).
+
+iterate_columns([], _, _, XValue, OValue, XValue, OValue).
+iterate_columns([Cell|Rest], RowIndex, ColIndex, XValue, OValue, FinalXValue, FinalOValue) :-
+  process_cell(Cell, RowIndex, ColIndex, XValue, OValue, NewXValue, NewOValue),
+  NextCol is ColIndex + 1,
+  iterate_columns(Rest, RowIndex, NextCol, NewXValue, NewOValue, FinalXValue, FinalOValue).
+
+process_cell(empty, _, _, XValue, OValue, XValue, OValue).
+process_cell(Cell, _, _, XValue, OValue, NewXValue, NewOValue) :-
+  % Cell \= empty,
+  length(Cell, TowerHeight),
+  ( tower_top(Cell, Top), Top == x -> NewXValue is XValue + TowerHeight, NewOValue = OValue ;
+                                    NewXValue = XValue, NewOValue is OValue + TowerHeight ).
+
+%==================================================================================================
+
+
+ 
+%soma das alturas das minhas torres - soma das alturas das torres do adversario
+
+% funcao:-
+% value(BoardAposMinhaJogada, Valor1)
+% value(BoardAposJogadorAdversario, Valor1)
+% Delta is Valor1-Valor2
+% [BoardAposMinhaJogada, BoardAposJogadorAdversario, Delta] 
+
+% ordenar lista de [B,B,Delta] por ordem decrescente de Delta e primeiro elemento (maior delta)
 
 
 %==================================================================================================
