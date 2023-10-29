@@ -138,9 +138,64 @@ move_computer(GameState, NewGameState, 1) :-
 move_computer(GameState, NewGameState, 2) :-
   write('HERE IN move_computer HARD (to implement)') , nl,
   [Board, Player] = GameState,
+  get_all_moves(Board, Player, Moves),
+  findall(Delta-Board1, (
+    member(Move, Moves),
+    translate_move(Board, Move, Board1),
+    value(Board1, Value1),
+    % depth 2
+    change_player(Player, NewPlayer),
+    get_all_moves(Board1, NewPlayer, Moves2),
+    findall(ValueAux, (
+      member(Move2, Moves2),
+      translate_move(Board1, Move2, Board2),
+      value(Board2, ValueAux)
+    ), AuxValues),
+    member(Value2, AuxValues),
+    Delta is Value1-Value2
+    ), EvaluatedBoards),
+  sort(EvaluatedBoards, SortedBoard),
+  last(SortedBoard, Board-Delta),
+
   change_player(Player, NewPlayer),
-  NewGameState = [Board, NewPlayer],
-  fail.
+  NewGameState = [Board, NewPlayer].
+
+
+x(Board, NewPlayer, Delta) :-
+  get_all_moves(Board, NewPlayer, Moves),
+  findall(Board1-Delta, (
+    member(Move, Moves),
+    translate_move(Board, Move, Board1),
+    value(Board1, Value1),
+    % depth 2
+    change_player(NewPlayer, NewPlayer2),
+    get_all_moves(Board1, NewPlayer2, Moves2),
+    findall(Board2-Delta2, (
+      member(Move2, Moves2),
+      translate_move(Board1, Move2, Board2),
+      value(Board2, Value2),
+      Delta2 is Value1-Value2
+    ), EvaluatedBoards2),
+    sort(EvaluatedBoards2, SortedBoard2),
+    last(SortedBoard2, Board1-Delta)
+    ), EvaluatedBoards),
+  sort(EvaluatedBoards, SortedBoard),
+  last(SortedBoard, Board-Delta).
+
+
+%[Board-Value1, NextBoard-Value2, -Delta]
+
+
+
+
+% funcao:-
+% value(BoardAposMinhaJogada, Valor1)
+% value(BoardAposJogadorAdversario, Valor1)
+% Delta is Valor1-Valor2
+% [BoardAposMinhaJogada, BoardAposJogadorAdversario, Delta] 
+
+% ordenar lista de [B,B,Delta] por ordem decrescente de Delta e primeiro elemento (maior delta)
+
 
 
 %==================================================================================================
@@ -193,18 +248,6 @@ process_cell(Cell, _, _, XValue, OValue, NewXValue, NewOValue) :-
                                     NewXValue = XValue, NewOValue is OValue + TowerHeight ).
 
 %==================================================================================================
-
-
- 
-%soma das alturas das minhas torres - soma das alturas das torres do adversario
-
-% funcao:-
-% value(BoardAposMinhaJogada, Valor1)
-% value(BoardAposJogadorAdversario, Valor1)
-% Delta is Valor1-Valor2
-% [BoardAposMinhaJogada, BoardAposJogadorAdversario, Delta] 
-
-% ordenar lista de [B,B,Delta] por ordem decrescente de Delta e primeiro elemento (maior delta)
 
 
 %==================================================================================================
