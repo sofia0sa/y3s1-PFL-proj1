@@ -13,37 +13,63 @@
 
 
 % =============== CHOOSE MAIN OPTION ========================== %
-choose_main_option(GameMode) :-
+choose_main_option :-
     repeat,
     choose_number(1, 3, '\nType a number', Option), !,
-    main_option(Option, GameMode).
+    main_option(Option).
 
-main_option(1, GameMode):- 
-    print_modes(GameMode).
+main_option(1):- 
+    print_modes.
 
-main_option(2, GameMode) :-
+main_option(2) :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
     write(' |       RULES:                                                          |\n'),
-    write(' |                                                                       |\n'), 
+    write(' |                                                                       |\n'),
+    write(' |   The goal of this game is building a King using 6 or more disks      |\n'),
+    write(' |   with your own color in the top disk.                                |\n'),
+    write(' |                                                                       |\n'),
+    write(' |   Six MaKING is played on a 5x5 board, where each                     |\n'),
+    write(' |   player holds 16 wooden disks - in case of a 4x4 board               |\n'),
+    write(' |   each player holds 12 disks. Players choose the color                |\n'),
+    write(' |   they play with and decide on the starting order.                    |\n'),
+    write(' |   The game starts with an empty board, and players                    |\n'),
+    write(' |   alternate turns. The player whose turn is, may choose               |\n'),
+    write(' |   whether to:                                                         |\n'),
+    write(' |                                                                       |\n'),
+    write(' |   -> place a new disk (a Pawn) on the board;                          |\n'),
+    write(' |   -> or move one of the towers or a part of a tower.                  |\n'),
+    write(' |                                                                       |\n'),
+    write(' |   For each number of disks in a board cell, the tower takes           |\n'),
+    write(' |   different roles and can move differently.                           |\n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),
+    write(' |  1  - pawn - 1 cell horizontal or vertical                            |\n'), 
+    write(' |  2  - rook - any number of cells horizontal or vertical,              |\n'),
+    write(' |       until finding another piece                                     |\n'),
+    write(' |  3  - knight - 2 cells horizontal or vertical,                        |\n'),
+    write(' |       then 1 cell horizontal or vertical                              |\n'),
+    write(' |  4  - bishop - any number of cells diagonal,                          |\n'),
+    write(' |       until finding another piece                                     |\n'),
+    write(' |  5  - queen - any number of cells horizontal, vertical or             |\n'),
+    write(' |       diagonal, until finding another piece                           |\n'),
+    write(' |  6+ - king - wins                                                     |\n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),
-    write(' |                                                                       |\n'),
+    write(' |   For more detailed information, consult the link below.              |\n'),
     write(' |_______________________________________________________________________|\n'),
+    write('\nhttp://www.boardspace.net/sixmaking/english/Six-MaKING-rules-Eng-Ger-Fra-Ro-Hu.pdf   \n'),
     repeat,
     write(' \n Type 1 to go back: '),
     read_number(Value),
     Value =:= 1,
     clear_console,
-    print_main_menu(GameMode). 
-    % (Value =:= 0 -> clear_console, print_main_menu(GameMode); main_option(2)).
+    print_main_menu. 
+    % (Value =:= 0 -> clear_console, print_main_menu; main_option(2)).
 
 
-main_option(3, GameMode):-
+main_option(3):-
     clear_console,
-    GameMode = 0,
     write('Sorry to see you go!!...\n\n'),
     write('  _______________________________________________________________________ \n'),
     write(' |       LEAVING                                                         |\n'),
@@ -60,7 +86,7 @@ main_option(3, GameMode):-
 
 % menu/0
 % Main menu
-choose_mode(GameMode) :-  
+choose_mode :-  
     repeat,
     choose_number(1, 4, '\nType a number', GameMode), !,
     mode_option(GameMode).
@@ -93,7 +119,7 @@ mode_option(3):-
 
 mode_option(4):-
     clear_console,
-    print_main_menu(GameMode).
+    print_main_menu.
 
 
 % =============== CHOOSE PLAYER ========================== %
@@ -154,7 +180,7 @@ print_header :-
     write(' |_______________________________________________________________________|\n\n').
 
 
-print_main_menu(GameMode) :-
+print_main_menu :-
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),                                                                                                                                            
@@ -167,10 +193,10 @@ print_main_menu(GameMode) :-
     write(' |                      3. Leave game                                    |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n\n'),
-    choose_main_option(GameMode).
+    choose_main_option.
 
 
-print_modes(GameMode) :-
+print_modes :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
@@ -186,23 +212,23 @@ print_modes(GameMode) :-
     write(' |                      4. Go back to main menu                          |\n'),
     write(' |                                                                       |\n'),
     write(' |_______________________________________________________________________|\n\n'),
-    choose_mode(GameMode).
+    choose_mode.
 
 
 % =============== MAIN MENU (called by play.) ========================== %
 
 % main_menu(-GameState)
 % Initialize GameState with Board, first Player
-% main_menu([Board, Player, GameMode]):-
+% main_menu([Board, Player]):-
 main_menu(NewGameState):-
     print_header,
-    print_main_menu(GameMode),
+    print_main_menu,
     init_random_state,
     choose_player(Player),
     choose_board(Size), 
     clear_console,
     init_state(Size, Board), %estado inicial da board
-    GameState = [Board, Player, GameMode],
+    GameState = [Board, Player],
     get_move(GameState, NewGameState).
 
 % main_menu

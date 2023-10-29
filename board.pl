@@ -21,7 +21,9 @@ length_to_letter(2, r).
 length_to_letter(3, n).
 length_to_letter(4, b).
 length_to_letter(5, q).
-length_to_letter(6, k).
+% length_to_letter(6, k). %KING with only 6
+length_to_letter(X, k):-
+    X > 5.
 
 check_color(o, C, X):-
     X = C.
@@ -83,6 +85,7 @@ place_pawn(Board, X, Y, player1, NewBoard) :-
     empty_cell(Board, X, Y),
     place_tower(Board, X, Y, [x], NewBoard).
 place_pawn(Board, X, Y, player2, NewBoard) :-
+
     empty_cell(Board, X, Y),
     place_tower(Board, X, Y, [o], NewBoard).
 
@@ -96,18 +99,18 @@ place_pawn(Board, X, Y, player2, NewBoard) :-
 %     Player == player2 -> place_tower(Board, X, Y, [o], NewBoard)).
 
 
-move_pieces(Board, X, Y, NewX, NewY, NewBoard) :-
-    % !TODO:
-    place_tower(Board, NewX, NewY, Piece, NewBoard).
+% move_pieces(Board, X, Y, NewX, NewY, NewBoard) :-
+%     % !TODO:
+%     place_tower(Board, NewX, NewY, Piece, NewBoard).
 
-% !DELETE: Apenas para testar
-test_move_pieces :-
-    board(4, Board),
-    print_board(4, Board),
-    place_pawn(Board, 1, 1, player1, NewBoard),
-    print_board(4, NewBoard).
-    % move_pieces(Board, 1, 1, 2, 2, NewBoard),
-    % print_board(4, NewBoard).
+% % !DELETE: Apenas para testar
+% test_move_pieces :-
+%     board(4, Board),
+%     print_board(4, Board),
+%     place_pawn(Board, 1, 1, player1, NewBoard),
+%     print_board(4, NewBoard).
+%     % move_pieces(Board, 1, 1, 2, 2, NewBoard),
+%     % print_board(4, NewBoard).
 
 %---------------------------------%
 %print matrix

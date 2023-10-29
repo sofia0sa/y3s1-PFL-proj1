@@ -126,6 +126,7 @@ SE NÃO DER MINIMAX:
 ---- LISTA ESTRUTURA MOVE PARA A GERAÇÃO DE TODAS AS MOVES POSSIVEIS ----
 
 [MoveFlag, Player, X, Y, NewX, NewY, NPieces]
+-> trans
 
 MoveFlag : 1 (add), 2 (move), 3 (separate)-> tipo de move escolhido no menu
 NPieces : -1 (add e move), 1 (separate) -> numero de peças a mover

@@ -10,13 +10,15 @@ get_moves_type_1(Board, Player, Moves) :-
 % !DELETE
 test_get_moves_type_1 :-
   Board = [
-    [[x,o], [x,o,o,x,o], empty, empty, empty],
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
     [empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]
 ],
   get_moves_type_1(Board, player1, Moves),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
   write(Moves).
     
 %predicate to get a list of all the moves of the type 2 -> move tower
@@ -53,6 +55,8 @@ test_get_moves_type_2 :-
   % valid_moves(Board, player1, 2, 1, ListOfMovesMoves),
   % write('HERE list: '), write(ListOfMovesMoves), nl,
   get_moves_type_2(Board, player2, Moves),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
   write(Moves).
 
 %predicate to get a list of all the moves of the type 3 -> separete tower and move pieces
@@ -87,20 +91,90 @@ test_get_moves_type_3 :-
     [empty, empty, empty, empty, empty],
     [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]
-],
+  ],
   % valid_moves(Board, player1, 2, 1, ListOfMovesMoves),
   % write('HERE list: '), write(ListOfMovesMoves), nl,
   get_moves_type_3(Board, player2, Moves),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
   write(Moves).
 
+get_all_moves(Board, Player, Moves) :-
+  get_moves_type_1(Board, Player, Moves1),
+  get_moves_type_2(Board, Player, Moves2),
+  get_moves_type_3(Board, Player, Moves3),
+  append(Moves1, Moves2, Moves12),
+  append(Moves12, Moves3, Moves).
 
+
+% !DELETE
+test_get_all_moves:-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  get_all_moves(Board, player2, Moves),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
+ 
 %==================================================================================================
 
 % move_computer(+GameState, -NewGameState, +Level)
 move_computer(GameState, NewGameState, 1) :-
+    [Board, Player] = GameState,
     write('HERE IN move_computer EASY (to implement)') , nl,
-    fail.
+    get_all_moves(Board, Player, Moves),
+    write('HERE Moves: '), write(Moves), nl,
+    random_member(Move, Moves),
+    write('HERE Move: '), write(Move), nl,
+    translate_move(Board, Move, NewBoard),
+    change_player(Player, NewPlayer),
+    NewGameState = [NewBoard, NewPlayer].
 
 move_computer(GameState, NewGameState, 2) :-
     write('HERE IN move_computer HARD (to implement)') , nl,
+    [Board, Player] = GameState,
+    change_player(Player, NewPlayer),
+    NewGameState = [Board, NewPlayer],
     fail.
+
+
+%==================================================================================================
+
+value(GameState, Player, Value) :-
+  write('HERE IN value (to implement)') , nl.
+  %soma das alturas das minhas torres - soma das alturas das torres do adversario
+
+
+%==================================================================================================
+translate_move(Board, Move, NewBoard) :-
+  [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
+  write('HERE IN translate_move') , nl,
+  (MoveFlag =:= 1 ->
+    write('HERE MOVE TYPE 1'), nl,
+    place_pawn(Board, NewX, NewY, Player, NewBoard);
+  MoveFlag =:= 2 ->
+    write('HERE MOVE TYPE 2'), nl,
+    % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
+    move_tower(Board, X, Y, NewX, NewY, NewBoard);
+  MoveFlag =:= 3 ->
+    write('HERE MOVE TYPE 3'), nl,
+    % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
+    separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
+  ).
+
+translate_move_1(Board, Player, X, Y, NewX, NewY, NewBoard) :-
+  write('HERE IN translate_move_1') , nl,
+  place_pawn(Board, Player, NewX, NewY, NewBoard).
+
+translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard) :-
+  write('HERE IN translate_move_2') , nl,
+  move_tower(Board, Player, X, Y, NewX, NewY, NewBoard).
+  
+translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard) :-
+  write('HERE IN translate_move_3') , nl,
+  separate_tower(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard).

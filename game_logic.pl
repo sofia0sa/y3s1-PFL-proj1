@@ -3,17 +3,14 @@
 
 % separate_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
-separate_tower(Board, X, Y, NMove, NPieces, NewBoard) :-
-  write('HERE IN separate_tower'), nl,
-  [NewX, NewY] = NMove,
+separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard) :-
   get_tower(Board, X, Y, Tower),
   split_list(Tower, Part1, NPieces, Part2),
   place_tower(Board, X, Y, Part1, Board1),
   move_pieces(Board1, NewX, NewY, Part2, NewBoard).
 
 %move whole tower
-move_tower(Board, X, Y, NMove, NewBoard) :-
-  [NewX, NewY] = NMove,
+move_tower(Board, X, Y, NewX, NewY, NewBoard) :-
   get_tower(Board, X, Y, Tower),
   place_tower(Board, X, Y, empty, Board1),
   move_pieces(Board1, NewX, NewY, Tower, NewBoard).
@@ -28,7 +25,6 @@ move_pieces(Board, X, Y, NPieces, NewBoard):-
 % valid_moves(+Board, +X, +Y, +Player, -ValidMoves)
 % Calculates all the valid moves for the piece at position (X, Y) for the given player.
 valid_moves(Board, Player, X, Y, ValidMoves) :-
-  write('HERE IN valid_moves'), nl,
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
   setof([NewX, NewY], (
@@ -49,7 +45,6 @@ valid_moves(Board, Player, X, Y, ValidMoves, NPieces) :-
 % valid_move(+Board, +X, +Y, +NewX, +NewY, +Player, +Piece)
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, Player, X, Y, NewX, NewY, Tower) :-
-  write('HERE IN valid_move'), nl,
   inside_board(Board, NewX, NewY),
   \+ empty_cell(Board, NewX, NewY),
   length(Tower, L), % Pawn
@@ -66,18 +61,15 @@ valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces) :-
   check_possible_tower(Board, Player, NewX, NewY, NPieces, Top).
 
 
-%check if addition <= 6
+% !WARNING: needs to be cleaned up, ask gui
 check_possible_tower(Board, Player, NewX, NewY, L, Top):-
-  write('HERE IN check_possible_tower'), nl,
-  write('HERE top: '), write(Top), nl,
   get_tower(Board, NewX, NewY, Tower),
   length(Tower, L1),
   L2 is L1+L,
-  % L2=<6.
-  % (L2 =:= 6 ->write('HERE player: '), write(Player), nl, top_to_player(Top, Player)).
   (L2 > 6 ->
     % If the tower height is greater than 6, the move is invalid
-    false
+    top_to_player(Top, Player)
+    % false %KING with only 6
   ;
     % If the tower height is less than 6, the move is valid regardless of the top
     L2 < 6
@@ -91,7 +83,6 @@ check_possible_tower(Board, Player, NewX, NewY, L, Top):-
 %pawn move
 %move 1 cell horizontally or vertically
 valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
-  write('HERE IN valid_piece_movement 1'), nl,
   (X =:= NewX; Y =:= NewY),
   (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
 
@@ -385,7 +376,8 @@ iterate_board(Board, Top):-
   nth1(Col, RowList, Tower),
   Tower \= empty,
   length(Tower, L),
-  L =:= 6,
+  % L =:= 6,  %KING with only 6
+  L >= 6,
   tower_top(Tower, Top).
 
 top_to_player(x, player1).

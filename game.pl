@@ -55,7 +55,7 @@ print_turn(Player):-
 %===================== GAME HUMAN MOVES ====================
 
 get_move(GameState, NewGameState) :- % para o player humano escolher move
-    [Board, Player, GameMode] = GameState,
+    [Board, Player] = GameState,
     \+difficulty(Player, _), !, %verifica se o player é humano
     write('\n=========================================\n'),
     write('\nWhat move do you want to make?\n'),
@@ -68,7 +68,7 @@ get_move(GameState, NewGameState) :- % para o player humano escolher move
 
 get_move(GameState, NewGameState) :- % para o computador facil escolher move
     difficulty(Player, 1), !,
-    move_computer(GameState, NewGameState, 1).
+    move_computer(GameState, NewGameState, 1). 
 
 get_move(GameState, NewGameState) :- % para o computador dificil escolher move
     move_computer(GameState, NewGameState, 2).
@@ -89,23 +89,23 @@ check_if_can_place_tower(Board, X1, Y1, NPieces) :-
     get_tower(Board, X1, Y1, Tower),
     length(Tower, L),
     L1 is L+NPieces,
-    L1 =<6,
+    % L1 =<6, %KING only with 6 pieces
     !.
 
 % move_option(+GameState, +Option, -NewGameState)
 % Unifies NewGameState with the new game state after the player chooses an option
 move_option(GameState, 1, NewGameState) :-
-    [Board, Player, GameMode] = GameState,
+    [Board, Player] = GameState,
     write('\n=========================================\n'),
     repeat,
     write('\nWhere do you want to place the piece?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer, GameMode].
+    NewGameState = [NewBoard, NewPlayer].
 
 move_option(GameState, 2, NewGameState) :-
-    [Board, Player, GameMode] = GameState,
+    [Board, Player] = GameState,
     write('\n=========================================\n'),
     repeat,
     
@@ -121,14 +121,15 @@ move_option(GameState, 2, NewGameState) :-
     get_possible_moves(Board, Player, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
-    move_tower(Board, X, Y, NMove, NewBoard),
+    [NewX, NewY] = NMove,
+    move_tower(Board, X, Y, NewX, NewY, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer, GameMode].
+    NewGameState = [NewBoard, NewPlayer].
 
 
 % IN CONSTRUCTION!
 move_option(GameState, 3, NewGameState) :-
-    [Board, Player, GameMode] = GameState,
+    [Board, Player] = GameState,
     write('\n=========================================\n'),
     repeat,
     write('\nWhich tower do you want to separate?\n'),
@@ -144,10 +145,10 @@ move_option(GameState, 3, NewGameState) :-
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     write('NMove: '), write(NMove), nl,
-    separate_tower(Board, X, Y, NMove, NPieces, NewBoard),
-
+    [NewX, NewY] = NMove,
+    separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard),
     change_player(Player, NewPlayer),
-    NewGameState = [NewBoard, NewPlayer, GameMode].
+    NewGameState = [NewBoard, NewPlayer].
 
 
 get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
@@ -160,7 +161,6 @@ get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     fail).
 
 
-% neste print, ja nao deve mostrar movimentos que coloquem em cima de torres que length daria >6 !!
 % print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
 get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
@@ -227,7 +227,7 @@ show_winner(Winner):-
 % Loop that keeps the game running
 game_cycle(GameState):- %IF GAME IS OVER because someone won
     % 7 =:= 3, !,
-    [Board, Player, GameMode] = GameState,
+    [Board, Player] = GameState,
     game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
     write('GAME OVER\n'), nl,
    
@@ -240,7 +240,7 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 
 game_cycle(GameState):- % HERE in case nobody is winning atm
     write('NEW GAME CYCLE\n'),
-    [Board, Player, GameMode] = GameState, 
+    [Board, Player] = GameState, 
     length(Board, Size),
     print_board(Size, Board),
     print_turn(Player),
