@@ -112,7 +112,7 @@ test_print_moves:-
   write('HERE Moves: '), write(Moves), nl,
   findall(Move, (
     member(Move, Moves),
-  % write('HERE Move: '), write(Move), nl),
+  write('HERE Move: '), write(Move), nl,
   translate_move(Board, Move, Board1)),
   % write('HERE Translated Board1: '), write(Board1), nl),
   % write('HERE Move and Board: '), write(Move), write(' - '), write(Board1), nl),
