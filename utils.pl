@@ -126,3 +126,12 @@ clear_data :-
 % Clears the console
 clear_console :-
     write('\33\[2J').
+
+%====== TO TEST STATISTICS ======
+
+measure_time(Keyword, Goal, Before, After, Diff):-
+    statistics(Keyword, [Before|_]),
+    Goal,
+    statistics(Keyword, [After|_]),
+    Diff is After-Before.
+    

@@ -4,8 +4,13 @@
 % separate_tower(+Board, +X, +Y, +Player, -NewBoard)
 % Separates the tower at position (X, Y) into two towers, one with the given player and the other with the remaining pieces.
 separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard) :-
+  write('HERE IN separate_tower\n'),  
   get_tower(Board, X, Y, Tower),
+  write('HERE Tower: '), write(Tower), nl,
+  write('HERE NPieces: '), write(NPieces), nl,
   split_list(Tower, Part1, NPieces, Part2),
+  write('HERE Part1: '), write(Part1), nl,
+  write('HERE Part2: '), write(Part2), nl,
   place_tower(Board, X, Y, Part1, Board1),
   move_pieces(Board1, NewX, NewY, Part2, NewBoard).
 
@@ -65,7 +70,7 @@ valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces) :-
 
 % !WARNING: needs to be cleaned up, ask gui
 check_possible_tower(Board, Player, NewX, NewY, L, Top):-
-  write('HERE IN check_possible_tower\n'),
+  % write('HERE IN check_possible_tower\n'),
   get_tower(Board, NewX, NewY, Tower),
   length(Tower, L1),
   L2 is L1+L,
@@ -73,9 +78,9 @@ check_possible_tower(Board, Player, NewX, NewY, L, Top):-
   % (L2 > 6 -> %KING with only 6
   (L2 >= 6 ->
     % If the tower height is greater than 6, the move is invalid %KING with only 6
-    write('HERE IN L2 >= 6\n'),
-    write('HERE Top: '), write(Top), nl,
-    write('HERE Player: '), write(Player), nl,
+    % write('HERE IN L2 >= 6\n'),
+    % write('HERE Top: '), write(Top), nl,
+    % write('HERE Player: '), write(Player), nl,
     top_to_player(Top, Player)
     % false %KING with only 6
   ;
@@ -352,18 +357,6 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
 %   ).
 
 
-% !DELETE: just for testing
-test_valid_moves:-
-  Board = [
-    [[x,o], [x], empty, [pawn], [pawn]],
-    [[o], empty, empty, empty, [pawn]],
-    [empty, [pawn], [x,x,o,o], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [x], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]]
-  ],
-  valid_moves(Board, player1, 2, 1, ValidMoves),
-  write(ValidMoves).
-
 % diagonal_occupied(+X1, +Y1, +X2, +Y2)
 % Checks if there are any occupied cells in the diagonal line as (X1, Y1) to (X2, Y2)
 diagonal_occupied(Board, X1, Y1, X2, Y2) :-
@@ -394,21 +387,6 @@ top_to_player(o, player2).
 game_over(Board, Winner):-
   iterate_board(Board, Top),
   top_to_player(Top, Winner).
-
-% !DELETE: just for testing
-test_game_over:-
-  Board = [
-    [[x,x,x], empty, empty, [pawn], empty],
-    [[pawn], [pawn], [x,x], [pawn], [pawn]],
-    [[pawn], [pawn], empty, [x,x,o,x,o], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]]
-  ],
-  game_over(Board, Winner),
-  write(Winner).
-
-
-
 
 
 % choose_piece_and_move(+Board, -NewBoard)

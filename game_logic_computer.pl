@@ -126,7 +126,7 @@ test_get_all_moves:-
 % move_computer(+GameState, -NewGameState, +Level)
 move_computer(GameState, NewGameState, 1) :-
   [Board, Player] = GameState,
-  write('HERE IN move_computer EASY (to implement)') , nl,
+  write('HERE IN move_computer EASY (implemented)') , nl,
   get_all_moves(Board, Player, Moves),
   write('HERE Moves: '), write(Moves), nl,
   random_member(Move, Moves),
@@ -249,25 +249,10 @@ move_computer(GameState, NewGameState, 2) :-
 %============================ GET BOARD VALUE ======================================================================
 
 %value is board value for PLayer
-value(GameState, Value) :-
-  [Board, Player] = GameState,
+value(Board, Value) :-
   iterate_board(Board, XValue, OValue),
   (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
 
-
-
-test_value :-
-  Board = [
-    [[x,o], [x], empty, empty, [x,o,o,x,o]],
-    [empty, empty, [x,o,x], empty, [o]],
-    [empty, empty, empty, empty, empty],
-    [[o,o], empty, empty, [x,x,x], empty],
-    [empty, empty, empty, empty, empty]
-  ],
-  GameState = [Board, player2],
-  value(GameState, Value),
-  write('HERE Value: '), write(Value), nl.
-  
 
 /* Calculates O and X Value based on tower heights and tops*/
 iterate_board(Board, FinalXValue, FinalOValue) :-
@@ -301,28 +286,28 @@ process_cell(Cell, _, _, XValue, OValue, NewXValue, NewOValue) :-
 %=============================== TRANSLATE MOVES INTO BOARDS ===================================================================
 translate_move(Board, Move, NewBoard) :-
   [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
-  write('HERE IN translate_move') , nl,
+  % write('HERE IN translate_move') , nl,
   (MoveFlag =:= 1 ->
-    write('HERE MOVE TYPE 1'), nl,
+    % write('HERE MOVE TYPE 1'), nl,
     place_pawn(Board, NewX, NewY, Player, NewBoard);
   MoveFlag =:= 2 ->
-    write('HERE MOVE TYPE 2'), nl,
+    % write('HERE MOVE TYPE 2'), nl,
     % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
     move_tower(Board, X, Y, NewX, NewY, NewBoard);
   MoveFlag =:= 3 ->
-    write('HERE MOVE TYPE 3'), nl,
+    % write('HERE MOVE TYPE 3'), nl,
     % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
   ).
 
 translate_move_1(Board, Player, X, Y, NewX, NewY, NewBoard) :-
-  write('HERE IN translate_move_1') , nl,
+  % write('HERE IN translate_move_1') , nl,
   place_pawn(Board, Player, NewX, NewY, NewBoard).
 
 translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard) :-
-  write('HERE IN translate_move_2') , nl,
+  % write('HERE IN translate_move_2') , nl,
   move_tower(Board, Player, X, Y, NewX, NewY, NewBoard).
   
 translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard) :-
-  write('HERE IN translate_move_3') , nl,
+  % write('HERE IN translate_move_3') , nl,
   separate_tower(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard).
