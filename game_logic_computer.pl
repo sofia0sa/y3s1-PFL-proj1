@@ -102,7 +102,8 @@ test_get_moves_type_3 :-
 get_all_moves(Board, Player, Moves) :-
   get_moves_type_1(Board, Player, Moves1),
   get_moves_type_2(Board, Player, Moves2),
-  get_moves_type_3(Board, Player, Moves3),
+  % get_moves_type_3(Board, Player, Moves3),
+  Moves3 = [],
   append(Moves1, Moves2, Moves12),
   append(Moves12, Moves3, Moves).
 
@@ -135,64 +136,63 @@ move_computer(GameState, NewGameState, 1) :-
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
-move_computer(GameState, NewGameState, 2) :-
-  write('HERE IN move_computer HARD (to implement)') , nl,
-  [Board, Player] = GameState,
-  get_all_moves(Board, Player, Moves),
-  findall([Board1,Value1], (
-    member(Move, Moves),
-    write('HERE Move: '), write(Move), nl,
-    translate_move(Board, Move, Board1),
-    write('HERE Board1: '), write(Board1), nl,
-    value(Board1, Value1),
-    write('HERE Value1: '), write(Value1), nl
-  ), EvaluatedBoards),
-  write('HERE EvaluatedBoards: '), write(EvaluatedBoards), nl,
-  sort(EvaluatedBoards, SortedBoard),
-  write('HERE SortedBoard: '), write(SortedBoard), nl,
-  last(SortedBoard, Board1-Value1),
-  change_player(Player, NewPlayer),
-  NewGameState = [Board1, NewPlayer].
-
-
+% NOSSO - testando -----------------
 % move_computer(GameState, NewGameState, 2) :-
 %   write('HERE IN move_computer HARD (to implement)') , nl,
 %   [Board, Player] = GameState,
 %   get_all_moves(Board, Player, Moves),
-%   findall(Delta-Board1, (
+%   findall([Board1,Value1], (
 %     member(Move, Moves),
+%     write('HERE Move: '), write(Move), nl,
 %     translate_move(Board, Move, Board1),
+%     write('HERE Board1: '), write(Board1), nl,
 %     value(Board1, Value1),
-%     % depth 2
-%     change_player(Player, NewPlayer),
-%     % get_all_moves(Board1, NewPlayer, Moves2),
-%     % findall(ValueAux, (
-%     %   member(Move2, Moves2),
-%     %   translate_move(Board1, Move2, Board2),
-%     %   value(Board2, Value2)
-%     %   Delta is Value1-Value2
-%     % ), AuxValues),
-%     % member(Value2, AuxValues),
-%     % Delta is Value1-Value2
-%     second_level(Board1, NewPlayer, Value2),
-%     Delta is Value1-Value2
-%     ), EvaluatedBoards),
+%     write('HERE Value1: '), write(Value1), nl
+%   ), EvaluatedBoards),
 %   write('HERE EvaluatedBoards: '), write(EvaluatedBoards), nl,
 %   sort(EvaluatedBoards, SortedBoard),
 %   write('HERE SortedBoard: '), write(SortedBoard), nl,
-%   last(SortedBoard, Delta-Board),
+%   last(SortedBoard, Board1-Value1),
 %   change_player(Player, NewPlayer),
-%   NewGameState = [Board, NewPlayer].
+%   NewGameState = [Board1, NewPlayer].
 
-% second_level(Board1, NewPlayer, Value2) :-
-%   get_all_moves(Board1, NewPlayer, Moves2),
-%   findall(ValueAux, (
-%     member(Move2, Moves2),
-%     translate_move(Board1, Move2, Board2),
-%     value(Board2, Value2)
-%   ), AuxValues),
-%   sort(AuxValues, SortedValues),
-%   last(SortedValues, Value2).
+%hard mode with minimax
+move_computer(GameState, NewGameState, 2) :-
+  write('HERE IN move_computer HARD (to implement)') , nl,
+  [Board, Player] = GameState,
+  get_all_moves(Board, Player, Moves),
+  findall(Delta-Board1, (
+    member(Move, Moves),
+    translate_move(Board, Move, Board1),
+    value(Board1, Player, Value1),
+    second_level(Board1, NewPlayer, Value2),
+    write('HERE Value1: '), write(Value1), nl,
+    write('HERE Value2: '), write(Value2), nl,
+    Delta is Value1-Value2,
+    write('HERE Delta: '), write(Delta), nl
+    ), EvaluatedBoards),
+  % write('HERE EvaluatedBoards: '), write(EvaluatedBoards), nl,
+  sort(EvaluatedBoards, SortedBoard),
+  write('HERE SortedBoard: '), write(SortedBoard), nl,
+  last(SortedBoard, Delta-NewBoard),
+  write('HERE Delta: '), write(Delta), nl,
+  write('HERE NewBoard: '), write(NewBoard), nl,
+  change_player(Player, NewPlayer),
+  NewGameState = [NewBoard, NewPlayer].
+
+second_level(Board1, Player, Value2) :-
+  change_player(Player, NewPlayer),
+  get_all_moves(Board1, NewPlayer, Moves2),
+  % write('HERE Moves2: '), write(Moves2), nl,
+  findall(ValueAux-Board2, (
+    member(Move2, Moves2),
+    translate_move(Board1, Move2, Board2),
+    value(Board2, NewPlayer, ValueAux)
+  ), AuxValues),
+  % write('HERE AuxValues: '), write(AuxValues), nl,
+  sort(AuxValues, SortedValues),
+  last(SortedValues, Value2-BoardAux), 
+  write('HERE BoardAux: '), write(BoardAux), nl.
 
 
 % ANOTAÇÕES:
@@ -208,11 +208,6 @@ move_computer(GameState, NewGameState, 2) :-
 
 %----- CHATGPT
 
-% move_computer(GameState, NewGameState, 2) :-
-%   [Board, Player] = GameState,
-%   change_player(Player, Opponent),
-%   get_all_moves(Board, Opponent, OpponentMoves),
-%   find_best_move(OpponentMoves, Board, Player, NewGameState).
 
 % find_best_move([], _, _, _).
 % find_best_move([OpponentMove|Rest], Board, Player, NewGameState) :-
@@ -235,6 +230,15 @@ move_computer(GameState, NewGameState, 2) :-
 %     find_best_player_move(Rest, OpponentBoard, Opponent, BestValue, NewBestValue2).
 
 
+
+% move_computer(GameState, NewGameState, 2) :-
+%   write('HERE IN move_computer HARD (to implement)') , nl,
+%   [Board, Player] = GameState,
+%   change_player(Player, Opponent),
+%   get_all_moves(Board, Opponent, OpponentMoves),
+%   find_best_move(OpponentMoves, Board, Player, NewGameState).
+
+
 % move_computer(GameState, NewGameState, 2) :-
 %   write('HERE IN move_computer HARD (to implement)') , nl,
 %   findall(Move, move_computer(GameState, NewGameState, 2), NewGameState).
@@ -249,7 +253,9 @@ move_computer(GameState, NewGameState, 2) :-
 %============================ GET BOARD VALUE ======================================================================
 
 %value is board value for PLayer
-value(Board, Value) :-
+value(Board, Player, Value) :-
+  write('HERE IN value') , nl,
+  write('HERE Player: '), write(Player), nl,
   iterate_board(Board, XValue, OValue),
   (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
 

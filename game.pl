@@ -4,6 +4,7 @@
 :- consult('game_logic_computer.pl').
 :- consult('menu.pl'). %ficheiro com os includes
 :- consult('utils.pl').
+:- consult('test.pl').
 
 % ==================== GAME MOVES -> retirado do FS, ver como fica o nosso ====================
 % choose_move(+GameState,+Player,+Level,-Move)
