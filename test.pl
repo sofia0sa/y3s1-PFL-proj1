@@ -1,6 +1,6 @@
-% :- consult(utils).
-% :- consult(board).
-% :- consult(game).
+:- consult(utils).
+:- consult(board).
+:- consult(game).
 
 % !DELETE: Apenas para testar
 test_place_tower :-
@@ -37,13 +37,14 @@ test_place_pawn(X,Y,P):-
 % !DELETE: just for testing
 test_valid_moves:-
   Board = [
-    [[x,o], [x], empty, [pawn], [pawn]],
-    [[o], empty, empty, empty, [pawn]],
-    [empty, [pawn], [x,x,o,o], [pawn], [pawn]],
-    [[pawn], [pawn], [pawn], [x], [pawn]],
-    [[pawn], [pawn], [pawn], [pawn], [pawn]]
+    [[x,o], [x], empty, [x], [x,o]],
+    [[o], empty, [x,x,o,o,x], empty, [o]],
+    [empty, [o], empty, empty, empty],
+    [[x,o], [x], [x,x,x,o,x], empty, [x]],
+    [[o,x], empty, [o], empty, [x,o,x]]
   ],
-  valid_moves(Board, player1, 2, 1, ValidMoves),
+  print_board(5, Board),  
+  valid_moves(Board, player1, 3, 4, ValidMoves),
   write(ValidMoves).
 
 

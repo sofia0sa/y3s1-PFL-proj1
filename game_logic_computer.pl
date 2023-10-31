@@ -34,9 +34,9 @@ get_moves_type_2(Board, Player, Moves) :-
       %if the cell is a tower, find all the valid moves for that tower
       \+ empty_cell(Board, Row, Col),
       X is Row, Y is Col,
-      write('X: '), write(X), write(' Y: '), write(Y), nl,
+      % write('X: '), write(X), write(' Y: '), write(Y), nl,
       valid_moves(Board, Player, Row, Col, ListOfMoves),
-      write('HERE Moves of type 2: '), write(ListOfMoves), nl,
+      % write('HERE Moves of type 2: '), write(ListOfMoves), nl,
       member([NewX, NewY], ListOfMoves)
       
       ), Moves).
@@ -74,10 +74,10 @@ get_moves_type_3(Board, Player, Moves) :-
       L1 is L-1,
       between(1, L1, NPieces),
       X is Row, Y is Col,
-      write('X: '), write(X), write(' Y: '), write(Y), nl,
+      % write('X: '), write(X), write(' Y: '), write(Y), nl,
       valid_moves(Board, Player, Row, Col, ListOfMoves, NPieces),
-      write('HERE Npieces: '), write(NPieces), nl, 
-      write('HERE LoM: '), write(ListOfMoves), nl,
+      % write('HERE Npieces: '), write(NPieces), nl, 
+      % write('HERE LoM: '), write(ListOfMoves), nl,
       member([NewX, NewY], ListOfMoves)
       
       ), Moves).
@@ -100,10 +100,12 @@ test_get_moves_type_3 :-
   write(Moves).
 
 get_all_moves(Board, Player, Moves) :-
+  % Moves1 = [],
+  % Moves2 = [],
   get_moves_type_1(Board, Player, Moves1),
   get_moves_type_2(Board, Player, Moves2),
-  % get_moves_type_3(Board, Player, Moves3),
-  Moves3 = [],
+  get_moves_type_3(Board, Player, Moves3),
+  % Moves3 = [],
   append(Moves1, Moves2, Moves12),
   append(Moves12, Moves3, Moves).
 
@@ -165,15 +167,15 @@ move_computer(GameState, NewGameState, 2) :-
     member(Move, Moves),
     translate_move(Board, Move, Board1),
     value(Board1, Player, Value1),
-    second_level(Board1, NewPlayer, Value2),
-    write('HERE Value1: '), write(Value1), nl,
-    write('HERE Value2: '), write(Value2), nl,
-    Delta is Value1-Value2,
-    write('HERE Delta: '), write(Delta), nl
+    % write('HERE Value1: '), write(Value1), nl,
+    second_level(Board1, Player, Value2),
+    % write('HERE Value2: '), write(Value2), nl,
+    Delta is Value1-Value2
+    % write('HERE Delta: '), write(Delta), nl
     ), EvaluatedBoards),
   % write('HERE EvaluatedBoards: '), write(EvaluatedBoards), nl,
   sort(EvaluatedBoards, SortedBoard),
-  write('HERE SortedBoard: '), write(SortedBoard), nl,
+  % write('HERE SortedBoard: '), write(SortedBoard), nl,
   last(SortedBoard, Delta-NewBoard),
   write('HERE Delta: '), write(Delta), nl,
   write('HERE NewBoard: '), write(NewBoard), nl,
@@ -182,17 +184,21 @@ move_computer(GameState, NewGameState, 2) :-
 
 second_level(Board1, Player, Value2) :-
   change_player(Player, NewPlayer),
+  % write('HERE NewPlayer: '), write(NewPlayer), nl,
   get_all_moves(Board1, NewPlayer, Moves2),
   % write('HERE Moves2: '), write(Moves2), nl,
-  findall(ValueAux-Board2, (
+  setof(ValueAux, (
+    % write('HERE Before member\n'),
     member(Move2, Moves2),
+    % write('HERE Move2: '), write(Move2), nl,  
     translate_move(Board1, Move2, Board2),
     value(Board2, NewPlayer, ValueAux)
+    % write('HERE ValueAux: '), write(ValueAux), nl
   ), AuxValues),
   % write('HERE AuxValues: '), write(AuxValues), nl,
   sort(AuxValues, SortedValues),
-  last(SortedValues, Value2-BoardAux), 
-  write('HERE BoardAux: '), write(BoardAux), nl.
+  last(SortedValues, Value2). 
+  % write('HERE BoardAux: '), write(BoardAux), nl.
 
 
 % ANOTAÇÕES:
@@ -254,9 +260,11 @@ second_level(Board1, Player, Value2) :-
 
 %value is board value for PLayer
 value(Board, Player, Value) :-
-  write('HERE IN value') , nl,
-  write('HERE Player: '), write(Player), nl,
+  % write('HERE IN value') , nl,
+  % write('HERE Player: '), write(Player), nl,
   iterate_board(Board, XValue, OValue),
+  % write('HERE XValue: '), write(XValue), nl,
+  % write('HERE OValue: '), write(OValue), nl,
   (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
 
 

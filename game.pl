@@ -4,7 +4,7 @@
 :- consult('game_logic_computer.pl').
 :- consult('menu.pl'). %ficheiro com os includes
 :- consult('utils.pl').
-:- consult('test.pl').
+% :- consult('test.pl').
 
 % ==================== GAME MOVES -> retirado do FS, ver como fica o nosso ====================
 % choose_move(+GameState,+Player,+Level,-Move)
@@ -68,6 +68,7 @@ get_move(GameState, NewGameState) :- % para o player humano escolher move
     move_option(GameState, Option, NewGameState).
 
 get_move(GameState, NewGameState) :- % para o computador facil escolher move
+    [Board, Player] = GameState,
     difficulty(Player, 1), !,
     move_computer(GameState, NewGameState, 1). 
 
@@ -110,8 +111,11 @@ move_option(GameState, 2, NewGameState) :-
 
     write('\nWhich tower do you want to move?\n'),
     get_coordinate(Board, X, Y),
-    \+ empty_cell(Board, X, Y),
-
+    % \+ empty_cell(Board, X, Y),
+    (empty_cell(Board, X, Y) -> 
+        format('There is not a tower in position [~w,~w]!\n', [X, Y]),
+        fail;
+        true),
     write('\nWhere do you want to place it?\n'),
     get_possible_moves(Board, Player, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
     choose_number(1, NMoves, 'Type a number', N1),
@@ -230,6 +234,8 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 game_cycle(GameState):- % HERE in case nobody is winning atm
     write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
+    % difficulty(Player, Dif),
+    % write('Dif: '), write(Dif), nl,
     length(Board, Size),
     print_board(Size, Board),
     print_turn(Player),

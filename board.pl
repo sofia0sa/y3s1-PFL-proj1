@@ -81,13 +81,22 @@ empty_cell(Board, X, Y) :-
 %     between(1, Size, Y).
 
 
+% place_pawn(Board, X, Y, player1, NewBoard) :-
+%     empty_cell(Board, X, Y),
+%     place_tower(Board, X, Y, [x], NewBoard).
+% place_pawn(Board, X, Y, player2, NewBoard) :-
+%     empty_cell(Board, X, Y),
+%     place_tower(Board, X, Y, [o], NewBoard).
 place_pawn(Board, X, Y, player1, NewBoard) :-
-    empty_cell(Board, X, Y),
-    place_tower(Board, X, Y, [x], NewBoard).
-place_pawn(Board, X, Y, player2, NewBoard) :-
+(   empty_cell(Board, X, Y)
+->  place_tower(Board, X, Y, [x], NewBoard)
+;   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]), fail).
 
-    empty_cell(Board, X, Y),
-    place_tower(Board, X, Y, [o], NewBoard).
+place_pawn(Board, X, Y, player2, NewBoard) :-
+(   empty_cell(Board, X, Y)
+->  place_tower(Board, X, Y, [o], NewBoard)
+;   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]), fail).
+
 
 % can only place a new piece if the cell is empty
 % place_tower(+Board, +X, +Y, +Player, -NewBoard)
@@ -169,7 +178,15 @@ board(4, [
     [empty, empty, empty, empty],
     [empty, empty, empty, empty]
 ]).
+board(5, [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ]).
 
+/*
 % 5x5 empty board
 board(5, [
     [[x,o], [x,o,o,x,o], empty, empty, empty],
@@ -178,7 +195,7 @@ board(5, [
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty]
 ]).
-
+*/
 print_board(Size, Board):-
     % clear_console,
     % write('  1   2   3   4   5'), nl,

@@ -117,7 +117,7 @@ lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
 
 
 % clear_data/0
-% removes all waters, names and difficul from the fact base for the next game
+% removes all waters, names and difficulty from the fact base for the next game
 clear_data :-
     retractall(difficulty(_, _)),
     retractall(name_of(_, _)).

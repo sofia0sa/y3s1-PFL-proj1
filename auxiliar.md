@@ -1,56 +1,3 @@
-HERE Move: [1,_2117,0,0,3,1,-1]
-HERE Move: [1,_2085,0,0,4,1,-1]
-HERE Move: [1,_2053,0,0,1,2,-1]
-HERE Move: [1,_2021,0,0,2,2,-1]
-HERE Move: [1,_1989,0,0,4,2,-1]
-HERE Move: [1,_1957,0,0,1,3,-1]
-HERE Move: [1,_1925,0,0,2,3,-1]
-HERE Move: [1,_1893,0,0,3,3,-1]
-HERE Move: [1,_1861,0,0,4,3,-1]
-HERE Move: [1,_1829,0,0,5,3,-1]
-HERE Move: [1,_1797,0,0,2,4,-1]
-HERE Move: [1,_1765,0,0,3,4,-1]
-HERE Move: [1,_1733,0,0,5,4,-1]
-HERE Move: [1,_1701,0,0,1,5,-1]
-HERE Move: [1,_1669,0,0,2,5,-1]
-HERE Move: [1,_1637,0,0,3,5,-1]
-HERE Move: [1,_1605,0,0,4,5,-1]
-HERE Move: [1,_1573,0,0,5,5,-1]
-HERE Move: [2,_2881,1,1,1,4,-1]
-HERE Move: [2,_2849,1,1,2,1,-1]
-HERE Move: [2,_2817,1,4,1,1,-1]
-HERE Move: [2,_2785,1,4,4,4,-1]
-HERE Move: [2,_2753,2,1,1,1,-1]
-HERE Move: [2,_2721,3,2,1,1,-1]
-HERE Move: [2,_2689,3,2,4,4,-1]
-HERE Move: [2,_2657,3,2,5,1,-1]
-HERE Move: [2,_2625,4,4,3,2,-1]
-HERE Move: [2,_2593,4,4,5,2,-1]
-HERE Move: [2,_2561,5,1,2,1,-1]
-HERE Move: [2,_2529,5,1,5,2,-1]
-HERE Move: [2,_2497,5,2,5,1,-1]
-HERE Move: [3,_3991,1,1,1,4,1]
-HERE Move: [3,_3959,1,1,2,1,1]
-HERE Move: [3,_3927,1,4,1,1,1]
-HERE Move: [3,_3895,1,4,4,4,1]
-HERE Move: [3,_3863,3,2,1,1,1]
-HERE Move: [3,_3831,3,2,4,4,1]
-HERE Move: [3,_3799,3,2,5,1,1]
-HERE Move: [3,_3767,3,2,1,1,2]
-HERE Move: [3,_3735,3,2,4,4,2]
-HERE Move: [3,_3703,3,2,5,1,2]
-HERE Move: [3,_3671,4,4,3,2,1]
-HERE Move: [3,_3639,4,4,5,2,1]
-HERE Move: [3,_3607,4,4,3,2,2]
-HERE Move: [3,_3575,4,4,5,2,2]
-HERE Move: [3,_3543,5,1,2,1,1]
-HERE Move: [3,_3511,5,1,5,2,1]
-HERE Move: [3,_3479,5,1,2,1,2]
-HERE Move: [3,_3447,5,1,5,2,2]
-HERE Move: [3,_3415,5,1,2,1,3]
-HERE Move: [3,_3383,5,1,5,2,3]
-HERE Move: [3,_3351,5,1,2,1,4]
-HERE Move: [3,_3319,5,1,5,2,4]
 
 ## REGRAS
 
@@ -177,8 +124,8 @@ avaliar novamente as boards resultantes
 ordenar a board do jogador atual ?
 
 BUGS:
-- quando se move uma peça para uma casa ocupada, dá loop infinito
-- quando se pede para mover algo cujo topo nao é nosso, loop infinito
+
+
 - quando damos letras no choose_number, ele passa-se e printa 3 vezes type a number
 
 

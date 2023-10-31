@@ -112,13 +112,13 @@ choose_mode :-
 mode_option(1):-
     clear_console,
     write('\n=========================================\n'),
-    write('\nPlayer vs. Player\n\n'),
+    write('\n       Player vs. Player\n\n'),
     get_name(player1), get_name(player2).
 
 mode_option(2):-
     clear_console,
     write('\n=========================================\n'),
-    write('\nPlayer vs. Computer\n\n'),
+    write('\n       Player vs. Computer\n\n'),
     get_name(player1),
     asserta((name_of(player2, 'Computer'))), !, 
     choose_difficulty(player2).
@@ -126,7 +126,7 @@ mode_option(2):-
 mode_option(3):-
     clear_console,
     write('\n=========================================\n'),
-    write('Computer vs. Computer\n'),
+    write('     Computer vs. Computer\n'),
     asserta((name_of(player1, 'Computer1'))),
     asserta((name_of(player2, 'Computer2'))), !,
     choose_difficulty(player1),
