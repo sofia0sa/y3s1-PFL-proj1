@@ -1,18 +1,12 @@
 :- use_module(library(lists)).
 :- use_module(library(between)).
-% :- consult(data).
 :- consult(utils).
 
 t(empty, X):- X=' '.
-
-% t is a list
 t(T, X):-
     length(T, L),
-    % write(L), nl,
     length_to_letter(L, C),
-    % write(C), nl,
     tower_top(T, Top),
-    % write(Top), nl,
     check_color(Top, C, X).
 
 
@@ -29,15 +23,6 @@ check_color(o, C, X):-
     X = C.
 check_color(x, C, X):-
     lowercase_to_uppercase(C, X).
-
-% o -> pretas, lower case
-% x -> brancas, upper case
-
-% !DELETE: Apenas para testar
-print_piece :-
-    T = [o, x],
-    t(T, X),
-    write(X).
 
 
 % place_tower(+Board, +X, +Y, +Piece, -NewBoard)
@@ -70,23 +55,9 @@ empty_cell(Board, X, Y) :-
     nth1(Y, Board, Row),
     nth1(X, Row, Piece),
     Piece == empty.
-    % Piece is empty.
 
 
-% % in_bounds(+X, +Y)
-% % Checks if the specified X and Y coordinates are within the bounds of the board
-% in_bounds(Board, X, Y) :-
-%     get_board_size(Board, Size),
-%     between(1, Size, X),
-%     between(1, Size, Y).
 
-
-% place_pawn(Board, X, Y, player1, NewBoard) :-
-%     empty_cell(Board, X, Y),
-%     place_tower(Board, X, Y, [x], NewBoard).
-% place_pawn(Board, X, Y, player2, NewBoard) :-
-%     empty_cell(Board, X, Y),
-%     place_tower(Board, X, Y, [o], NewBoard).
 place_pawn(Board, X, Y, player1, NewBoard) :-
 (   empty_cell(Board, X, Y)
 ->  place_tower(Board, X, Y, [x], NewBoard)
@@ -97,29 +68,6 @@ place_pawn(Board, X, Y, player2, NewBoard) :-
 ->  place_tower(Board, X, Y, [o], NewBoard)
 ;   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]), fail).
 
-
-% can only place a new piece if the cell is empty
-% place_tower(+Board, +X, +Y, +Player, -NewBoard)
-% Places a pawn from white or black depending on the player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-% place_pawn(Board, X, Y, Player, NewBoard) :-
-%     empty_cell(Board, X, Y), 
-%     %check which player is playing
-%     (Player == player1 -> place_tower(Board, X, Y, [x], NewBoard);
-%     Player == player2 -> place_tower(Board, X, Y, [o], NewBoard)).
-
-
-% move_pieces(Board, X, Y, NewX, NewY, NewBoard) :-
-%     % !TODO:
-%     place_tower(Board, NewX, NewY, Piece, NewBoard).
-
-% % !DELETE: Apenas para testar
-% test_move_pieces :-
-%     board(4, Board),
-%     print_board(4, Board),
-%     place_pawn(Board, 1, 1, player1, NewBoard),
-%     print_board(4, NewBoard).
-%     % move_pieces(Board, 1, 1, 2, 2, NewBoard),
-%     % print_board(4, NewBoard).
 
 %---------------------------------%
 %print matrix
@@ -197,28 +145,25 @@ board(5, [
 ]).
 */
 print_board(Size, Board):-
-    % clear_console,
-    % write('  1   2   3   4   5'), nl,
     p_h(1, Size),
-    % board(Size, B),
     p_m(Size, Board),
     write('\n').
 
-% !TEST:
-%get board size
-get_board_size(Board, Size):-
-    length(Board, Size).
+% % !TEST:
+% %get board size
+% get_board_size(Board, Size):-
+%     length(Board, Size).
 
 % !TEST:
 %clear board
 clear_board(Board):-
-    get_board_size(Board, Size),
+    length(Board, Size),
     board(Size, Board).
 
 % inside_board(+Board, +X, +Y)
 % Checks if the coordinates X and Y are inside the Board
 inside_board(Board, X, Y) :-
-    get_board_size(Board, Size),
+    length(Board, Size),
     between(1, Size, X),
     between(1, Size, Y).
 

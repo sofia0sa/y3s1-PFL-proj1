@@ -2,6 +2,14 @@
 :- consult(board).
 :- consult(game).
 
+
+
+% !DELETE: apenas para testes
+test_split_list :-
+  split_list([1,2,3,4,5,6,7,8,9], Part1, 3, Part2),
+  write('Part1: '), write(Part1), nl,
+  write('Part2: '), write(Part2), nl.
+
 % !DELETE: Apenas para testar
 test_place_tower :-
   board(4, Board),

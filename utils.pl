@@ -82,12 +82,6 @@ split_list(List, Part1, Part2Length, Part2) :-
     length(List, ListLength),
     ListLength =:= N + Part2Length.
 
-% !DELETE: apenas para testes
-test_split_list :-
-    split_list([1,2,3,4,5,6,7,8,9], Part1, 3, Part2),
-    write('Part1: '), write(Part1), nl,
-    write('Part2: '), write(Part2), nl.
-
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"
 print_list(List) :-
@@ -100,11 +94,14 @@ print_list([H|T], Index) :-
     write(Index), write(' - '), write(H), nl,
     NewIndex is Index + 1,
     print_list(T, NewIndex).
-  
+
+% tower_top(+Tower, -Top)
+% Returns the top element of Tower
 tower_top(Tower, Top) :-
   last(Tower, Top).
 
-  % Convert lowercase atom to uppercase atom
+% lowercase_to_uppercase(+LowercaseAtom, -UppercaseAtom)
+% Convert lowercase atom to uppercase atom
 lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
   atom_chars(LowercaseAtom, [LowercaseChar]),
   char_code(LowercaseChar, LowercaseCode),
@@ -113,11 +110,23 @@ lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
   atom_chars(UppercaseAtom, [UppercaseChar]).
 
 
+%between_rev(+Lower, +Upper, -X)
+% X is a number between Lower and Upper, in descending order
+between_rev(Lower, Upper, X) :- 
+  Upper >= Lower, 
+  X = Upper. 
+
+between_rev(Lower, Upper, X) :- 
+    Upper > Lower, 
+    NewUpper is Upper - 1, 
+    between_rev(Lower, NewUpper, X).
+
+
 % ================== CLEARING ==================
 
 
 % clear_data/0
-% removes all waters, names and difficulty from the fact base for the next game
+% removes all wnames and difficulty from the fact base for the next game
 clear_data :-
     retractall(difficulty(_, _)),
     retractall(name_of(_, _)).
