@@ -1,26 +1,27 @@
-% FILE TO PRINT MENUS AND GET USER INPUT (at the beginning of the game)
-% also with the use_modules necessary
-
 :- use_module(library(lists)).
 :- use_module(library(between)).
 :- use_module(library(system), [now/1]).
 :- consult(utils).
-% :- consult(data).
 :- consult(board).
 :- use_module(library(lists)).
 :- use_module(library(random)).
-% :- use_module(library(charsio)).
 
+% =============== MAIN MENU OPTIONS ========================== %
 
-% =============== CHOOSE MAIN OPTION ========================== %
+% choose_main_option/0
+% Choice of main menu option.
 choose_main_option :-
     repeat,
     choose_number(1, 3, '\nType a number', Option), !,
     main_option(Option).
 
+% option(+N)
+% Main menu options.
+% Option to choose game mode.
 main_option(1):- 
     print_modes.
 
+% Option to view game rules.
 main_option(2) :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
@@ -65,10 +66,26 @@ main_option(2) :-
     Value =:= 1,
     clear_console,
     print_main_menu. 
-    % (Value =:= 0 -> clear_console, print_main_menu; main_option(2)).
+
+% Option to leave the game.
+main_option(3):-
+    clear_console,
+    write('Sorry to see you go!!...\n\n'),
+    write('  _______________________________________________________________________ \n'),
+    write(' |       LEAVING                                                         |\n'),
+    write(' |                                                                       |\n'), 
+    write(' |                         ***                                           |\n'),
+    write(' |                        *                                              |\n'),
+    write(' |                        ****                                           |\n'),
+    write(' |                        *   *                                          |\n'),
+    write(' |                         *** MAKING ...                                |\n'),
+    write(' |_______________________________________________________________________|\n'),
+    fail.
 
 % ==================== SHORT RULES BEFORE BOARD ====================
 
+% print_short_rules/0
+% Prints short set of game rules and it's present before the first board is printed.
 print_short_rules :-
     write('\n=========================================\n'),
     write('\nREMEMBER:\n'),
@@ -84,37 +101,26 @@ print_short_rules :-
     write('   6+ - king - wins                                          \n'),
     write('\nThese rules will stay here.\n\n').
 
-main_option(3):-
-    clear_console,
-    write('Sorry to see you go!!...\n\n'),
-    write('  _______________________________________________________________________ \n'),
-    write(' |       LEAVING                                                         |\n'),
-    write(' |                                                                       |\n'), 
-    write(' |                         ***                                           |\n'),
-    write(' |                        *                                              |\n'),
-    write(' |                        ****                                           |\n'),
-    write(' |                        *   *                                          |\n'),
-    write(' |                         *** MAKING ...                                |\n'),
-    write(' |_______________________________________________________________________|\n'),
-    fail.
 
-% =============== CHOOSE GAME MODES ========================== %
+% =============== GAME MODES OPTIONS ========================== %
 
-% menu/0
-% Main menu
+% choose_mode/0
+% Choice of game mode.
 choose_mode :-  
     repeat,
     choose_number(1, 4, '\nType a number', GameMode), !,
     mode_option(GameMode).
 
 % option(+N)
-% Main menu options. Each represents a game mode.
+% Choice of game mode and choice of difficulty in case computer modes were chosen.
+% Game mode option: Player vs Player.
 mode_option(1):-
     clear_console,
     write('\n=========================================\n'),
     write('\n       Player vs. Player\n\n'),
     get_name(player1), get_name(player2).
 
+% Game mode option: Player vs Computer.
 mode_option(2):-
     clear_console,
     write('\n=========================================\n'),
@@ -123,6 +129,7 @@ mode_option(2):-
     asserta((name_of(player2, 'Computer'))), !, 
     choose_difficulty(player2).
 
+% Game mode option: Computer vs Computer.
 mode_option(3):-
     clear_console,
     write('\n=========================================\n'),
@@ -132,6 +139,7 @@ mode_option(3):-
     choose_difficulty(player1),
     choose_difficulty(player2).
 
+% Extra option: Go back to main menu.
 mode_option(4):-
     clear_console,
     print_main_menu.
@@ -140,13 +148,10 @@ mode_option(4):-
 % =============== CHOOSE PLAYER ========================== %
 
 % choose_player(-Player)
-% Unifies player with the player who will start the game
+% Choice of first player to play.
 choose_player(Player):-
     name_of(player1, Name1),
     name_of(player2, Name2),
-    % string_codes(Name1Str, Name1),
-    % string_codes(Name2Str, Name2),
-    %format('Who starts playing?\n1 - ~s being White player \n2 - ~s being Black player\n', [Name1Str, Name2Str]),
     format('\nWho starts playing?\n1 - ~s, with white pieces (UPPERCASE) \n2 - ~s, with black pieces (lowercase) \n', [Name1, Name2]),
     repeat,
     choose_number(1, 2, '\nSelect', Index),
@@ -157,7 +162,7 @@ choose_player(Player):-
 % =============== CHOOSE DIFFICULTY ========================== %
 
 % choose_difficulty(+Computer)
-% Choose Computer difficulty (1 or 2)
+% Choice of Computer difficulty: Easy or Hard.
 choose_difficulty(Computer) :-
     format('\nPlease select ~a difficulty:\n', [Computer]),
     write('1 - Easy\n'),
@@ -171,18 +176,18 @@ choose_difficulty(Computer) :-
 % =============== CHOOSE BOARD ========================== %
 
 % choose_board(-Size)
-% Board size choice
+% Choice of board size: 4x4 or 5x5.
 choose_board(Size):-
     repeat,
     write('\nWhat board size do you want to choose: 4 or 5? '),
     read_number(Size),
-    member(Size, [4, 5]), !. % Size must be some of the list 4 or 5
+    member(Size, [4, 5]), !. 
 
 
 % =============== PRINTS ========================== %
 
 % print_header/0
-% Game header
+% Prints game header.
 print_header :-
     write('  _______________________________________________________________________ \n'),
     write(' |       WELCOME TO                                                      |\n'),
@@ -194,7 +199,8 @@ print_header :-
     write(' |                         *** MAKING !!                                 |\n'),
     write(' |_______________________________________________________________________|\n\n').
 
-
+% print_main_menu/0
+% Prints main menu.
 print_main_menu :-
     write('  _______________________________________________________________________ \n'),
     write(' |                                                                       |\n'),
@@ -210,7 +216,8 @@ print_main_menu :-
     write(' |_______________________________________________________________________|\n\n'),
     choose_main_option.
 
-
+% print_modes/0
+% Prints game modes.
 print_modes :-
     clear_console,
     write('  _______________________________________________________________________ \n'),
@@ -233,10 +240,9 @@ print_modes :-
 
 % =============== MAIN MENU (called by play.) ========================== %
 
-% main_menu(-GameState)
-% Initialize GameState with Board, first Player
-% main_menu([Board, Player]):-
-main_menu(NewGameState):-
+% main(-NewGameState)
+% Calls configuration predicates and starts the game.
+main(NewGameState):-
     print_header,
     print_main_menu,
     init_random_state,
@@ -248,6 +254,5 @@ main_menu(NewGameState):-
     GameState = [Board, Player],
     get_move(GameState, NewGameState).
 
-% main_menu
-% If user leaves the game, fail and exit
-main_menu(_).
+% Used when game is exited.
+main(_).

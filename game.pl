@@ -253,6 +253,6 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
 % Starts the game and clears data when it ends 
 play :-
     clear_console,
-    main_menu(GameState), !,
+    main(GameState), !,
     game_cycle(GameState),
     clear_data.
