@@ -1,83 +1,47 @@
-% DICHEIRO DE STARTING POINT -> aqui se começa o jogo com play.
-
 :- consult('game_logic.pl').
 :- consult('game_logic_computer.pl').
-:- consult('menu.pl'). %ficheiro com os includes
+:- consult('menu.pl'). 
 :- consult('utils.pl').
-% :- consult('test.pl').
 
-% ==================== GAME MOVES -> retirado do FS, ver como fica o nosso ====================
-% choose_move(+GameState,+Player,+Level,-Move)
-% Choose move a human player
-% choose_move([Board,Player,ForcedMoves,TotalMoves], ColI-RowI-ColF-RowF):-
-%     \+difficulty(Player, _),                    
-%     repeat,
-%     get_move(Board, ColI-RowI-ColF-RowF),                 
-%     check_forced_moves(ColI-RowI,ForcedMoves),
-%     validate_move([Board,Player,ForcedMoves,TotalMoves], ColI-RowI, ColF-RowF), !.  
-% choose_move([Board,Player,ForcedMoves,TotalMoves], Move):-
-%     difficulty(Player, Level),                  
-%     choose_move([Board,Player,ForcedMoves,TotalMoves], Player, Level, Move), !.   
-
-% % choose_move(+GameState,+Player,+Level,-Move)
-% % Bot random player. Makes a list of possible moves and select a random one
-% choose_move(GameState, Player, 1, ColI-RowI-ColF-RowF):- 
-%     valid_moves(GameState, Player, ListOfMoves),
-%     random_member(ColI-RowI-ColF-RowF, ListOfMoves).
-
-% % choose_move(+GameState,+Player,+Level,-Move)
-% % Bot greedy player. Makes a list of possible moves and select the one with the most points according minimax algorithm
-% choose_move(GameState, Player, 2, ColI-RowI-ColF-RowF):-
-% 	valid_moves(GameState, Player, ListOfMoves),
-%     other_player(Player, NewPlayer),
-% 	findall(Value-Coordinate, ( member(Coordinate, ListOfMoves), 
-%                                 move(GameState, Coordinate, NewGameState), 
-%                                 value(NewGameState,Player, Value1),
-%                                 minimax(NewGameState, NewPlayer, min, 1, Value2),
-%                                 Value is Value1 + Value2), Pairs),
-%     sort(Pairs, SortedPairs),
-%     last(SortedPairs, Max-_),
-%     findall(Coordinates, member(Max-Coordinates, SortedPairs), MaxCoordinates),
-%     random_member(ColI-RowI-ColF-RowF, MaxCoordinates).
-
-
-
-% ================================== PRINT NEXT PLAYER =================================================================
+% ===================== PRINT NEXT PLAYER ==================
 % print_turn(+Player)
-% Prints a message declaring whose turn it is
+% Prints message indicating the next player to play.
 print_turn(Player):-
     write('\n=========================================\n'),
     name_of(Player, Name),
     format('\nIt`s ~a`s turn!\n', [Name]), !.
-    % atom_string(NameAtom, Name)
-    % format('It`s ~w`s turn!\n', [NameAtom]), !.
 
 
 %===================== GAME HUMAN MOVES ====================
 
+% get_move(+GameState, -NewGameState)
+% Prints choice of moves in case of human player or calls the move predicate in case of Computer. 
+% Predicate for printing and choosing a possible movement in case of human player.
 get_move(GameState, NewGameState) :- % para o player humano escolher move
     [Board, Player] = GameState,
     \+difficulty(Player, _), !, %verifica se o player é humano
     repeat,
     write('\n=========================================\n'),
     write('\nWhat move do you want to make?\n'),
-    write('1 - Add piece\n'),
-    write('2 - Move piece\n'),
+    write('1 - Add pawn\n'),
+    write('2 - Move tower\n'),
     write('3 - Separate tower\n'),
     choose_number(1, 3, '\nType a number', Option), %!,
     move_option(GameState, Option, NewGameState).
 
-get_move(GameState, NewGameState) :- % para o computador facil escolher move
+% Predicate for choice of movement in case of Easy Computer mode.
+get_move(GameState, NewGameState) :- 
     [Board, Player] = GameState,
     difficulty(Player, 1), !,
     move_computer(GameState, NewGameState, 1). 
 
-get_move(GameState, NewGameState) :- % para o computador dificil escolher move
+% Predicate for choice of movement in case of Hard Computer mode.
+get_move(GameState, NewGameState) :- 
     move_computer(GameState, NewGameState, 2).
 
 
 % check_if_tower_exists(+Board, +X, +Y, -L)
-% Checks if there is a tower in the given coordinates to check if a player can separate it
+% Checks if there is a tower in the given coordinates.
 check_if_tower_exists(Board, X, Y, L) :-
     get_tower(Board, X, Y, Tower),
     \+ empty_cell(Board, X, Y),
@@ -85,8 +49,8 @@ check_if_tower_exists(Board, X, Y, L) :-
     L>1,
     !.
 
-%checks if the player can place the tower in the given coordinates
-% !DUVIDA: jogador so deve poder colocar em cima de peças dele, senao era facil ganhar (bastava ir somando ate uma torre = 6)?
+% check_if_can_place_tower(+Board, +X, +Y, +NPieces)
+% Checks if a tower can be placed in the given coordinates.
 check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
     get_tower(Board, X1, Y1, Tower),
     length(Tower, L),
@@ -95,7 +59,8 @@ check_if_can_place_tower(Board, X1, Y1, NPieces) :-
     !.
 
 % move_option(+GameState, +Option, -NewGameState)
-% Unifies NewGameState with the new game state after the player chooses an option
+% Choice of one of the three move options.
+% Choice of "Add piece" option. Asks where to place the piece and places it in the given coordinates, if possible. Changes player after the move was made.
 move_option(GameState, 1, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
@@ -105,6 +70,7 @@ move_option(GameState, 1, NewGameState) :-
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer].
 
+% Choice of "Move piece" option. Asks where to move the piece and moves it to the given coordinates, if possible. Changes player after the move was made.
 move_option(GameState, 2, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'), 
@@ -183,7 +149,7 @@ get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
 
 
 % get_coordinate(+Board,-X, -Y)
-% Unifies Coordinate with a valid coordinate given by input within the Board
+% Choice of coordinate based on choice of column and row number.
 get_coordinate(Board, X, Y):-
     length(Board, Size),
     choose_number(1, Size, 'Choose column', X),
@@ -223,7 +189,6 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
     [Board, Player] = GameState,
     game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
     write('GAME OVER\n'), nl,
-   
     
     length(Board, Size),
     print_board(Size, Board),
@@ -247,10 +212,8 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
 
 % ==================== GAME START ====================
 
-
-% FUNCTION THAT STARTS THE GAME and keeps the game playing!!
 % play/0
-% Starts the game and clears data when it ends 
+% Starts the game, calls configuration predicate (the main(-GameState) predicate), keeps game running in a game cycle and clears data when it ends. 
 play :-
     clear_console,
     main(GameState), !,
