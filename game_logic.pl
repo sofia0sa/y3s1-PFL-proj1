@@ -82,14 +82,12 @@ check_possible_tower(Board, Player, NewX, NewY, L, Top):-
 
 % valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +TowerHeight)
 % Returns the coordinates (NewX, NewY) of a valid move for the piece at (X, Y) with the given height.
-%pawn move
-%move 1 cell horizontally or vertically
+% Pawn - can move 1 cell horizontally or vertically
 valid_piece_movement(_, X, Y, NewX, NewY, 1) :-
   (X =:= NewX; Y =:= NewY),
   (X =:= NewX + 1; X =:= NewX - 1; Y =:= NewY + 1; Y =:= NewY - 1).
 
-% rook move
-% move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
+% Rook - can move any number of cells horizontally or vertically, until it reaches another piece. Can only move to cells that are not empty.
 valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
   X = NewX,
   vertical_up(Board, X, Y, NewX, NewY).
@@ -103,12 +101,11 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 2) :-
   Y = NewY,
   horizontal_right(Board, X, Y, NewX, NewY).
 
-%knight move
-%move 2 cells horizontally or vertically and then 1 cell in the other direction
+% Knight - can move 2 cells horizontally or vertically and then 1 cell in the other direction
 valid_piece_movement(_, X, Y, NewX, NewY, 3) :-
   (abs(X - NewX) =:= 2, abs(Y - NewY) =:= 1 ; abs(X - NewX) =:= 1, abs(Y - NewY) =:= 2).
 
-%bishop move
+% Bishop - can move any number of cells diagonally, until it reaches another piece. Can only move to cells that are not empty.
 valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
   up_right(Board, X, Y, NewX, NewY).
 valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
@@ -118,8 +115,7 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
 valid_piece_movement(Board, X, Y, NewX, NewY, 4) :-
   down_left(Board, X, Y, NewX, NewY).
 
-%queen move
-% move any number of cells horizontally, vertically or diagonally, until it reaches the end of the board or another piece
+% Queen - can move any number of cells horizontally, vertically or diagonally, until it reaches another piece. Can only move to cells that are not empty.
 valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   X = NewX,
   vertical_up(Board, X, Y, NewX, NewY).
@@ -141,7 +137,7 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
 valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   down_left(Board, X, Y, NewX, NewY).
 
-
+% !TEST: after commenting second cut
 % vertical_up(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, Y) to (X, 1)
 vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
@@ -149,7 +145,7 @@ vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
   between_rev(1, Z, Y1),
   \+ empty_cell(Board, X, Y1), !,
   OccupiedX = X,
-  OccupiedY = Y1, !.
+  OccupiedY = Y1. %, !.
 
 % vertical_down(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, Y) to (X, Size)
@@ -159,7 +155,7 @@ vertical_down(Board, X, Y, OccupiedX, OccupiedY) :-
   between(Z, Size, Y1), 
   \+ empty_cell(Board, X, Y1), !,
   OccupiedX = X,
-  OccupiedY = Y1, !.
+  OccupiedY = Y1. %, !.
 
 % horizontal_left(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the horizontal line from (X, Y) to (1, Y)
@@ -168,7 +164,7 @@ horizontal_left(Board, X, Y, OccupiedX, OccupiedY) :-
   between_rev(1, Z, X1),
   \+ empty_cell(Board, X1, Y), !,
   OccupiedX = X1,
-  OccupiedY = Y, !.
+  OccupiedY = Y. %, !.
   
 % horizontal_right(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the horizontal line from (X, Y) to (Size, Y)
@@ -178,7 +174,7 @@ horizontal_right(Board, X, Y, OccupiedX, OccupiedY) :-
   between(Z, Size, X1),
   \+ empty_cell(Board, X1, Y), !,
   OccupiedX = X1,
-  OccupiedY = Y, !.
+  OccupiedY = Y. %, !.
 
 % up_right(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the diagonal line from (X, Y) to the top right corner
