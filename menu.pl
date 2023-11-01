@@ -250,7 +250,7 @@ main(NewGameState):-
     choose_board(Size), 
     clear_console,
     print_short_rules,
-    init_state(Size, Board), %estado inicial da board
+    initial_state(Size, Board), %estado inicial da board
     GameState = [Board, Player],
     get_move(GameState, NewGameState).
 

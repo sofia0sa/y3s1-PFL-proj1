@@ -187,8 +187,8 @@ test_inside_board :-
 
 %---------------------------------%
 
-% init_state(+Size,-Board)
+% initial_state(+Size,-Board)
 % Unifies Board with a Size matrix that represents the game: animals and empty pieces
-init_state(Size, Board):-
+initial_state(Size, Board):-
     board(Size, Board),
     print_board(Size, Board). % !WARNING: Apenas para testar

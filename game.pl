@@ -60,7 +60,7 @@ check_if_can_place_tower(Board, X1, Y1, NPieces) :-
 
 % move_option(+GameState, +Option, -NewGameState)
 % Choice of one of the three move options.
-% Choice of "Add piece" option. Asks where to place the piece and places it in the given coordinates, if possible. Changes player after the move was made.
+% Choice of "Add pawn" option. Asks where to place the piece and places it in the given coordinates, if possible. Changes player after the move was made.
 move_option(GameState, 1, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
@@ -70,7 +70,7 @@ move_option(GameState, 1, NewGameState) :-
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer].
 
-% Choice of "Move piece" option. Asks where to move the piece and moves it to the given coordinates, if possible. Changes player after the move was made.
+% Choice of "Move tower" option. Asks which tower to move and where to move. Moves it to the given coordinates, if possible. Changes player after the move was made.
 move_option(GameState, 2, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'), 
@@ -83,7 +83,7 @@ move_option(GameState, 2, NewGameState) :-
         fail;
         true),
     write('\nWhere do you want to place it?\n'),
-    get_possible_moves(Board, Player, X, Y, ListOfMoves, NMoves), %prints and lets choose the move
+    get_possible_moves(Board, Player, X, Y, ListOfMoves, NMoves), 
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     [NewX, NewY] = NMove,
@@ -92,13 +92,10 @@ move_option(GameState, 2, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer].
 
 
-% IN CONSTRUCTION!
+% Choice of "Separate tower" option. Asks which tower and how many pieces wants to separate and where to move them. Separates the tower in the given coordinates, if possible. Changes player after the move was made.
 move_option(GameState, 3, NewGameState) :-
     [Board, Player] = GameState,
-    write('\n=========================================\n'),
-    % write('\nType 1 to go back (just in case there is no option to move) \n or anything else to continue\n'),
-    % read_number(Value),
-    % (Value =:= 1 -> get_move(GameState, NewGameState); true),   
+    write('\n=========================================\n'), 
     
     write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
@@ -109,7 +106,7 @@ move_option(GameState, 3, NewGameState) :-
     choose_number(1, L1, 'Type a number', NPieces),
 
     write('\nWhere do you want to place them?\n'),
-    get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, NMoves), %possible moves para que nao aconteca um placement com length>6
+    get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, NMoves), 
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
     write('NMove: '), write(NMove), nl,
@@ -119,6 +116,9 @@ move_option(GameState, 3, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer].
 
 
+% get_possible_moves(+Board, +Player, +X, +Y, -ListOfMoves, -L)
+% Determines and prints the possible moves that a player can make in case of "Move tower" and "Separate tower" options.
+% Possible moves for the "Move tower" option.
 get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     valid_moves(Board, Player, X, Y, ListOfMoves),
     write('HERE IN get_possible_moves'), nl,
@@ -132,7 +132,7 @@ get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     fail).
 
 
-% print_possible_moves(+Board, +X, +Y, +NPieces, +PlaceFlag)
+% Possible moves for the "Separate tower" option.
 get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     write('HERE IN get_possible_moves'), nl,
     write('HERE Player: '), write(Player), nl,
@@ -146,10 +146,8 @@ get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     fail).
 
 
-
-
 % get_coordinate(+Board,-X, -Y)
-% Choice of coordinate based on choice of column and row number.
+% Lets player choose coordinates based on the size of the board.
 get_coordinate(Board, X, Y):-
     length(Board, Size),
     choose_number(1, Size, 'Choose column', X),
@@ -157,37 +155,23 @@ get_coordinate(Board, X, Y):-
 
 
 
-% ==================== GAME WINNER - VER COMO FAZER ====================
-% Predicate of the player vs player game mode loop (player 1 won)
-game(FinalGamestate,N,FinalGamestate) :-
-    isEven(N),
-    % game_over(1),
-    write('\nCongrats, player 1 won!\n').
-
-% Predicate of the player vs player game mode loop (player 2 won)
-game(FinalGamestate,N,FinalGamestate) :-
-    \+isEven(N),
-    % game_over(2),
-
-    write('\nCongrats, player 2 won!\n').
-
+% ==================== PRINTING GAME WINNER ====================
 
 % show_winner(+GameState, +Winner)
-% Prints the winner of the game and number of moves they made
+% Prints the winner of the game.
 show_winner(Winner):-
     name_of(Winner, Name),
     format('Winner is ~a! Congrats!!\n', [Name]).
-    % fail.
-
 
 
 % ============================== GAME CYCLE ====================
+
 % game_cycle(+GameState)
-% Loop that keeps the game running
-game_cycle(GameState):- %IF GAME IS OVER because someone won
-    % 7 =:= 3, !,
+% Loop that keeps the game running. Checks if the game is over. If not, calls the get_move predicate to get the next move.
+% Checks if game is over. If it is, prints the winner and prevents from going to another game_cycle predicate.
+game_cycle(GameState):-
     [Board, Player] = GameState,
-    game_over(Board, Winner), !, %verifica se alguem ganhou (length tower = 6)
+    game_over(Board, Winner), !, 
     write('GAME OVER\n'), nl,
     
     length(Board, Size),
@@ -195,25 +179,21 @@ game_cycle(GameState):- %IF GAME IS OVER because someone won
 
     show_winner(Winner).
 
-
+% Calls the get_move predicate to get the next move, while there is no winner.
 game_cycle(GameState):- % HERE in case nobody is winning atm
     write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
-    % difficulty(Player, Dif),
-    % write('Dif: '), write(Dif), nl,
     length(Board, Size),
     print_board(Size, Board),
     print_turn(Player),
     get_move(GameState, NewGameState), %para player humano
-    % move(GameState, Move, NewGameState), !,  %this was giving errors
     game_cycle(NewGameState).
-
 
 
 % ==================== GAME START ====================
 
 % play/0
-% Starts the game, calls configuration predicate (the main(-GameState) predicate), keeps game running in a game cycle and clears data when it ends. 
+% Starts the game, calls main predicate to save configurations, keeps game running in a game cycle and clears data when it ends. 
 play :-
     clear_console,
     main(GameState), !,
