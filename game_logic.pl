@@ -3,19 +3,19 @@
 
 
 separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard) :-
-  write('HERE IN separate_tower\n'),  
+  % write('HERE IN separate_tower\n'),  
   get_tower(Board, X, Y, Tower),
-  write('HERE Tower: '), write(Tower), nl,
-  write('HERE NPieces: '), write(NPieces), nl,
+  % write('HERE Tower: '), write(Tower), nl,
+  % write('HERE NPieces: '), write(NPieces), nl,
   split_list(Tower, Part1, NPieces, Part2),
-  write('HERE Part1: '), write(Part1), nl,
-  write('HERE Part2: '), write(Part2), nl,
+  % write('HERE Part1: '), write(Part1), nl,
+  % write('HERE Part2: '), write(Part2), nl,
   length(Board, Size),
-  print_board(Size, Board),
+  % print_board(Size, Board),
   place_tower(Board, X, Y, Part1, Board1),
-  print_board(Size, Board1),
-  move_pieces(Board1, NewX, NewY, Part2, NewBoard),
-  print_board(Size, NewBoard).
+  % print_board(Size, Board1),
+  move_pieces(Board1, NewX, NewY, Part2, NewBoard).
+  % print_board(Size, NewBoard).
 
 %move whole tower
 move_tower(Board, X, Y, NewX, NewY, NewBoard) :-

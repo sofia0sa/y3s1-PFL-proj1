@@ -1,4 +1,4 @@
-
+% :- use_module(library(prolog_breakpoints)).
 
 % A move is of this type [MoveFlag, Player, X, Y, NewX, NewY, NPieces]
 
@@ -100,10 +100,10 @@ test_get_moves_type_3 :-
   write(Moves).
 
 get_all_moves(Board, Player, Moves) :-
-  % Moves1 = [],
-  % Moves2 = [],
-  get_moves_type_1(Board, Player, Moves1),
-  get_moves_type_2(Board, Player, Moves2),
+  Moves1 = [],
+  Moves2 = [],
+  % get_moves_type_1(Board, Player, Moves1),
+  % get_moves_type_2(Board, Player, Moves2),
   get_moves_type_3(Board, Player, Moves3),
   % Moves3 = [],
   append(Moves1, Moves2, Moves12),
@@ -138,26 +138,7 @@ move_computer(GameState, NewGameState, 1) :-
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
-% NOSSO - testando -----------------
-% move_computer(GameState, NewGameState, 2) :-
-%   write('HERE IN move_computer HARD (to implement)') , nl,
-%   [Board, Player] = GameState,
-%   get_all_moves(Board, Player, Moves),
-%   findall([Board1,Value1], (
-%     member(Move, Moves),
-%     write('HERE Move: '), write(Move), nl,
-%     translate_move(Board, Move, Board1),
-%     write('HERE Board1: '), write(Board1), nl,
-%     value(Board1, Value1),
-%     write('HERE Value1: '), write(Value1), nl
-%   ), EvaluatedBoards),
-%   write('HERE EvaluatedBoards: '), write(EvaluatedBoards), nl,
-%   sort(EvaluatedBoards, SortedBoard),
-%   write('HERE SortedBoard: '), write(SortedBoard), nl,
-%   last(SortedBoard, Board1-Value1),
-%   change_player(Player, NewPlayer),
-%   NewGameState = [Board1, NewPlayer].
-
+/*
 %hard mode with minimax
 move_computer(GameState, NewGameState, 2) :-
   write('HERE IN move_computer HARD (to implement)') , nl,
@@ -190,17 +171,141 @@ second_level(Board1, Player, Value2) :-
   setof(ValueAux, (
     % write('HERE Before member\n'),
     member(Move2, Moves2),
-    % write('HERE Move2: '), write(Move2), nl,  
+    write('HERE Move2: '), write(Move2), nl,  
     translate_move(Board1, Move2, Board2),
-    value(Board2, NewPlayer, ValueAux)
-    % write('HERE ValueAux: '), write(ValueAux), nl
+    write('HERE Board2: '), write(Board2), nl,
+    value(Board2, NewPlayer, ValueAux),
+    write('HERE ValueAux: '), write(ValueAux), nl
   ), AuxValues),
   % write('HERE AuxValues: '), write(AuxValues), nl,
   sort(AuxValues, SortedValues),
   last(SortedValues, Value2). 
   % write('HERE BoardAux: '), write(BoardAux), nl.
 
+*/
+% !DELETE
+test_move_computer :-
+  Board = [
+    [[x,o], [x], empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, [x,x], empty, empty],
+    [[o,o], empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  % Board = [
+  %   [[x,o], [x], empty, empty, [x,o,o,x,o]],
+  %   [empty, empty, [x,o,x], empty, [o]],
+  %   [empty, empty, empty, empty, empty],
+  %   [[o,o], empty, empty, [x,x,x], empty],
+  %   [empty, empty, empty, empty, empty]
+  % ],
+  GameState = [Board, player1],
+  move_computer(GameState, NewGameState, 2),
+  write('HERE NewGameState: '), write(NewGameState), nl.
+/*
+move_computer(GameState, NewGameState, 2) :-
+  write('HERE IN move_computer HARD (to implement)'), nl,
+  [Board, Player] = GameState,
+  get_all_moves(Board, Player, Moves),
+  write('HERE Moves: '), write(Moves), nl,
+  evaluate_moves(Moves, Board, Player, EvaluatedBoards),
+  sort(EvaluatedBoards, SortedBoard),
+  last(SortedBoard, Delta-NewBoard),
+  write('HERE Delta: '), write(Delta), nl,
+  write('HERE NewBoard: '), write(NewBoard), nl,
+  change_player(Player, NewPlayer),
+  NewGameState = [NewBoard, NewPlayer].
 
+evaluate_moves([], _, _, []).
+evaluate_moves([Move|RestMoves], Board, Player, [Delta-Board1|RestEvaluated]) :-
+    write('HERE IN evaluate_moves'), nl,
+    write('HERE Move: '), write(Move), nl,
+    translate_move(Board, Move, Board1),
+    value(Board1, Player, Value1),
+    write('HERE Value1: '), write(Value1), nl,
+    second_level(Board1, Player, Value2),
+    Delta is Value1 - Value2,
+    evaluate_moves(RestMoves, Board, Player, RestEvaluated).
+
+second_level(Board1, Player, Value2) :-
+    write('HERE IN second_level'), nl,
+    change_player(Player, NewPlayer),
+    write('Board1: '), write(Board1), nl,
+    get_all_moves(Board1, NewPlayer, Moves2),
+    write('HERE Moves2: '), write(Moves2), nl,
+    evaluate_moves(Moves2, Board1, NewPlayer, EvaluatedMoves),
+    sort(EvaluatedMoves, SortedValues),
+    last(SortedValues, Value2).
+
+*/
+
+move_computer(GameState, NewGameState, 2) :-
+  write('HERE IN move_computer HARD (to implement)'), nl,
+  [Board, Player] = GameState,
+  get_all_moves(Board, Player, Moves),
+  evaluate_moves(Moves, Board, Player, 2, EvaluatedBoards),
+  sort(EvaluatedBoards, SortedBoard),
+  last(SortedBoard, Delta-NewBoard),
+  write('HERE Delta: '), write(Delta), nl,
+  write('HERE NewBoard: '), write(NewBoard), nl,
+  change_player(Player, NewPlayer),
+  NewGameState = [NewBoard, NewPlayer].
+
+evaluate_moves(_, _, _, 0, []).
+evaluate_moves([], _, _, _, []).
+evaluate_moves([Move|RestMoves], Board, Player, Depth, [Delta-Board1|RestEvaluated]) :-
+  DepthMinusOne is Depth - 1,
+  translate_move(Board, Move, Board1),
+  value(Board1, Player, Value1),
+  second_level(Board1, Player, DepthMinusOne, Value2),
+  Delta is Value1 - Value2,
+  evaluate_moves(RestMoves, Board, Player, Depth, RestEvaluated).
+
+second_level(_, _, 0, 0).
+second_level(Board1, Player, Depth, Value2) :-
+  DepthMinusOne is Depth - 1,
+  change_player(Player, NewPlayer),
+  get_all_moves(Board1, NewPlayer, Moves2),
+  evaluate_moves(Moves2, Board1, NewPlayer, DepthMinusOne, EvaluatedMoves),
+  sort(EvaluatedMoves, SortedValues),
+  last(SortedValues, Value2).
+
+
+
+/*
+% Recursive helper for minimax algorithm
+minimax_recursive(_, _, 0, 0):- !.
+minimax_recursive(GameState, Player, Level, Value):-
+    change_player(Player, NewPlayer),
+    swap_minimax(min, max, NewType), % Swap the minimax mode
+    NextLevel is Level - 1,
+    valid_moves(GameState, Player, ListOfMoves),
+    setof(Val, (
+        member(Coordinate, ListOfMoves), 
+        move(GameState, Coordinate, NewGameState), 
+        value(NewGameState, Player, Value1),
+        minimax_recursive(NewGameState, NewPlayer, NextLevel, Value2), 
+        Val is Value1 + Value2
+    ), Values),
+    eval(NewType, Values, Value).
+
+%hard mode with recursive minimax
+move_computer(GameState, NewGameState, 2) :-
+    write('HERE IN move_computer HARD (to implement)') , nl,
+    [Board, Player] = GameState,
+    get_all_moves(Board, Player, Moves),
+    findall(Delta-Board1, (
+        member(Move, Moves),
+        translate_move(Board, Move, Board1),
+        value(Board1, Player, Value1),
+        minimax_recursive(Board1, Player, 2, Value2), % Depth is set to 2
+        Delta is Value1 - Value2
+    ), EvaluatedBoards),
+    sort(EvaluatedBoards, SortedBoard),
+    last(SortedBoard, Delta-NewBoard),
+    change_player(Player, NewPlayer),
+    NewGameState = [NewBoard, NewPlayer].
+*/
 % ANOTAÇÕES:
 %[Board-Value1, NextBoard-Value2, -Delta]
 % funcao:-
@@ -260,7 +365,7 @@ second_level(Board1, Player, Value2) :-
 
 %value is board value for PLayer
 value(Board, Player, Value) :-
-  % write('HERE IN value') , nl,
+  write('HERE IN value') , nl,
   % write('HERE Player: '), write(Player), nl,
   iterate_board(Board, XValue, OValue),
   % write('HERE XValue: '), write(XValue), nl,
@@ -294,11 +399,26 @@ process_cell(Cell, _, _, XValue, OValue, NewXValue, NewOValue) :-
   ( tower_top(Cell, Top), Top == x -> NewXValue is XValue + TowerHeight, NewOValue = OValue ;
                                     NewXValue = XValue, NewOValue is OValue + TowerHeight ).
 
+
+% !DELETE
+test_value:-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  value(Board, player2, Value),
+  write('HERE Value: '), write(Value), nl.
+
+
 %==================================================================================================
 
 
 %=============================== TRANSLATE MOVES INTO BOARDS ===================================================================
 translate_move(Board, Move, NewBoard) :-
+  write('HERE IN translate_move') , nl,
   [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
   % write('HERE IN translate_move') , nl,
   (MoveFlag =:= 1 ->
@@ -309,7 +429,7 @@ translate_move(Board, Move, NewBoard) :-
     % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
     move_tower(Board, X, Y, NewX, NewY, NewBoard);
   MoveFlag =:= 3 ->
-    % write('HERE MOVE TYPE 3'), nl,
+    write('HERE MOVE TYPE 3'), nl,
     % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
   ).
