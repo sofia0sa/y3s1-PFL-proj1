@@ -81,7 +81,7 @@ main_option(3):-
     write(' |                         *** MAKING ...                                |\n'),
     write(' |_______________________________________________________________________|\n'),
     % trace,
-    halt.
+    abort.
     % fail.
 % ==================== SHORT RULES BEFORE BOARD ====================
 
@@ -256,4 +256,4 @@ main(NewGameState):-
     get_move(GameState, NewGameState).
 
 % Used when game is exited.
-% main(_).
+main(_).

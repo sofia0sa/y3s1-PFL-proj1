@@ -166,12 +166,12 @@ second_level(Board1, Player, Value2) :-
   change_player(Player, NewPlayer),
   % write('HERE NewPlayer: '), write(NewPlayer), nl,
   get_all_moves(Board1, NewPlayer, Moves2),
-  % write('HERE Moves2: '), write(Moves2), nl,
-  setof(ValueAux, (
+  write('HERE Moves2: '), write(Moves2), nl,
+  setof(ValueAux, (Move2, Board2)^(
     % write('HERE Before member\n'),
     member(Move2, Moves2),
     write('HERE Move2: '), write(Move2), nl,  
-    translate_move(Board1, Move2, Board2),
+    translate_move(Board1, Move2, Board2), 
     write('HERE Board2: '), write(Board2), nl,
     value(Board2, NewPlayer, ValueAux),
     write('HERE ValueAux: '), write(ValueAux), nl
@@ -180,8 +180,8 @@ second_level(Board1, Player, Value2) :-
   sort(AuxValues, SortedValues),
   last(SortedValues, Value2). 
   % write('HERE BoardAux: '), write(BoardAux), nl.
-
 */
+
 
 
 

@@ -25,12 +25,6 @@ check_color(x, C, X):-
     lowercase_to_uppercase(C, X).
 
 
-% place_tower(+Board, +X, +Y, +Piece, -NewBoard)
-% Places a piece of type Piece on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-place_tower(Board, X, Y, Piece, NewBoard) :-
-    nth1(Y, Board, Row),
-    replace_nth1(X, Row, Piece, NewRow),
-    replace_nth1(Y, Board, NewRow, NewBoard).
 
 % replace_nth1(+Index, +List, +Value, -NewList)
 % Replaces the element at the specified Index in List with Value and returns the resulting NewList
@@ -56,17 +50,10 @@ empty_cell(Board, X, Y) :-
     nth1(X, Row, Piece),
     Piece == empty.
 
+print_tower_struct(Tower, L):-
+    write(Tower).
 
 
-place_pawn(Board, X, Y, player1, NewBoard) :-
-(   empty_cell(Board, X, Y)
-->  place_tower(Board, X, Y, [x], NewBoard)
-;   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]), fail).
-
-place_pawn(Board, X, Y, player2, NewBoard) :-
-(   empty_cell(Board, X, Y)
-->  place_tower(Board, X, Y, [o], NewBoard)
-;   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]), fail).
 
 
 %---------------------------------%

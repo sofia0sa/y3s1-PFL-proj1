@@ -68,11 +68,11 @@ read_number_aux(X,X).
 % split_list(+List, -Part1, +Part2Length, -Part2)
 % Splits a list into two parts, Part1 and Part2, where Part2 has length Part2Length
 split_list(List, Part1, Part2Length, Part2) :-
-    length(Part1, N),
     length(Part2, Part2Length),
-    append(Part1, Part2, List),
-    length(List, ListLength),
-    ListLength =:= N + Part2Length.
+    % length(Part1, N),
+    append(Part1, Part2, List), !.
+    % length(List, ListLength),
+    % ListLength =:= N + Part2Length.
 
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"

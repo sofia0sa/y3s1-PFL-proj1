@@ -100,10 +100,6 @@ move_option(GameState, 3, NewGameState) :-
     write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
     % check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
-    % (\+ check_if_tower_exists(Board, X, Y, L) -> %checks if there is a tower to separate in the given coordinates
-    %     format('There is not a tower in position [~w,~w]!\n', [X, Y]),
-    %     fail;
-    %     true),
     get_tower(Board, X, Y, Tower),
     (Tower == empty -> %checks if the tower in the given coordinates is empty
         format('There is not a tower in position [~w,~w]!\n', [X, Y]),
@@ -114,8 +110,9 @@ move_option(GameState, 3, NewGameState) :-
         write('You can`t separate a pawn!\n'),
         fail;
         true),
+    %print tower structure
     
-    % check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
+    
     write('\nHow many pieces do you want to move from the tower?\n'),
     L1 is L-1,
     choose_number(1, L1, 'Type a number', NPieces),

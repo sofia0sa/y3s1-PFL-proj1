@@ -127,13 +127,24 @@ BUGS:
 
 - menu principal, se dermos input incorreto aquilo da print 2x do "Type a number between" -> é suposto so dar 1!!
 - quando damos letras no choose_number, ele passa-se e printa 3 vezes type a number
+- PROF => Perguntar se o nosso algoritmo é considerado um minimax, ou se é um algoritmo qlqr
 - PROF => HA MELHOR MANEIRA DE FAZER SAIR DO JOGO? EU FIZ HALT E SAI DO SICSTUS, MAS QUERIA QUE PROLOG RETORNASSE 'YES'
 
+TO DO:
+- Na separate tower, indicar a estrutura da torre escolhida
+- Relembrar ao utilizador se joga com maiúsculas ou minúsculas
+- KO rule
+- Melhorar Value 
 
 SE NÃO DER MINIMAX:
 - computador faz algo +/- inteligente: procura a torre mais alta, ve se existe alguma torre que possa separar e mover para cima dessa torre, desde que o topo seja do proprio computador
 
-
+prof:
+- fazer um random select das jogadas IA possiveis quando o valor é igual -> pode levar a que o jogo entre duas IA hard seja diferente e nao sempre igual
+- o abort funcionou para sair do jogo (seria melhor com yes mas nao é dito no enunciado. seria mover o resto do predicado main para apos o choose game mode = 2)
+- devemos ter 3 gamestates para evitar loops -> fazer branch e testar se nao parte o jogo -> NO FIM!
+- colocar o predicado minimax com a recursao (por poucas decimas)
+- vitoria da mais +100 pontos no value para ser evidente que um dado jogador ganharia com essa jogada
 
 
 ---- LISTA ESTRUTURA MOVE PARA A GERAÇÃO DE TODAS AS MOVES POSSIVEIS ----
