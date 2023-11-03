@@ -125,8 +125,9 @@ ordenar a board do jogador atual ?
 
 BUGS:
 
-
+- menu principal, se dermos input incorreto aquilo da print 2x do "Type a number between" -> é suposto so dar 1!!
 - quando damos letras no choose_number, ele passa-se e printa 3 vezes type a number
+- PROF => HA MELHOR MANEIRA DE FAZER SAIR DO JOGO? EU FIZ HALT E SAI DO SICSTUS, MAS QUERIA QUE PROLOG RETORNASSE 'YES'
 
 
 SE NÃO DER MINIMAX:
