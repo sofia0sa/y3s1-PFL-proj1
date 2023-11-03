@@ -99,8 +99,23 @@ move_option(GameState, 3, NewGameState) :-
     
     write('\nWhich tower do you want to separate?\n'),
     get_coordinate(Board, X, Y),
-    check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
-
+    % check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
+    % (\+ check_if_tower_exists(Board, X, Y, L) -> %checks if there is a tower to separate in the given coordinates
+    %     format('There is not a tower in position [~w,~w]!\n', [X, Y]),
+    %     fail;
+    %     true),
+    get_tower(Board, X, Y, Tower),
+    (Tower == empty -> %checks if the tower in the given coordinates is empty
+        format('There is not a tower in position [~w,~w]!\n', [X, Y]),
+        fail;
+        true),
+    length(Tower, L),
+    (L==1 -> %checks if the tower in the given coordinates has only one piece
+        write('You can`t separate a pawn!\n'),
+        fail;
+        true),
+    
+    % check_if_tower_exists(Board, X, Y, L), %checks if there is a tower to separate in the given coordinates
     write('\nHow many pieces do you want to move from the tower?\n'),
     L1 is L-1,
     choose_number(1, L1, 'Type a number', NPieces),
@@ -109,7 +124,7 @@ move_option(GameState, 3, NewGameState) :-
     get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, NMoves), 
     choose_number(1, NMoves, 'Type a number', N1),
     nth1(N1, ListOfMoves, NMove),
-    write('NMove: '), write(NMove), nl,
+    % write('NMove: '), write(NMove), nl,
     [NewX, NewY] = NMove,
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard),
     change_player(Player, NewPlayer),
@@ -121,9 +136,6 @@ move_option(GameState, 3, NewGameState) :-
 % Possible moves for the "Move tower" option.
 get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     valid_moves(Board, Player, X, Y, ListOfMoves),
-    write('HERE IN get_possible_moves'), nl,
-    write('HERE Player: '), write(Player), nl,
-    write('HERE ListOfMoves: '), write(ListOfMoves), nl,
     length(ListOfMoves, L),
     ( L>0 -> 
     write('Structure: [X,Y]\n'),
@@ -134,12 +146,9 @@ get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
 
 % Possible moves for the "Separate tower" option.
 get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
-    write('HERE IN get_possible_moves'), nl,
-    write('HERE Player: '), write(Player), nl,
     valid_moves(Board, Player, X, Y, ListOfMoves, NPieces),
     length(ListOfMoves, L),
     ( L>0 ->
-    write('ListOfMoves: '), write(ListOfMoves), nl,
     write('Structure: [X,Y]\n'),
     print_list(ListOfMoves);
     format('It`s not possible to move ~d pieces of the tower in [~d, ~d]!\n', [NPieces, X, Y]),
