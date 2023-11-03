@@ -2,6 +2,8 @@
 :- consult(board).
 
 
+% separate_tower(+Board, +X, +Y, +NewX, +NewY, -NewBoard)
+% !TODO: documentation
 separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard) :-
   % write('HERE IN separate_tower\n'),  
   get_tower(Board, X, Y, Tower),
@@ -17,12 +19,15 @@ separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard) :-
   move_pieces(Board1, NewX, NewY, Part2, NewBoard).
   % print_board(Size, NewBoard).
 
-%move whole tower
+% move_tower(+Board, +X, +Y, +NewX, +NewY, -NewBoard)
+% Moves the tower at (X, Y) to (NewX, NewY) and returns the new board.
 move_tower(Board, X, Y, NewX, NewY, NewBoard) :-
   get_tower(Board, X, Y, Tower),
   place_tower(Board, X, Y, empty, Board1),
   move_pieces(Board1, NewX, NewY, Tower, NewBoard).
 
+% move_pieces(+Board, +X, +Y, +NPieces, -NewBoard)
+% Moves NPieces to the top of the tower at (X,Y) and returns the new board.
 move_pieces(Board, X, Y, NPieces, NewBoard):-
   get_tower(Board, X, Y, Tower),
   append(Tower, NPieces, NewTower),

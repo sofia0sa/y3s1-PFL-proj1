@@ -100,10 +100,10 @@ test_get_moves_type_3 :-
   write(Moves).
 
 get_all_moves(Board, Player, Moves) :-
-  Moves1 = [],
-  Moves2 = [],
-  % get_moves_type_1(Board, Player, Moves1),
-  % get_moves_type_2(Board, Player, Moves2),
+  % Moves1 = [],
+  % Moves2 = [],
+  get_moves_type_1(Board, Player, Moves1),
+  get_moves_type_2(Board, Player, Moves2),
   get_moves_type_3(Board, Player, Moves3),
   % Moves3 = [],
   append(Moves1, Moves2, Moves12),
@@ -208,7 +208,10 @@ test_move_computer :-
   % ],
   GameState = [Board, player1],
   move_computer(GameState, NewGameState, 2),
-  write('HERE NewGameState: '), write(NewGameState), nl.
+  write('HERE NewGameState: '), write(NewGameState), nl,
+  [NewBoard, NewPlayer] = NewGameState,
+  length(NewBoard, Size),
+  print_board(Size, NewBoard).
 /*
 move_computer(GameState, NewGameState, 2) :-
   write('HERE IN move_computer HARD (to implement)'), nl,
@@ -288,56 +291,136 @@ second_level(Board1, Player, Depth, Value2) :-
 
 %====
 % !DELETE
+
 move_computer(GameState, NewGameState, 2) :-
-  write('HERE IN move_computer HARD (to implement)') , nl,
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves),
-  List = [],
-  calculate_value(Board, Player, Moves, List), %List leva Board1-Delta. agora falta arranjar o melhor delta
-  write('HERE List: '), write(List), nl,
+  calculate_value(Board, Player, Moves, List),
   sort(List, SortedList),
-  write('HERE SortedList: '), write(SortedList), nl,
+  % write('HERE SortedList: '), write(SortedList), nl,
   last(SortedList, NewBoard-Delta),
+  % write('HERE Delta: '), write(Delta), nl,
+  change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
+calculate_value(Board, Player, Moves, FinalList) :- 
+  calculate_value(Board, Player, Moves, [], FinalList).
 
-calculate_value(Board, Player, [], List).
-calculate_value(Board, Player, Moves, List) :-
-  write('HERE IN calculate_value'), nl,
+calculate_value(_, _, [], Acc, Acc):- !.
+  % write('HERE IN calculate_value - Base Condition'), nl,
+  % write('Final List: '), write(Acc), nl.
+calculate_value(Board, Player, Moves, Acc, FinalList) :-
+  % write('HERE IN calculate_value'), nl,
+  % write('HERE CV1 Moves: '), write(Moves), nl,
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board1),
   value(Board1, Player, Value1),
 
-  %2nd level
   change_player(Player, NewPlayer),
   get_all_moves(Board1, NewPlayer, Moves2),
-  % List2 is [value1],
-  calculate_value_2(Board1, NewPlayer, Moves2, List2, Value1),
+  % write('HERE CV1 Moves2: '), write(Moves2), nl,
+  \+ Moves2 = [],
+  calculate_value_2(Board1, NewPlayer, Moves2, List2, Value1), %!,
+
   sort(List2, SortedList2),
-  [Delta | _] = SortedList2, %tirar o menor delta depois de dar sort
-  %---- back to 1st level
-  NewList = [Board1-Delta | List],
-  calculate_value(Board, Player, T, NewList).
+  % write('HERE SortedList2: '), write(SortedList2), nl,
+  [Delta | _] = SortedList2,
 
+  NewAcc = [Board1-Delta | Acc],
+  % write('HERE CV1 NewAcc: '), write(NewAcc), nl,
+  calculate_value(Board, Player, T, NewAcc, FinalList).
 
-% calculate_value_2(Board, Player, [], [], Value1).
-calculate_value_2(_, _, [], List, Value1) :-
-  List = [], % Unify the resulting List with an empty list when there are no more moves.
-  write('HERE IN calculate_value_2 - Base Condition'), nl,
-  write('Final List: '), write(List), nl,
-  write('Final Value1: '), write(Value1), nl.
-calculate_value_2(Board, Player, Moves, List, Value1) :- %[Delta, Delta, ... ] -> cada Board1-Value1 vai ter associado uma lista de Deltas (vindas da calculate2) -> vamos buscar o move que gerou o maior Delta
-  write('HERE IN calculate_value_2'), nl,
-  write('HERE Moves: '), write(Moves), nl,
+calculate_value_2(Board, Player, Moves, FinalList, Value1) :- 
+  calculate_value_2(Board, Player, Moves, [], FinalList, Value1).
+
+calculate_value_2(_, _, [], Acc, Acc, _):- !.
+  % write('HERE IN calculate_value_2 - Base Condition'), nl,
+  % write('Final List: '), write(Acc), nl.
+calculate_value_2(Board, Player, Moves, Acc, FinalList, Value1) :-
+  % write('HERE IN calculate_value_2'), nl,
+  % write('HERE Moves: '), write(Moves), nl,
   [CurrMove|T] = Moves,
-  write('HERE CurrMove: '), write(CurrMove), nl,
+  % write('HERE CurrMove: '), write(CurrMove), nl,
   translate_move(Board, CurrMove, Board2),
   value(Board2, Player, Value2),
-  write('HERE Value2: '), write(Value2), nl,
-  Delta is Value1-Value2,
-  NewList = [Delta | List],
-  write('HERE NewList: '), write(NewList), nl,
-  calculate_value_2(Board, Player, T, NewList, Value1).
+  Delta is Value1 - Value2,
+
+  NewAcc = [Delta | Acc],
+  % write('HERE CV2 NewAcc: '), write(NewAcc), nl,
+  calculate_value_2(Board, Player, T, NewAcc, FinalList, Value1).
+
+
+% move_computer(GameState, NewGameState, 2) :-
+%   write('HERE IN move_computer HARD (to implement)') , nl,
+%   [Board, Player] = GameState,
+%   get_all_moves(Board, Player, Moves),
+%   List = [],
+%   calculate_value(Board, Player, Moves, List), %List leva Board1-Delta. agora falta arranjar o melhor delta
+%   write('HERE List: '), write(List), nl,
+%   sort(List, SortedList),
+%   write('HERE SortedList: '), write(SortedList), nl,
+%   last(SortedList, NewBoard-Delta),
+%   NewGameState = [NewBoard, NewPlayer].
+
+
+
+
+% calculate_value(Board, Player, [], List).
+% calculate_value(Board, Player, Moves, List) :-
+%   write('HERE IN calculate_value'), nl,
+%   [CurrMove|T] = Moves,
+%   translate_move(Board, CurrMove, Board1),
+%   value(Board1, Player, Value1),
+
+%   %2nd level
+%   change_player(Player, NewPlayer),
+%   get_all_moves(Board1, NewPlayer, Moves2),
+%   % List2 is [value1],
+%   % List2 = [],
+%   calculate_value_2(Board1, NewPlayer, Moves2, Value1, Res), %so interessa a List2 (lista de Deltas)
+%   write('HERE Moves2: '), write(Moves2), nl,
+%   write('HERE List2: '), write(List2), nl,
+%   sort(List2, SortedList2),
+%   [Delta | _] = SortedList2, %tirar o menor delta depois de dar sort
+%   %---- back to 1st level
+%   NewList = [Board1-Delta | List],
+%   calculate_value(Board, Player, T, NewList).
+
+% %something like this
+% sumN(N, Sum):- sumN(N, Sum, 0). % Encapsulate
+% sumN(0, Sum, Sum). % Base case – the result is
+% % in the accumulator
+% sumN(N, Sum, Acc):- N > 0,
+%     N1 is N-1, 
+%     Acc1 is Acc + N,
+%     sumN(N1, Sum, Acc1).
+
+
+% % calculate_value_2(+Board, +Player, +Moves (vai terminar vazio), -List (resposta), +Value1).
+% calculate_value_2(Board, Player, [], List, Value1) :-
+%   !,
+%   % Moves = [], !,
+%   % Moves = List,
+%   % List = [], % Unify the resulting List with an empty list when there are no more moves.
+%   write('HERE IN calculate_value_2 - Base Condition'), nl,
+%   write('Final List: '), write(List), nl.
+% calculate_value_2(Board, Player, Moves, Value1, Res, Acc) :- %[Delta, Delta, ... ] -> cada Board1-Value1 vai ter associado uma lista de Deltas (vindas da calculate2) -> vamos buscar o move que gerou o maior Delta
+%   write('HERE IN calculate_value_2'), nl,
+%   write('HERE Moves: '), write(Moves), nl,
+%   [CurrMove|T] = Moves,
+%   write('HERE CurrMove: '), write(CurrMove), nl,
+%   write('HERE Tail: '), write(T), nl,
+%   translate_move(Board, CurrMove, Board2),
+%   value(Board2, Player, Value2),
+%   write('HERE Value2: '), write(Value2), nl,
+%   Delta is Value1-Value2,
+%   trace,
+%   (List == [] -> NewList = [Delta]; append([Delta], List, NewList)),
+%   % NewList = [Delta | List],
+%   % append([Delta], List, NewList),
+%   notrace,
+%   write('HERE NewList: '), write(NewList), nl,
+%   calculate_value_2(Board, Player, T, NewList, Value1).
 
 
 
@@ -364,28 +447,28 @@ calculate_value_2(Board, Player, Moves, List, Value1) :- %[Delta, Delta, ... ] -
 
 
 
-move_computer(GameState, NewGameState, 2) :-
-  write('HERE IN move_computer HARD (to implement)'), nl,
-  [Board, Player] = GameState,
-  get_all_moves(Board, Player, Moves),
-  evaluate_moves(Moves, Board, Player, 2, EvaluatedBoards),
-  sort(EvaluatedBoards, SortedBoard),
-  last(SortedBoard, Delta-NewBoard),
-  write('HERE Delta: '), write(Delta), nl,
-  write('HERE NewBoard: '), write(NewBoard), nl,
-  change_player(Player, NewPlayer),
-  NewGameState = [NewBoard, NewPlayer].
+% move_computer(GameState, NewGameState, 2) :-
+%   write('HERE IN move_computer HARD (to implement)'), nl,
+%   [Board, Player] = GameState,
+%   get_all_moves(Board, Player, Moves),
+%   evaluate_moves(Moves, Board, Player, 2, EvaluatedBoards),
+%   sort(EvaluatedBoards, SortedBoard),
+%   last(SortedBoard, Delta-NewBoard),
+%   write('HERE Delta: '), write(Delta), nl,
+%   write('HERE NewBoard: '), write(NewBoard), nl,
+%   change_player(Player, NewPlayer),
+%   NewGameState = [NewBoard, NewPlayer].
 
 
-second_level(_, _, 0, 0).
-second_level(Board1, Player, Depth, Value2) :-
-  write('Depth: '), write(Depth), nl,
-  DepthMinusOne is Depth - 1,
-  change_player(Player, NewPlayer),
-  get_all_moves(Board1, NewPlayer, Moves2),
-  evaluate_moves(Moves2, Board1, NewPlayer, DepthMinusOne, EvaluatedMoves),
-  sort(EvaluatedMoves, SortedValues),
-  last(SortedValues, Value2).
+% second_level(_, _, 0, 0).
+% second_level(Board1, Player, Depth, Value2) :-
+%   write('Depth: '), write(Depth), nl,
+%   DepthMinusOne is Depth - 1,
+%   change_player(Player, NewPlayer),
+%   get_all_moves(Board1, NewPlayer, Moves2),
+%   evaluate_moves(Moves2, Board1, NewPlayer, DepthMinusOne, EvaluatedMoves),
+%   sort(EvaluatedMoves, SortedValues),
+%   last(SortedValues, Value2).
 
 
 /*
@@ -481,7 +564,7 @@ move_computer(GameState, NewGameState, 2) :-
 
 %value is board value for PLayer
 value(Board, Player, Value) :-
-  write('HERE IN value') , nl,
+  % write('HERE IN value') , nl,
   % write('HERE Player: '), write(Player), nl,
   iterate_board(Board, XValue, OValue),
   % write('HERE XValue: '), write(XValue), nl,
@@ -534,7 +617,7 @@ test_value:-
 
 %=============================== TRANSLATE MOVES INTO BOARDS ===================================================================
 translate_move(Board, Move, NewBoard) :-
-  write('HERE IN translate_move') , nl,
+  % write('HERE IN translate_move') , nl,
   [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
   % write('HERE IN translate_move') , nl,
   (MoveFlag =:= 1 ->
@@ -545,7 +628,7 @@ translate_move(Board, Move, NewBoard) :-
     % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
     move_tower(Board, X, Y, NewX, NewY, NewBoard);
   MoveFlag =:= 3 ->
-    write('HERE MOVE TYPE 3'), nl,
+    % write('HERE MOVE TYPE 3'), nl,
     % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
   ).

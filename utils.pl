@@ -25,14 +25,6 @@ get_name(Player) :-
     asserta(name_of(Player, Name)).
 
 
-print_heart :-
-    write('  /\\  /\\  '), nl,
-    write(' /  \\/  \\ '), nl,
-    write(' \\      / '), nl,
-    write('  \\    /  '), nl,
-    write('   \\  /   '), nl,
-    write('    \\/    ').
-
 chess_pieces :-
     write(' K  Q  R  B  N  P'), nl,
     write(' k  q  r  b  n  p').
