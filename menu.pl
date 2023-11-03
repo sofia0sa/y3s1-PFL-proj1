@@ -256,4 +256,4 @@ main(NewGameState):-
     get_move(GameState, NewGameState).
 
 % Used when game is exited.
-main(_).
+% main(_).

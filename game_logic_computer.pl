@@ -1,13 +1,14 @@
 
 % A move is of this type [MoveFlag, Player, X, Y, NewX, NewY, NPieces]
 
-% predicate to get a list of all the moves of the type 1 -> place pawn (aka all the cells that are empty)
-get_moves_type_1(Board, Player, Moves) :-
+% get_moves_by_type(+Board, +Player, -Moves, +MoveType)
+% Gets all the moves of type 1 (place pawn) for a given player and board.
+get_moves_by_type(Board, Player, Moves, 1) :-
     findall([1, Player, 0, 0, NewX, NewY, -1], empty_cell(Board, NewX, NewY), Moves).
 
 
 % !DELETE
-test_get_moves_type_1 :-
+test_get_moves_by_type :-
   Board = [
     [[x,o], [x], empty, empty, [x,o,o,x,o]],
     [empty, empty, [x,o,x], empty, [o]],
@@ -15,14 +16,13 @@ test_get_moves_type_1 :-
     [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]
 ],
-  get_moves_type_1(Board, player1, Moves),
+  get_moves_by_type(Board, player1, Moves, 1),
   length(Moves, L),
   write('HERE Length: '), write(L), nl,
   write(Moves).
     
-%predicate to get a list of all the moves of the type 2 -> move tower
-%iterate through all the cells of the board, and find the valid moves for all the towers 
-get_moves_type_2(Board, Player, Moves) :-
+% Gets all the moves of type 2 (move tower) for a given player and board.
+get_moves_by_type(Board, Player, Moves, 2) :-
     length(Board, Size),
     findall([2, Player, X, Y, NewX, NewY, -1], (
       %iterate through all the cells of the board
@@ -40,10 +40,8 @@ get_moves_type_2(Board, Player, Moves) :-
       
       ), Moves).
 
-translate([x,y,1], [x,y,'Adicionar uma peça em:']).
-
 % !DELETE
-test_get_moves_type_2 :-
+test_get_moves_by_type :-
   Board = [
     [[x,o], [x], empty, empty, [x,o,o,x,o]],
     [empty, empty, [x,o,x], empty, [o]],
@@ -51,16 +49,14 @@ test_get_moves_type_2 :-
     [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]
 ],
-  % valid_moves(Board, player1, 2, 1, ListOfMovesMoves),
-  % write('HERE list: '), write(ListOfMovesMoves), nl,
-  get_moves_type_2(Board, player2, Moves),
+  get_moves_by_type(Board, player2, Moves, 2),
   length(Moves, L),
   write('HERE Length: '), write(L), nl,
   write(Moves).
 
-%predicate to get a list of all the moves of the type 3 -> separete tower and move pieces
-%iterate through all the cells of the board, and find the valid moves for all the towers
-get_moves_type_3(Board, Player, Moves) :-
+
+% Gets all the moves of type 3 (separate tower) for a given player and board.
+get_moves_by_type(Board, Player, Moves, 3) :-
     length(Board, Size),
     findall([3, Player, X, Y, NewX, NewY, NPieces], (
       %iterate through all the cells of the board
@@ -83,7 +79,7 @@ get_moves_type_3(Board, Player, Moves) :-
 
 
 % !DELETE
-test_get_moves_type_3 :-
+test_get_moves_by_type :-
   Board = [
     [[x,o], [x], empty, empty, [x,o,o,x,o]],
     [empty, empty, [x,o,x], empty, [o]],
@@ -93,18 +89,18 @@ test_get_moves_type_3 :-
   ],
   % valid_moves(Board, player1, 2, 1, ListOfMovesMoves),
   % write('HERE list: '), write(ListOfMovesMoves), nl,
-  get_moves_type_3(Board, player2, Moves),
+  get_moves_by_type(Board, player2, Moves, 3),
   length(Moves, L),
   write('HERE Length: '), write(L), nl,
   write(Moves).
 
+
+% get_all_moves(+Board, +Player, -Moves)
+% Gets all the moves from each type for a given player and board.
 get_all_moves(Board, Player, Moves) :-
-  % Moves1 = [],
-  % Moves2 = [],
-  get_moves_type_1(Board, Player, Moves1),
-  get_moves_type_2(Board, Player, Moves2),
-  get_moves_type_3(Board, Player, Moves3),
-  % Moves3 = [],
+  get_moves_by_type(Board, Player, Moves1, 1),
+  get_moves_by_type(Board, Player, Moves2, 2),
+  get_moves_by_type(Board, Player, Moves3, 3),
   append(Moves1, Moves2, Moves12),
   append(Moves12, Moves3, Moves).
 
@@ -126,6 +122,7 @@ test_get_all_moves:-
 %======================= MOVES FOR COMPUTER EASY AND HARD ===========================================================================
 
 % move_computer(+GameState, -NewGameState, +Level)
+% Gets a move for the computer based on the level of difficulty. In this case, easy level.
 move_computer(GameState, NewGameState, 1) :-
   [Board, Player] = GameState,
   write('HERE IN move_computer EASY (implemented)') , nl,
@@ -213,7 +210,7 @@ test_move_computer :-
   print_board(Size, NewBoard).
 
 
-
+% Gets a move for the computer based on the level of difficulty. In this case, hard level.
 move_computer(GameState, NewGameState, 2) :-
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves),
@@ -279,35 +276,39 @@ calculate_value_2(Board, Player, Moves, Acc, FinalList, Value1) :-
 
 %============================ GET BOARD VALUE ======================================================================
 
-%value is board value for PLayer
+% value(+Board, +Player, -Value)
+% Calculates the value of a board for a given player. Used for the hard level in computer mode.
 value(Board, Player, Value) :-
-  % write('HERE IN value') , nl,
-  % write('HERE Player: '), write(Player), nl,
   iterate_board(Board, XValue, OValue),
-  % write('HERE XValue: '), write(XValue), nl,
-  % write('HERE OValue: '), write(OValue), nl,
   (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
 
 
-/* Calculates O and X Value based on tower heights and tops*/
+% iterate_board(+Board, -XValue, -OValue)
+% Iterates through the board and calculates the value of the board for each player based on tower heights and tops.
 iterate_board(Board, FinalXValue, FinalOValue) :-
   RowIndex is 1,
   XValue is 0,
   OValue is 0,
   iterate_rows(Board, RowIndex, XValue, OValue, FinalXValue, FinalOValue).
 
+% iterate_rows(+Board, +RowIndex, +XValue, +OValue, -FinalXValue, -FinalOValue)
+% Iterates through the rows of the board and calculates the value of the board for each player based on tower heights and tops. Calls iterate_columns/6.
 iterate_rows([], _, XValue, OValue, XValue, OValue).
 iterate_rows([Row|Rest], RowIndex, XValue, OValue, FinalXValue, FinalOValue) :-
   iterate_columns(Row, RowIndex, 1, XValue, OValue, NewXValue, NewOValue),
   NextRow is RowIndex + 1,
   iterate_rows(Rest, NextRow, NewXValue, NewOValue, FinalXValue, FinalOValue).
 
+% iterate_columns(+Row, +RowIndex, +ColIndex, +XValue, +OValue, -FinalXValue, -FinalOValue)
+% Iterates through the columns of the board and calculates the value of the board for each player based on tower heights and tops, by calling process_cell/7.
 iterate_columns([], _, _, XValue, OValue, XValue, OValue).
 iterate_columns([Cell|Rest], RowIndex, ColIndex, XValue, OValue, FinalXValue, FinalOValue) :-
   process_cell(Cell, RowIndex, ColIndex, XValue, OValue, NewXValue, NewOValue),
   NextCol is ColIndex + 1,
   iterate_columns(Rest, RowIndex, NextCol, NewXValue, NewOValue, FinalXValue, FinalOValue).
 
+% process_cell(+Cell, +RowIndex, +ColIndex, +XValue, +OValue, -NewXValue, -NewOValue)
+% Calculates the value of the board for each player based on tower heights and tops.
 process_cell(empty, _, _, XValue, OValue, XValue, OValue).
 process_cell(Cell, _, _, XValue, OValue, NewXValue, NewOValue) :-
   % Cell \= empty,
@@ -329,35 +330,50 @@ test_value:-
   write('HERE Value: '), write(Value), nl.
 
 
-%==================================================================================================
-
-
 %=============================== TRANSLATE MOVES INTO BOARDS ===================================================================
-translate_move(Board, Move, NewBoard) :-
-  % write('HERE IN translate_move') , nl,
-  [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
-  % write('HERE IN translate_move') , nl,
-  (MoveFlag =:= 1 ->
-    % write('HERE MOVE TYPE 1'), nl,
-    place_pawn(Board, NewX, NewY, Player, NewBoard);
-  MoveFlag =:= 2 ->
-    % write('HERE MOVE TYPE 2'), nl,
-    % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
-    move_tower(Board, X, Y, NewX, NewY, NewBoard);
-  MoveFlag =:= 3 ->
-    % write('HERE MOVE TYPE 3'), nl,
-    % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
-    separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
-  ).
 
-translate_move_1(Board, Player, X, Y, NewX, NewY, NewBoard) :-
-  % write('HERE IN translate_move_1') , nl,
-  place_pawn(Board, Player, NewX, NewY, NewBoard).
+% translate_move(+Board, +Move, -NewBoard)
+% Translates a move into a board.
+% translate_move(Board, Move, NewBoard) :-
+%   % write('HERE IN translate_move') , nl,
+%   [MoveFlag, Player, X, Y, NewX, NewY, NPieces] = Move,
+%   % write('HERE IN translate_move') , nl,
+%   (MoveFlag =:= 1 ->
+%     % write('HERE MOVE TYPE 1'), nl,
+%     place_pawn(Board, NewX, NewY, Player, NewBoard);
+%   MoveFlag =:= 2 ->
+%     % write('HERE MOVE TYPE 2'), nl,
+%     % translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard);
+%     move_tower(Board, X, Y, NewX, NewY, NewBoard);
+%   MoveFlag =:= 3 ->
+%     % write('HERE MOVE TYPE 3'), nl,
+%     % translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard)
+%     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard)
+%   ).
 
-translate_move_2(Board, Player, X, Y, NewX, NewY, NewBoard) :-
-  % write('HERE IN translate_move_2') , nl,
-  move_tower(Board, Player, X, Y, NewX, NewY, NewBoard).
-  
-translate_move_3(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard) :-
-  % write('HERE IN translate_move_3') , nl,
-  separate_tower(Board, Player, X, Y, NewX, NewY, NPieces, NewBoard).
+% translate_move(+Board, +Move, -NewBoard)
+% Translates a move into a board, depending on the move type:
+% Moves of type 1 (place pawn).
+translate_move(Board, [1, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+  write('HERE IN translate_move 1') , nl,
+    place_pawn(Board, NewX, NewY, Player, NewBoard).
+% Moves of type 2 (move tower).
+translate_move(Board, [2, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+  write('HERE IN translate_move 2') , nl,
+    move_tower(Board, X, Y, NewX, NewY, NewBoard).
+% Moves of type 3 (separate tower).
+translate_move(Board, [3, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+  write('HERE IN translate_move 3') , nl,
+    separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard).
+
+test_translate_move :-
+  Board = [
+    [[x,o], [x], empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, [x,x], empty, empty],
+    [[o,o], empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  translate_move(Board, [3, player1, 1, 1, 2, 1, 2], NewBoard),
+  length(NewBoard, Size),
+  print_board(Size, NewBoard).

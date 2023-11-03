@@ -1,48 +1,39 @@
 :- use_module(library(lists)).
 
 :- dynamic difficulty/2.
-
 :- dynamic name_of/2.
 
-% name_of(Player, Name) :-
-%     retract(name_of(Player, _)),
-%     string_codes(NameStr, Name),
-%     asserta(name_of(Player, NameStr)).
 
 % === GAME RELATED ===
 
-% change_player(+CurrentPlayer,-NextPlayer)
-% Change player turn
+% change_player(+CurrtPlayer,-NextPlayer)
+% Change the player's turn.
 change_player(player1, player2).
 change_player(player2, player1).
 
 % get_name(+Player)
-% Asks player name. Dynamically adds the name_of/2 fact to the base fact
+% Asks and saves a player's name. Dynamically adds the name_of/2 fact to the base fact.
 get_name(Player) :-
     format('Hello ~a, what is your name? ', [Player]),
     read_line(Codes),
     atom_codes(Name, Codes),
     asserta(name_of(Player, Name)).
 
-
-chess_pieces :-
-    write(' K  Q  R  B  N  P'), nl,
-    write(' k  q  r  b  n  p').
-    
 % init_random_state/0
-% Initialize the random module
+% Responsible for initializing the random module.
 init_random_state :-
     now(X),
     setrand(X).
 
 % choose_number(+Min,+Max,+Context,-Value) antes era get_option
-% Unifies Value with the value given by user input between Min and Max when asked about Context
+% Checks if the value given by user input is between Min and Max or if it's exactly the only number that the user can type.
+% When there is no number interval, checks if it's the same number. 
 choose_number(SameN,SameN,Context,Value):-
     repeat,
     format('~a (can only be ~d): ', [Context, SameN]),
     read_number(Value),
     Value == SameN, !.
-
+% Checks if the number is between Min and Max.
 choose_number(Min,Max,Context,Value):-
     repeat,
     format('~a between ~d and ~d: ', [Context, Min, Max]),
@@ -51,7 +42,7 @@ choose_number(Min,Max,Context,Value):-
 
 
 % read_number(-Number)
-% Unifies Number with input number from console
+% Unifies the Number with input number from console.
 read_number(X):-
     read_number_aux(X,0).
 read_number_aux(X,Acc):- 
@@ -62,17 +53,11 @@ read_number_aux(X,Acc):-
 read_number_aux(X,X).
 
 
-
-% === GUI ===
-
 % split_list(+List, -Part1, +Part2Length, -Part2)
 % Splits a list into two parts, Part1 and Part2, where Part2 has length Part2Length
 split_list(List, Part1, Part2Length, Part2) :-
     length(Part2, Part2Length),
-    % length(Part1, N),
     append(Part1, Part2, List), !.
-    % length(List, ListLength),
-    % ListLength =:= N + Part2Length.
 
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"
@@ -93,7 +78,7 @@ tower_top(Tower, Top) :-
   last(Tower, Top).
 
 % lowercase_to_uppercase(+LowercaseAtom, -UppercaseAtom)
-% Convert lowercase atom to uppercase atom
+% Converts lowercase atom to uppercase atom. Used to differentiate players in board.
 lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
   atom_chars(LowercaseAtom, [LowercaseChar]),
   char_code(LowercaseChar, LowercaseCode),
@@ -103,11 +88,9 @@ lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
 
 
 %between_rev(+Lower, +Upper, -X)
-% X is a number between Lower and Upper, in descending order
-between_rev(Lower, Upper, X) :- 
-  Upper >= Lower, 
-  X = Upper. 
-
+% X is a number between Lower and Upper, in descending order. Used to determine moves in certain directions.
+between_rev(Lower, Upper, Upper) :- 
+  Upper >= Lower.
 between_rev(Lower, Upper, X) :- 
     Upper > Lower, 
     NewUpper is Upper - 1, 
@@ -118,21 +101,12 @@ between_rev(Lower, Upper, X) :-
 
 
 % clear_data/0
-% removes all wnames and difficulty from the fact base for the next game
+% Clears all names and difficulties, removing them from the fact base.
 clear_data :-
     retractall(difficulty(_, _)),
     retractall(name_of(_, _)).
 
 % clear_console/0
-% Clears the console
+% Clears the console.
 clear_console :-
     write('\33\[2J').
-
-%====== TO TEST STATISTICS ======
-
-measure_time(Keyword, Goal, Before, After, Diff):-
-    statistics(Keyword, [Before|_]),
-    Goal,
-    statistics(Keyword, [After|_]),
-    Diff is After-Before.
-    
