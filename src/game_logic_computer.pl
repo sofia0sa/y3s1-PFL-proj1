@@ -117,6 +117,7 @@ test_get_all_moves:-
 
 % move_computer(+GameState, -NewGameState, +Level)
 % Gets a move for the computer based on the level of difficulty. In this case, easy level.
+/*
 move_computer(GameState, NewGameState, 1) :-
   [Board, Player] = GameState,
   write('HERE IN move_computer EASY (implemented)') , nl,
@@ -125,6 +126,21 @@ move_computer(GameState, NewGameState, 1) :-
   random_member(Move, Moves),
   write('HERE Move: '), write(Move), nl,
   translate_move(Board, Move, NewBoard),
+  change_player(Player, NewPlayer),
+  NewGameState = [NewBoard, NewPlayer].
+*/
+move_computer(OldGameState, GameState, NewGameState, 1) :-
+  write('HERE OldGameState: '), write(OldGameState), nl,
+  [OldBoard, _OldPlayer] = OldGameState,
+  [Board, Player] = GameState,
+  write('HERE IN move_computer EASY (implemented)') , nl,
+  write('HERE OldBoard: '), write(OldBoard), nl,
+  get_all_moves(Board, Player, Moves),
+  write('HERE Moves: '), write(Moves), nl,
+  random_member(Move, Moves),
+  write('HERE Move: '), write(Move), nl,
+  translate_move(Board, Move, NewBoard),
+  OldBoard \= NewBoard,
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
@@ -175,7 +191,7 @@ second_level(Board1, Player, Value2) :-
 
 
 % Gets a move for the computer based on the level of difficulty. In this case, hard level.
-move_computer(GameState, NewGameState, 2) :-
+move_computer(_OldGameState, GameState, NewGameState, 2) :-
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves),
   calculate_value(Board, Player, Moves, List, 2),

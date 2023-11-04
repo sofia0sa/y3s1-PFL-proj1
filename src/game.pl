@@ -17,7 +17,8 @@ print_turn(Player):-
 % get_move(+GameState, -NewGameState)
 % Prints choice of moves in case it´s a human player or calls the move predicate in case it´s the Computer. 
 % Predicate for printing and choosing a possible movement in case it's a human player.
-get_move(GameState, NewGameState) :-
+get_move(OldGameState, GameState, NewGameState) :-
+    write('HERE OldGameState: '), write(OldGameState), nl,
     [_Board, Player] = GameState,
     \+difficulty(Player, _), !, 
     repeat,
@@ -27,15 +28,17 @@ get_move(GameState, NewGameState) :-
     write('2 - Move tower\n'),
     write('3 - Separate tower\n'),
     choose_number(1, 3, '\nType a number', Option), %!,
-    move_option(GameState, Option, NewGameState).
+    move_option(OldGameState, GameState, Option, NewGameState).
 % Predicate for choice of movement in case it's Easy Computer mode.
-get_move(GameState, NewGameState) :- 
+get_move(OldGameState, GameState, NewGameState) :- 
+    write('HERE IN get_move dif 1'), nl,
     [_Board, Player] = GameState,
     difficulty(Player, 1), !,
-    move_computer(GameState, NewGameState, 1). 
+    % move_computer(GameState, NewGameState, 1). 
+    move_computer(OldGameState, GameState, NewGameState, 1).
 % Predicate for choice of movement in case it's Hard Computer mode.
-get_move(GameState, NewGameState) :- 
-    move_computer(GameState, NewGameState, 2).
+get_move(OldGameState, GameState, NewGameState) :- 
+    move_computer(OldGameState, GameState, NewGameState, 2).
 
 
 % check_if_tower_exists(+Board, +X, +Y, -L)
@@ -58,7 +61,7 @@ check_if_tower_exists(Board, X, Y, L) :-
 % move_option(+GameState, +Option, -NewGameState)
 % Choice of move option.
 % Choice: "Add pawn" option. Asks where to place the piece and places it in the given coordinates, if possible. Changes player after the move was made.
-move_option(GameState, 1, NewGameState) :-
+move_option(_OldGameState, GameState, 1, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
     write('\nWhere do you want to place the piece?\n\n'),
@@ -68,7 +71,7 @@ move_option(GameState, 1, NewGameState) :-
     NewGameState = [NewBoard, NewPlayer].
 
 % Choice: "Move tower" option. Asks which tower to move and where to move. Moves it to the given coordinates, if possible. Changes player after the move was made.
-move_option(GameState, 2, NewGameState) :-
+move_option(_OldGameState, GameState, 2, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'), 
 
@@ -90,8 +93,9 @@ move_option(GameState, 2, NewGameState) :-
 
 
 % Choice: "Separate tower" option. Asks which tower and how many pieces wants to separate and where to move them. Separates the tower in the given coordinates, if possible. Changes player after the move was made.
-move_option(GameState, 3, NewGameState) :-
+move_option(OldGameState, GameState, 3, NewGameState) :-
     [Board, Player] = GameState,
+    [OldBoard, _OldPlayer] = OldGameState,
     write('\n=========================================\n'), 
     
     write('\nWhich tower do you want to separate?\n'),
@@ -106,7 +110,6 @@ move_option(GameState, 3, NewGameState) :-
         write('You can`t separate a pawn!\n'),
         fail;
         true),
-    %print tower structure
     print_tower_structure(Tower, L),
     
     write('\nHow many pieces do you want to move from the tower?\n'),
@@ -119,6 +122,11 @@ move_option(GameState, 3, NewGameState) :-
     nth1(N1, ListOfMoves, NMove),
     [NewX, NewY] = NMove,
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard),
+    (OldBoard == NewBoard -> 
+        write('\nWarning! You cannot undo your opponent`s move!\n'),
+        !,
+        fail;
+        true),
     change_player(Player, NewPlayer),
     NewGameState = [NewBoard, NewPlayer].
 
@@ -169,7 +177,7 @@ show_winner(Winner):-
 % game_cycle(+GameState)
 % Loop that keeps the game running and checks if the game is over. If it´s not, calls the get_move predicate to get the next move.
 % Checks if game is over. If it is, prints a winning message.
-game_cycle(GameState):-
+game_cycle(_OldGameState, GameState):-
     [Board, _Player] = GameState,
     game_over(Board, Winner), !, 
     
@@ -181,14 +189,14 @@ game_cycle(GameState):-
     show_winner(Winner).
 
 % Calls recursively the get_move predicate to get the next move, while there is no winner, changing players' turns.
-game_cycle(GameState):- % HERE in case nobody is winning atm
+game_cycle(OldGameState, GameState):- % HERE in case nobody is winning atm
     % write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
     length(Board, Size),
     display_game(Size, Board),
     print_turn(Player),
-    get_move(GameState, NewGameState), %para player humano
-    game_cycle(NewGameState).
+    get_move(OldGameState, GameState, NewGameState), %para player humano
+    game_cycle(GameState, NewGameState).
 
 
 % ==================== GAME START ====================
@@ -198,5 +206,6 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
 play :-
     clear_console,
     main(GameState), !,
-    game_cycle(GameState),
+    % game_cycle(GameState, GameState),
+    game_cycle([[], _], GameState),
     clear_data.

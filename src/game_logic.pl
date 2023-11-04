@@ -211,7 +211,7 @@ up_right(Board, X, Y, OccupiedX, OccupiedY) :-
 up_left(Board, X, Y, OccupiedX, OccupiedY) :-
   X1 is X - 1, X1 >= 1,
   Y1 is Y - 1, Y1 >= 1,
-  (empty_cell(Board,Y1) ->
+  (empty_cell(Board, X1, Y1) ->
     up_left(Board, X1, Y1, OccupiedX, OccupiedY);
     OccupiedX is X1,
     OccupiedY is Y1, !
