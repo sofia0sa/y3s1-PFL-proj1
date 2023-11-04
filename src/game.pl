@@ -14,11 +14,10 @@ print_turn(Player):-
 
 %===================== GAME HUMAN MOVES ====================
 
-% get_move(+GameState, -NewGameState)
+% get_move(+OldGameState, +GameState, -NewGameState)
 % Prints choice of moves in case it´s a human player or calls the move predicate in case it´s the Computer. 
 % Predicate for printing and choosing a possible movement in case it's a human player.
 get_move(OldGameState, GameState, NewGameState) :-
-    write('HERE OldGameState: '), write(OldGameState), nl,
     [_Board, Player] = GameState,
     \+difficulty(Player, _), !, 
     repeat,
@@ -58,13 +57,13 @@ check_if_tower_exists(Board, X, Y, L) :-
     % L1 is L+NPieces,
     % !.
 
-% move_option(+GameState, +Option, -NewGameState)
+% move_option(+OldGameState, +GameState, +Option, -NewGameState)
 % Choice of move option.
 % Choice: "Add pawn" option. Asks where to place the piece and places it in the given coordinates, if possible. Changes player after the move was made.
 move_option(_OldGameState, GameState, 1, NewGameState) :-
     [Board, Player] = GameState,
     write('\n=========================================\n'),
-    write('\nWhere do you want to place the piece?\n\n'),
+    write('\nWhere do you want to place the pawn?\n\n'),
     get_coordinate(Board, X, Y),
     place_pawn(Board, X, Y, Player, NewBoard),
     change_player(Player, NewPlayer),
@@ -112,7 +111,7 @@ move_option(OldGameState, GameState, 3, NewGameState) :-
         true),
     print_tower_structure(Tower, L),
     
-    write('\nHow many pieces do you want to move from the tower?\n'),
+    write('\nHow many disks do you want to move from the tower?\n'),
     L1 is L-1,
     choose_number(1, L1, 'Type a number', NPieces),
 
@@ -151,7 +150,7 @@ get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     ( L>0 ->
     write('Structure: [X,Y]\n'),
     print_list(ListOfMoves);
-    format('It`s not possible to move ~d pieces of the tower in [~d, ~d]!\n', [NPieces, X, Y]),
+    format('It`s not possible to move ~d disks of the tower in [~d, ~d]!\n', [NPieces, X, Y]),
     fail).
 
 
@@ -174,7 +173,7 @@ show_winner(Winner):-
 
 % ============================== GAME CYCLE ====================
 
-% game_cycle(+GameState)
+% game_cycle(+OldGameState, +GameState)
 % Loop that keeps the game running and checks if the game is over. If it´s not, calls the get_move predicate to get the next move.
 % Checks if game is over. If it is, prints a winning message.
 game_cycle(_OldGameState, GameState):-
@@ -206,6 +205,5 @@ game_cycle(OldGameState, GameState):- % HERE in case nobody is winning atm
 play :-
     clear_console,
     main(GameState), !,
-    % game_cycle(GameState, GameState),
     game_cycle([[], _], GameState),
     clear_data.

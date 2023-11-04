@@ -115,7 +115,7 @@ test_get_all_moves:-
  
 %======================= MOVES FOR COMPUTER EASY AND HARD ===========================================================================
 
-% move_computer(+GameState, -NewGameState, +Level)
+% move_computer(+OldGameState, +GameState, -NewGameState, +Level)
 % Gets a move for the computer based on the level of difficulty. In this case, easy level.
 /*
 move_computer(GameState, NewGameState, 1) :-

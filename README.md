@@ -1,12 +1,17 @@
 The README file should be structured as follows:
+
 ● Identification of the topic (game) and group (group designation, student number and full name of each
 member of the group), as well as an indication of the contribution (in percentages, adding up to 100%)
 of each member of the group to the assignment;
+
 ● Installation and Execution: include all the necessary steps for the correct execution of the game in both
 Linux and Windows environments (in addition to the installation of SICStus Prolog 4.8).
+
 ● Description of the game: a brief description of the game and its rules (up to 350 words); you should also
 include the links used to gather information (official game website, rule book, etc.)
-● Game Logic: Describe (merely copying the source code is not enough) the design and implementation
+
+● Game Logic: 
+Describe (merely copying the source code is not enough) the design and implementation
 of the game logic in Prolog. The starting predicate must be play/0. This section should have information
 on the following topics (up to 2000 words in total):
 o Internal Game State Representation: describe how the game state is represented, including board
@@ -51,4 +56,30 @@ Sofia Resende Ferreira de Sá (up202108676)
 
 ## Instalação e Execução
 
-Para executar o jogo, é necessário instalar o SICStus Prolog (de preferência, a versão 4.8.0) e fazer download dos ficheiros presentes em PFL_TP1_T06_SixMaking_7.zip e descompactá-los. De seguida, abra o SICStus Prolog e carregue o ficheiro game.pl, através do comando [File] -> [Consult] -> [main.pl]. Por fim, para iniciar o jogo, basta executar o comando play.
+Para executar o jogo, é necessário instalar o **SICStus Prolog** (de preferência, a versão 4.8.0), fazer *download* dos ficheiros presentes em **PFL_TP1_T06_SixMaking_7.zip** e descompactá-los. Dentro do diretório **src**, deve consultar o ficheiro **game.pl**, através de [File] -> [Consult] -> [game.pl] ou diretamente da linha de comandos do SICStus Prolog. Por fim, para iniciar o jogo, basta executar o comando **``play.``**. O jogo está disponível em ambientes Windows e Linux.
+
+
+## Descrição do Jogo
+
+O jogo Six MaKING é uma criação de Dorsonczky József, e foi publicado em 2013 pela Mind Fitness Games (OVECo S.R.L.). É uma variação interessante do xadrez, no qual torres são construídas utilizando discos de madeira. Cada disco representa uma peça de xadrez, com o valor de: 1 disco para o Peão, 2 para a Torre, 3 para o Cavalo, 4 para o Bispo, 5 para a Rainha, e 6 ou mais para o Rei.
+
+O objetivo do jogo é construir um Rei utilizando seis ou mais discos da sua cor no topo da torre.
+
+O jogo é jogado em um tabuleiro de 5x5 ou 4x4, dependendo da versão escolhida, e cada jogador possui 16 discos de madeira ou 12 na versão 4x4. Os jogadores escolhem a cor com a qual desejam jogar e definem a ordem inicial.
+
+O jogo começa com o tabuleiro vazio, e os jogadores alternam as suas jogadas. Cada jogador, na sua vez, pode escolher entre:
+
+- Colocar um novo disco (um Peão) no tabuleiro;
+- Mover uma torre completa ou parte dela.
+
+Para colocar um novo disco, o jogador pode escolher qualquer célula vazia do tabuleiro.
+
+Para mover uma torre ou parte dela, o jogador segue os movimentos correspondentes às peças do xadrez. Por exemplo, uma torre composta por 2 discos (Torre) pode mover-se em qualquer direção ortogonal, enquanto que uma torre de 3 discos (Cavalo) move-se em forma de 'L' em cima de outra torre.
+
+O jogo termina quando a primeira torre com seis ou mais discos (o Rei) é construída. O vencedor é o jogador que tem a sua cor no topo dessa torre.
+
+Links de Referência:
+- https://www.boardspace.net/sixmaking/english/Six-MaKING-rules-Eng-Ger-Fra-Ro-Hu.pdf
+
+## Lógica do Jogo
+
