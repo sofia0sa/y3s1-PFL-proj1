@@ -18,7 +18,7 @@ print_turn(Player):-
 % Prints choice of moves in case it´s a human player or calls the move predicate in case it´s the Computer. 
 % Predicate for printing and choosing a possible movement in case it's a human player.
 get_move(GameState, NewGameState) :-
-    [Board, Player] = GameState,
+    [_Board, Player] = GameState,
     \+difficulty(Player, _), !, 
     repeat,
     write('\n=========================================\n'),
@@ -30,7 +30,7 @@ get_move(GameState, NewGameState) :-
     move_option(GameState, Option, NewGameState).
 % Predicate for choice of movement in case it's Easy Computer mode.
 get_move(GameState, NewGameState) :- 
-    [Board, Player] = GameState,
+    [_Board, Player] = GameState,
     difficulty(Player, 1), !,
     move_computer(GameState, NewGameState, 1). 
 % Predicate for choice of movement in case it's Hard Computer mode.
@@ -49,11 +49,11 @@ check_if_tower_exists(Board, X, Y, L) :-
 
 % check_if_can_place_tower(+Board, +X1, +Y1, +NPieces)
 % Checks if a tower can be placed in the given coordinates.
-check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
-    get_tower(Board, X1, Y1, Tower),
-    length(Tower, L),
-    L1 is L+NPieces,
-    !.
+% check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
+    % get_tower(Board, X1, Y1, Tower),
+    % length(Tower, L),
+    % L1 is L+NPieces,
+    % !.
 
 % move_option(+GameState, +Option, -NewGameState)
 % Choice of move option.
@@ -170,12 +170,13 @@ show_winner(Winner):-
 % Loop that keeps the game running and checks if the game is over. If it´s not, calls the get_move predicate to get the next move.
 % Checks if game is over. If it is, prints a winning message.
 game_cycle(GameState):-
-    [Board, Player] = GameState,
+    [Board, _Player] = GameState,
     game_over(Board, Winner), !, 
-    write('GAME OVER\n'), nl,
     
     length(Board, Size),
     display_game(Size, Board),
+    
+    write('GAME OVER\n'), nl,
 
     show_winner(Winner).
 

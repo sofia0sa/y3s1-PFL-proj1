@@ -141,3 +141,27 @@ test_inside_board :-
   \+ inside_board(Board, 5, 5),
   \+ inside_board(Board, 1, 5),
   \+ inside_board(Board, 5, 1).
+
+
+% !DELETE
+test_move_computer :-
+  Board = [
+    [[x,o], [x], empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, [x,x,x], empty, empty],
+    [empty, empty, empty, empty, [x,o,o,x,o]],
+    [empty, empty, empty, empty, empty]
+  ],
+  % Board = [
+  %   [[x,o], [x], empty, empty, [x,o,o,x,o]],
+  %   [empty, empty, [x,o,x], empty, [o]],
+  %   [empty, empty, empty, empty, empty],
+  %   [[o,o], empty, empty, [x,x,x], empty],
+  %   [empty, empty, empty, empty, empty]
+  % ],
+  GameState = [Board, player1],
+  move_computer(GameState, NewGameState, 2),
+  % write('HERE NewGameState: '), write(NewGameState), nl,
+  [NewBoard, _NewPlayer] = NewGameState,
+  length(NewBoard, Size),
+  display_game(Size, NewBoard).

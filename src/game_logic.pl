@@ -68,7 +68,7 @@ valid_moves(Board, Player, X, Y, ListOfMoves, NPieces) :-
   ), ValidMoves),
   sort(ValidMoves, ListOfMoves).
   
-
+  
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, Player, X, Y, NewX, NewY, Tower) :-
   inside_board(Board, NewX, NewY),
@@ -86,7 +86,8 @@ valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces) :-
   tower_top(Tower, Top),
   check_possible_tower(Board, Player, NewX, NewY, NPieces, Top).
 
-
+% check_possible_tower(+Board, +Player, +NewX, +NewY, +L, +Top)
+% Checks if the tower at (NewX, NewY) can be built by the given player.
 check_possible_tower(Board, Player, NewX, NewY, L, Top):-
   get_tower(Board, NewX, NewY, Tower),
   length(Tower, L1),
@@ -208,10 +209,9 @@ up_right(Board, X, Y, OccupiedX, OccupiedY) :-
 % up_left(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the diagonal line from (X, Y) to the top left corner
 up_left(Board, X, Y, OccupiedX, OccupiedY) :-
-  length(Board, Size),
   X1 is X - 1, X1 >= 1,
   Y1 is Y - 1, Y1 >= 1,
-  (empty_cell(Board, X1, Y1) ->
+  (empty_cell(Board,Y1) ->
     up_left(Board, X1, Y1, OccupiedX, OccupiedY);
     OccupiedX is X1,
     OccupiedY is Y1, !
@@ -271,7 +271,7 @@ choose_piece_and_move(Board, NewBoard) :-
   repeat,
   write('Select the piece you want to move (X, Y): '),
   get_coordinate(Board, X, Y),
-  get_tower(Board, X, Y, Piece),
+  get_tower(Board, X, Y, _Piece),
   valid_moves(Board, X, Y, ValidMoves),
   print_valid_moves(ValidMoves),
   write('Choose a move (NewX, NewY): '),

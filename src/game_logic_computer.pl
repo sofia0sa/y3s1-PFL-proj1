@@ -5,6 +5,40 @@
 % Gets all the moves of type 1 (place pawn) for a given player and board.
 get_moves_by_type(Board, Player, Moves, 1) :-
     findall([1, Player, 0, 0, NewX, NewY, -1], empty_cell(Board, NewX, NewY), Moves).
+% Gets all the moves of type 2 (move tower) for a given player and board.
+get_moves_by_type(Board, Player, Moves, 2) :-
+  length(Board, Size),
+  findall([2, Player, X, Y, NewX, NewY, -1], (
+    %iterate through all the cells of the board
+    between(1, Size, Row),
+    nth1(Row, Board, RowList),
+    between(1, Size, Col),
+    nth1(Col, RowList, _Cell),
+    %if the cell is a tower, find all the valid moves for that tower
+    \+ empty_cell(Board, Row, Col),
+    X is Row, Y is Col,
+    % write('X: '), write(X), write(' Y: '), write(Y), nl,
+    valid_moves(Board, Player, Row, Col, ListOfMoves),
+    % write('HERE Moves of type 2: '), write(ListOfMoves), nl,
+    member([NewX, NewY], ListOfMoves)
+    
+    ), Moves).
+
+% Gets all the moves of type 3 (separate tower) for a given player and board.
+get_moves_by_type(Board, Player, Moves, 3) :-
+  length(Board, Size),
+  findall([3, Player, X, Y, NewX, NewY, NPieces], (
+    between(1, Size, Row),
+    nth1(Row, Board, RowList),
+    between(1, Size, Col),
+    nth1(Col, RowList, _Cell),
+    check_if_tower_exists(Board, Row, Col, L),
+    L1 is L-1,
+    between(1, L1, NPieces),
+    X is Row, Y is Col,
+    valid_moves(Board, Player, Row, Col, ListOfMoves, NPieces),
+    member([NewX, NewY], ListOfMoves)
+    ), Moves).
 
 
 % !DELETE
@@ -21,24 +55,7 @@ test_get_moves_by_type :-
   write('HERE Length: '), write(L), nl,
   write(Moves).
     
-% Gets all the moves of type 2 (move tower) for a given player and board.
-get_moves_by_type(Board, Player, Moves, 2) :-
-    length(Board, Size),
-    findall([2, Player, X, Y, NewX, NewY, -1], (
-      %iterate through all the cells of the board
-      between(1, Size, Row),
-      nth1(Row, Board, RowList),
-      between(1, Size, Col),
-      nth1(Col, RowList, Cell),
-      %if the cell is a tower, find all the valid moves for that tower
-      \+ empty_cell(Board, Row, Col),
-      X is Row, Y is Col,
-      % write('X: '), write(X), write(' Y: '), write(Y), nl,
-      valid_moves(Board, Player, Row, Col, ListOfMoves),
-      % write('HERE Moves of type 2: '), write(ListOfMoves), nl,
-      member([NewX, NewY], ListOfMoves)
-      
-      ), Moves).
+
 
 % !DELETE
 test_get_moves_by_type :-
@@ -53,23 +70,6 @@ test_get_moves_by_type :-
   length(Moves, L),
   write('HERE Length: '), write(L), nl,
   write(Moves).
-
-
-% Gets all the moves of type 3 (separate tower) for a given player and board.
-get_moves_by_type(Board, Player, Moves, 3) :-
-    length(Board, Size),
-    findall([3, Player, X, Y, NewX, NewY, NPieces], (
-      between(1, Size, Row),
-      nth1(Row, Board, RowList),
-      between(1, Size, Col),
-      nth1(Col, RowList, Cell),
-      check_if_tower_exists(Board, Row, Col, L),
-      L1 is L-1,
-      between(1, L1, NPieces),
-      X is Row, Y is Col,
-      valid_moves(Board, Player, Row, Col, ListOfMoves, NPieces),
-      member([NewX, NewY], ListOfMoves)
-      ), Moves).
 
 
 % !DELETE
@@ -174,36 +174,6 @@ second_level(Board1, Player, Value2) :-
 */
 
 
-
-
-
-
-%
-
-% !DELETE
-test_move_computer :-
-  Board = [
-    [[x,o], [x], empty, empty, empty],
-    [empty, empty, empty, empty, empty],
-    [empty, empty, [x,x,x], empty, empty],
-    [empty, empty, empty, empty, [x,o,o,x,o]],
-    [empty, empty, empty, empty, empty]
-  ],
-  % Board = [
-  %   [[x,o], [x], empty, empty, [x,o,o,x,o]],
-  %   [empty, empty, [x,o,x], empty, [o]],
-  %   [empty, empty, empty, empty, empty],
-  %   [[o,o], empty, empty, [x,x,x], empty],
-  %   [empty, empty, empty, empty, empty]
-  % ],
-  GameState = [Board, player1],
-  move_computer(GameState, NewGameState, 2),
-  % write('HERE NewGameState: '), write(NewGameState), nl,
-  [NewBoard, NewPlayer] = NewGameState,
-  length(NewBoard, Size),
-  display_game(Size, NewBoard).
-
-
 % Gets a move for the computer based on the level of difficulty. In this case, hard level.
 move_computer(GameState, NewGameState, 2) :-
   [Board, Player] = GameState,
@@ -211,7 +181,7 @@ move_computer(GameState, NewGameState, 2) :-
   calculate_value(Board, Player, Moves, List, 2),
   sort(List, SortedList),
   % write('HERE SortedList: '), write(SortedList), nl,
-  last(SortedList, Delta-NewBoard),
+  last(SortedList, _Delta-NewBoard),
   % write('HERE Delta: '), write(Delta), nl,
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
@@ -219,7 +189,6 @@ move_computer(GameState, NewGameState, 2) :-
 
 calculate_value(Board, Player, Moves, FinalList, Value1, 1) :- 
   calculate_value(Board, Player, Moves, [], FinalList, Value1, 1).
-
 calculate_value(_, _, [], Acc, Acc, _, 1):- !.
 calculate_value(Board, Player, Moves, Acc, FinalList, MaxValue, 1) :-
   [CurrMove|T] = Moves,
@@ -229,18 +198,14 @@ calculate_value(Board, Player, Moves, Acc, FinalList, MaxValue, 1) :-
   Delta is MaxValue + MinValue,
   NewAcc = [Delta | Acc],
   calculate_value(Board, Player, T, NewAcc, FinalList, MaxValue, 1).
-
-
 % calculate_value(+Board, +Player, +Moves, -FinalList, +Depth)
 calculate_value(Board, Player, Moves, FinalList, 2) :- 
   calculate_value(Board, Player, Moves, [], FinalList, 2).
-
 calculate_value(_, _, [], Acc, Acc, 2):- !.
 calculate_value(Board, Player, Moves, Acc, FinalList, Depth) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board1),
   value(Board1, Player, Value1),
-
   change_player(Player, NewPlayer),
   get_all_moves(Board1, NewPlayer, Moves2),
   \+ Moves2 = [],
@@ -250,8 +215,6 @@ calculate_value(Board, Player, Moves, Acc, FinalList, Depth) :-
   [Delta | _] = SortedList2,
   NewAcc = [Delta-Board1 | Acc],
   calculate_value(Board, Player, T, NewAcc, FinalList, Depth).
-
-
 
 
 max_or_min(min, Value, MinValue):- MinValue is -Value.
@@ -372,13 +335,13 @@ test_value:-
 % translate_move(+Board, +Move, -NewBoard)
 % Translates a move into a board, depending on the move type:
 % Moves of type 1 (place pawn).
-translate_move(Board, [1, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+translate_move(Board, [1, Player, _X, _Y, NewX, NewY, _NPieces], NewBoard) :-
     place_pawn(Board, NewX, NewY, Player, NewBoard).
 % Moves of type 2 (move tower).
-translate_move(Board, [2, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+translate_move(Board, [2, _Player, X, Y, NewX, NewY, _NPieces], NewBoard) :-
     move_tower(Board, X, Y, NewX, NewY, NewBoard).
 % Moves of type 3 (separate tower).
-translate_move(Board, [3, Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
+translate_move(Board, [3, _Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard).
 
 test_translate_move :-

@@ -139,10 +139,9 @@ FILES DOCUMENTADOS:
 - menu.pl
 - game.pl
 - utils.pl
-
+- board.pl
 
 FALTA:
-- board.pl
 - game_logic.pl
 - game_logic_computer.pl
 
