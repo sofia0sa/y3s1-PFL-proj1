@@ -13,14 +13,14 @@ test_split_list :-
 % !DELETE: Apenas para testar
 test_place_tower :-
   board(4, Board),
-  print_board(4, Board),
+  display_game(4, Board),
   place_tower(Board, 1, 1, [x], NewBoard),
-  print_board(4, NewBoard).
+  display_game(4, NewBoard).
 
 % !DELETE: Apenas para testar
 test_get_tower :-
   board(5, Board),
-  print_board(5, Board),
+  display_game(5, Board),
   get_tower(Board, 1, 2, Piece),
   write(Piece),
   translate(Piece, X),
@@ -29,17 +29,17 @@ test_get_tower :-
 % !DELETE: Apenas para testar
 test_empty_cell :-
   board(5, Board),
-  print_board(5, Board),
+  display_game(5, Board),
   empty_cell(Board, 1, 3).
 
 % !DELETE: Apenas para testar
 test_place_pawn(X,Y,P):-
   board(4, Board),
-  print_board(4, Board),
+  display_game(4, Board),
   write('board printed\n'),
   place_pawn(Board, X, Y, P, NewBoard),
   write('pawn placed\n'),
-  print_board(4, NewBoard).
+  display_game(4, NewBoard).
 
 
 % !DELETE: just for testing
@@ -51,7 +51,7 @@ test_valid_moves:-
     [[x,o], [x], [x,x,x,o,x], empty, [x]],
     [[o,x], empty, [o], empty, [x,o,x]]
   ],
-  print_board(5, Board),  
+  display_game(5, Board),  
   valid_moves(Board, player1, 3, 4, ValidMoves),
   write(ValidMoves).
 
@@ -128,3 +128,16 @@ test_print_moves:-
   % write('HERE Translated Board1: '), write(Board1), nl),
   % write('HERE Move and Board: '), write(Move), write(' - '), write(Board1), nl),
    Moves).
+
+
+  % !DELETE: Apenas para testar
+test_inside_board :-
+  board(4, Board),
+  display_game(4, Board),
+  inside_board(Board, 1, 1),
+  inside_board(Board, 4, 4),
+  inside_board(Board, 2, 3),
+  \+ inside_board(Board, 0, 0),
+  \+ inside_board(Board, 5, 5),
+  \+ inside_board(Board, 1, 5),
+  \+ inside_board(Board, 5, 1).

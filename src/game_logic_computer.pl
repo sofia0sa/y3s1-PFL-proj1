@@ -201,7 +201,7 @@ test_move_computer :-
   % write('HERE NewGameState: '), write(NewGameState), nl,
   [NewBoard, NewPlayer] = NewGameState,
   length(NewBoard, Size),
-  print_board(Size, NewBoard).
+  display_game(Size, NewBoard).
 
 
 % Gets a move for the computer based on the level of difficulty. In this case, hard level.
@@ -391,4 +391,4 @@ test_translate_move :-
   ],
   translate_move(Board, [3, player1, 1, 1, 2, 1, 2], NewBoard),
   length(NewBoard, Size),
-  print_board(Size, NewBoard).
+  display_game(Size, NewBoard).

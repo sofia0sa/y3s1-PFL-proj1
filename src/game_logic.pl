@@ -32,13 +32,13 @@ place_tower(Board, X, Y, Piece, NewBoard) :-
   replace_nth1(Y, Board, NewRow, NewBoard).
 
 
-
+% place_pawn(+Board, +X, +Y, +Player, -NewBoard)
+% Places a pawn of the given player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_pawn(Board, X, Y, player1, NewBoard) :-
 (empty_cell(Board, X, Y) ->
   place_tower(Board, X, Y, [x], NewBoard);
   format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]),
   fail).
-
 place_pawn(Board, X, Y, player2, NewBoard) :-
 (empty_cell(Board, X, Y) -> 
   place_tower(Board, X, Y, [o], NewBoard);
@@ -48,8 +48,8 @@ place_pawn(Board, X, Y, player2, NewBoard) :-
 
 
 
-
-% Calculates all the valid moves for the piece at position (X, Y) for the given player.
+% valid_moves(+Board, +Player, +X, +Y, -ListOfMoves)
+% Calculates all the valid moves for the tower at position (X, Y) for the given player.
 valid_moves(Board, Player, X, Y, ListOfMoves) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),
@@ -58,8 +58,8 @@ valid_moves(Board, Player, X, Y, ListOfMoves) :-
   ), ValidMoves),
   sort(ValidMoves, ListOfMoves).
 
-
-% Calculates all the valid moves for the piece at position (X, Y) for the given player.
+% valid_moves(+Board, +Player, +X, +Y, -ListOfMoves, +NPieces)
+% Calculates all the valid moves for the separating NPieces from the tower at position (X, Y) for the given player.
 valid_moves(Board, Player, X, Y, ListOfMoves, NPieces) :-
   get_tower(Board, X, Y, Tower),
   \+ empty_cell(Board, X, Y),

@@ -175,7 +175,7 @@ game_cycle(GameState):-
     write('GAME OVER\n'), nl,
     
     length(Board, Size),
-    print_board(Size, Board),
+    display_game(Size, Board),
 
     show_winner(Winner).
 
@@ -184,7 +184,7 @@ game_cycle(GameState):- % HERE in case nobody is winning atm
     % write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
     length(Board, Size),
-    print_board(Size, Board),
+    display_game(Size, Board),
     print_turn(Player),
     get_move(GameState, NewGameState), %para player humano
     game_cycle(NewGameState).
