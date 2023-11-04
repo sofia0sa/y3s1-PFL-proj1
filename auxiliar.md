@@ -125,7 +125,6 @@ BUGS:
 - PROF daniel => HA MELHOR MANEIRA DE FAZER SAIR DO JOGO? EU FIZ HALT E SAI DO SICSTUS, MAS QUERIA QUE PROLOG RETORNASSE 'YES'
 
 TO DO:
-- Na separate tower, indicar a estrutura da torre escolhida
 - Relembrar ao utilizador se joga com maiúsculas ou minúsculas
 - KO rule
 - Melhorar Value 
@@ -140,11 +139,12 @@ FILES DOCUMENTADOS:
 - menu.pl
 - game.pl
 - utils.pl
-- game_logic_computer.pl
+
 
 FALTA:
 - board.pl
 - game_logic.pl
+- game_logic_computer.pl
 
 The second clause does not perform any actions, but it prevents the program from crashing or producing unexpected behavior when the user leaves the game without making a selection. Instead, the program will simply fail and exit gracefully
 

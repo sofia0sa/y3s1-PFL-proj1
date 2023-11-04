@@ -80,9 +80,8 @@ main_option(3):-
     write(' |                        *   *                                          |\n'),
     write(' |                         *** MAKING ...                                |\n'),
     write(' |_______________________________________________________________________|\n'),
-    % trace,
     abort.
-    % fail.
+
 % ==================== SHORT RULES BEFORE BOARD ====================
 
 % print_short_rules/0

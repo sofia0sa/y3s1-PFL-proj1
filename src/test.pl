@@ -23,7 +23,7 @@ test_get_tower :-
   print_board(5, Board),
   get_tower(Board, 1, 2, Piece),
   write(Piece),
-  t(Piece, X),
+  translate(Piece, X),
   write(X).
 
 % !DELETE: Apenas para testar

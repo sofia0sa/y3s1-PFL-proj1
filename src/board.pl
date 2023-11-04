@@ -2,8 +2,8 @@
 :- use_module(library(between)).
 :- consult(utils).
 
-t(empty, X):- X=' '.
-t(T, X):-
+translate(empty, X):- X=' '.
+translate(T, X):-
     length(T, L),
     length_to_letter(L, C),
     tower_top(T, Top),
@@ -80,7 +80,7 @@ p_l([C|L]):-
 %print cell
 % p_c().
 p_c(C):-
-    t(C, S),
+    translate(C, S),
     format(' ~s ', [S]).
     % write(S).
 
@@ -115,7 +115,7 @@ board(4, [
 ]).
 board(5, [
     [[x,o], [x], empty, empty, [x,o,o,x,o]],
-    [empty, empty, [x,o,x], empty, [o]],
+    [empty, [x], [x,o,x], empty, [o]],
     [empty, empty, empty, empty, empty],
     [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]

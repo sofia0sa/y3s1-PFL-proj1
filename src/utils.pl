@@ -11,6 +11,11 @@
 change_player(player1, player2).
 change_player(player2, player1).
 
+% player_case(+Player, -Case)
+% Returns the case of the player's pieces.
+player_case(player1, 'Uppercase').
+player_case(player2, 'lowercase').
+
 % get_name(+Player)
 % Asks and saves a player's name. Dynamically adds the name_of/2 fact to the base fact.
 get_name(Player) :-
@@ -71,6 +76,34 @@ print_list([H|T], Index) :-
     write(Index), write(' - '), write(H), nl,
     NewIndex is Index + 1,
     print_list(T, NewIndex).
+
+% print_tower_structure(+Tower, +Height)
+% Prints the tower structure, indicating the index.
+print_tower_structure(Tower, Height) :-
+    write('\nTower Structure:\n'),
+    print_tower_index(Height, 1),
+    print_tower_structure(Tower, Height, 1).
+
+% print_tower_structure(+Tower, +Height, +Index)
+% Prints the tower structure.
+print_tower_structure(Tower, Height, Height) :-
+    nth1(Height, Tower, Element),
+    write(Element), nl.
+print_tower_structure(Tower, Height, Index) :-
+    nth1(Index, Tower, Element),
+    write(Element),
+    NextIndex is Index + 1,
+    write(' - '),
+    print_tower_structure(Tower, Height, NextIndex).
+
+% print_tower_index(+Height, +Index)
+% Prints the index of the tower pieces.
+print_tower_index(Height, Height) :-
+    format('~d (Top)~n', [Height]).
+print_tower_index(Height, Index) :-
+    format('~d   ', [Index]),
+    NextIndex is Index + 1,
+    print_tower_index(Height, NextIndex). 
 
 % tower_top(+Tower, -Top)
 % Returns the top element of Tower

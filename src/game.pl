@@ -9,8 +9,8 @@
 print_turn(Player):-
     write('\n=========================================\n'),
     name_of(Player, Name),
-    format('\nIt`s ~a`s turn!\n', [Name]), !.
-
+    player_case(Player, Case), 
+    format('\nIt`s ~a`s turn!(~s)\n', [Name, Case]), !.
 
 %===================== GAME HUMAN MOVES ====================
 
@@ -107,7 +107,7 @@ move_option(GameState, 3, NewGameState) :-
         fail;
         true),
     %print tower structure
-    
+    print_tower_structure(Tower, L),
     
     write('\nHow many pieces do you want to move from the tower?\n'),
     L1 is L-1,
@@ -181,7 +181,7 @@ game_cycle(GameState):-
 
 % Calls recursively the get_move predicate to get the next move, while there is no winner, changing players' turns.
 game_cycle(GameState):- % HERE in case nobody is winning atm
-    write('NEW GAME CYCLE\n'),
+    % write('NEW GAME CYCLE\n'),
     [Board, Player] = GameState, 
     length(Board, Size),
     print_board(Size, Board),
