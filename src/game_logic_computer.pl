@@ -4,7 +4,29 @@
 % get_moves_by_type(+Board, +Player, -Moves, +MoveType)
 % Gets all the moves of type 1 (place pawn) for a given player and board.
 get_moves_by_type(Board, Player, Moves, 1) :-
-    findall([1, Player, 0, 0, NewX, NewY, -1], empty_cell(Board, NewX, NewY), Moves).
+    length(Board, Size),
+    player_char(Player, Char),
+    findall([1, Player, 0, 0, NewX, NewY, -1], ( 
+      empty_cell(Board, NewX, NewY),
+under_piece_limit(Board, Size, Char)
+    ), Moves).
+
+% !DELETE
+test_get_moves_by_type :-
+  Board = [
+    [empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [[x,x,x], [x], [x], [x], [x,x]],
+    [[x,x,x], [x], [x], [x], [x,x]]
+  ],
+  get_moves_by_type(Board, player1, Moves, 1),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
+ 
+    
+
 % Gets all the moves of type 2 (move tower) for a given player and board.
 get_moves_by_type(Board, Player, Moves, 2) :-
   length(Board, Size),

@@ -124,6 +124,19 @@ board(4, [
     [empty, empty, empty, empty],
     [empty, empty, empty, empty]
 ]).
+% board(4, [
+%     [empty, empty, empty, empty],
+%     [[o], [o], [o], [o]],
+%     [[o], [o], [o], [o]],
+%     [[o], [o], [o], [o]]
+% ]).
+% board(5, [
+%     [empty, empty, empty, empty, empty],
+%     [empty, empty, empty, empty, empty],
+%     [empty, empty, empty, empty, empty],
+%     [[x,x,x], [x], [x], [x], [x,x]],
+%     [[x,x,x], [x], [x], [x], [x,x]]
+%   ]).
 board(5, [
     [[x,o], [x], empty, empty, [x,o,o,x,o]],
     [empty, [x], [x,o,x], empty, [o]],

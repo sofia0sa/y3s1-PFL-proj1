@@ -165,3 +165,33 @@ test_move_computer :-
   [NewBoard, _NewPlayer] = NewGameState,
   length(NewBoard, Size),
   display_game(Size, NewBoard).
+
+
+% !DELETE
+test_place_pawn :-
+  Board = [
+    [empty, empty, empty, empty],
+    [[x], [x], [x], [x]],
+    [[x], [x], [x], [x]],
+    [[x], [x], [x], [x]]
+  ],
+  place_pawn(Board, 1, 1, player1, NewBoard),
+  length(NewBoard, Size),
+  display_game(Size, NewBoard).
+
+% !DELETE
+test_count_pieces :-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, [x], [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  count_pieces(Board, o, Count),
+  format('Count: ~w\n', [Count]).
+
+% !DELETE
+test_flatten :-
+  flatten([1, [2, 3], [4, [5, 6]]], FlatList),
+  write(FlatList).

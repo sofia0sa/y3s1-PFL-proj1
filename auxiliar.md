@@ -125,7 +125,7 @@ BUGS:
 - PROF daniel => HA MELHOR MANEIRA DE FAZER SAIR DO JOGO? EU FIZ HALT E SAI DO SICSTUS, MAS QUERIA QUE PROLOG RETORNASSE 'YES'
 
 TO DO:
-- limite de peças
+- limite de peças -> mudar msg de feedback para não aparecer no AI.
 
 
 DONE:

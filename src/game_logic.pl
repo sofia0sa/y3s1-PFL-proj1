@@ -36,16 +36,51 @@ place_tower(Board, X, Y, Piece, NewBoard) :-
 % Places a pawn of the given player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
 place_pawn(Board, X, Y, player1, NewBoard) :-
 (empty_cell(Board, X, Y) ->
+  length(Board, Size),
+  under_piece_limit(Board, Size, x),
   place_tower(Board, X, Y, [x], NewBoard);
-  format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]),
+  format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
   fail).
 place_pawn(Board, X, Y, player2, NewBoard) :-
 (empty_cell(Board, X, Y) -> 
+  length(Board, Size),
+  under_piece_limit(Board, Size, o),
   place_tower(Board, X, Y, [o], NewBoard);
-  format('Cannot place pawn in cell [~w,~w]!\n', [X, Y]),
+  format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
   fail).
 
+%under_piece_limit(+Board, +Size, +Piece)
+%Checks if the number of pieces of type Piece in Board is under the limit for the given board size.
+under_piece_limit(Board, 4, Piece):-
+  count_pieces(Board, Piece, Count), !,
+  (Count < 12 -> 
+    true;
+    write('\nCannot place pawn! Limit of 12 pawns reached!\n'),
+    fail
+  ).
+under_piece_limit(Board, 5, Piece):-
+  count_pieces(Board, Piece, Count), !,
+  (Count < 16 ->
+    true;
+    write('\nCannot place pawn! Limit of 16 pawns reached!\n'),
+    fail
+  ).
 
+% count_pieces(+Board, +Piece, -Count)
+% Counts the number of occurrences of Piece in Board.
+count_pieces(Board, Piece, Count) :-
+  flatten(Board, FlatBoard),
+  count(Piece, FlatBoard, Count).
+
+% count(+Element, +List, -Count)
+% Counts the number of occurrences of Element in List.
+count(_, [], 0).
+count(X, [X|T], Count) :-
+  count(X, T, Count1),
+  Count is Count1 + 1.
+count(X, [Y|T], Count) :-
+  X \= Y,
+  count(X, T, Count).
 
 
 % valid_moves(+Board, +Player, +X, +Y, -ListOfMoves)

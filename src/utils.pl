@@ -16,6 +16,9 @@ change_player(player2, player1).
 player_case(player1, 'Uppercase').
 player_case(player2, 'lowercase').
 
+player_char(player1, x).
+player_char(player2, o).
+
 % get_name(+Player)
 % Asks and saves a player's name. Dynamically adds the name_of/2 fact to the base fact.
 get_name(Player) :-
@@ -63,6 +66,16 @@ read_number_aux(X,X).
 split_list(List, Part1, Part2Length, Part2) :-
     length(Part2, Part2Length),
     append(Part1, Part2, List), !.
+
+% flatten(+List, -FlatList)
+% Flattens a nested list into a single list.
+flatten([], []).
+flatten([H|T], FlatList) :-
+  flatten(H, FlatH),
+  flatten(T, FlatT),
+  append(FlatH, FlatT, FlatList).
+flatten(X, [X]).
+
 
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"
