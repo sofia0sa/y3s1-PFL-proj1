@@ -1,7 +1,19 @@
-:- consult(utils).
-:- consult(board).
 :- consult(game).
 
+
+test_translate_move :-
+  Board = [
+    [[x,o], [x], empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, [x,x], empty, empty],
+    [[o,o], empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  translate_move(Board, [3, player1, 1, 1, 2, 1, 2], NewBoard),
+  length(NewBoard, Size),
+  display_game(Size, NewBoard).
+
+/*
 % !DELETE
 test_value:-
   Board = [
@@ -14,7 +26,7 @@ test_value:-
   % value(Board, player2, Value),
   value(Board, Value),
   write('HERE Value: '), write(Value), nl.
-
+*/
 % !DELETE
 test_get_all_moves:-
   Board = [
@@ -140,16 +152,16 @@ test_game_over:-
   write(Winner).
 
 
-test_value :-
+test_value:-
   Board = [
-    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [[x,o], [x], empty, empty, [x,o,o,x,o,o]],
     [empty, empty, [x,o,x], empty, [o]],
     [empty, empty, empty, empty, empty],
     [[o,o], empty, empty, [x,x,x], empty],
     [empty, empty, empty, empty, empty]
   ],
   GameState = [Board, player2],
-  value(Board, Value),
+  value(Board, player2, Value),
   write('HERE Value: '), write(Value), nl.
   
 

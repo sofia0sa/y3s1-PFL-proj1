@@ -1,6 +1,4 @@
-:- consult(utils).
-:- consult(board).
-
+% ================================= GAME MOVES =================================
 
 % separate_tower(+Board, +X, +Y, +NewX, +NewY, -NewBoard)
 % Separates the tower into two parts, keeping the bottom one at (X, Y) and moving the top NPieces to (NewX, NewY). Returns the new board.
@@ -37,6 +35,7 @@ place_tower(Board, X, Y, Piece, NewBoard) :-
 place_pawn(Board, X, Y, _Player, _NewBoard) :-
   \+empty_cell(Board, X, Y),
   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]), !, fail.
+
 % When cell's empty, checks if the number of pieces of the given player in the board is under the limit. If not, prints a feedback message and fails.
 place_pawn(Board, X, Y, Player, _NewBoard) :-
   empty_cell(Board, X, Y),
@@ -45,6 +44,7 @@ place_pawn(Board, X, Y, Player, _NewBoard) :-
   \+under_piece_limit(Board, Size, Char), !,
   write('\nCannot place pawn! Limit of pawns reached!\n'),
   fail.
+
 % When cell's empty and the number of pieces of the given player in the board is under the limit, places the pawn and returns the resulting NewBoard.
 place_pawn(Board, X, Y, Player, NewBoard) :-
   empty_cell(Board, X, Y),
@@ -53,18 +53,14 @@ place_pawn(Board, X, Y, Player, NewBoard) :-
   under_piece_limit(Board, Size, Char),
   place_tower(Board, X, Y, [Char], NewBoard).
 
-%under_piece_limit(+Board, +Size, +Piece)
-%Checks if the number of pieces of type Piece in Board is under the limit for the given board size.
+
+% ================================= CHECKING =================================
+%under_piece_limit(+Board, +Size, +Char)
+%Checks if the number of pieces of type Char in Board is under the limit for the given board size.
 under_piece_limit(Board, Size, Char):-
   board_pieces(Size, NPieces),
   count_pieces(Board, Char, Count), !,
   Count < NPieces.
-
-% board_pieces(+Size, -NPieces)
-% Returns the number of pieces allowed for the given board size.
-board_pieces(5,16).
-board_pieces(4,12).
-
 
 % count_pieces(+Board, +Piece, -Count)
 % Counts the number of occurrences of Piece in Board.
@@ -82,7 +78,17 @@ count(X, [Y|T], Count) :-
   X \= Y,
   count(X, T, Count).
 
-
+% check_possible_tower(+Board, +Player, +NewX, +NewY, +L, +Top)
+% Checks if the tower at (NewX, NewY) can be built by the given player.
+check_possible_tower(Board, Player, NewX, NewY, L, Top):-
+  get_tower(Board, NewX, NewY, Tower),
+  length(Tower, L1),
+  L2 is L1+L,
+  (L2 >= 6 ->
+    top_to_player(Top, Player);
+    L2 < 6
+  ).
+  
 % ================================= VALID MOVES =================================
 
 % valid_moves(+Board, +Player, +X, +Y, -ListOfMoves)
@@ -122,18 +128,6 @@ valid_move(Board, Player, X, Y, NewX, NewY, Tower, NPieces) :-
   valid_piece_movement(Board, X, Y, NewX, NewY, L),
   tower_top(Tower, Top),
   check_possible_tower(Board, Player, NewX, NewY, NPieces, Top).
-
-% check_possible_tower(+Board, +Player, +NewX, +NewY, +L, +Top)
-% Checks if the tower at (NewX, NewY) can be built by the given player.
-check_possible_tower(Board, Player, NewX, NewY, L, Top):-
-  get_tower(Board, NewX, NewY, Tower),
-  length(Tower, L1),
-  L2 is L1+L,
-  (L2 >= 6 ->
-    top_to_player(Top, Player);
-    L2 < 6
-  ).
-  
 
 % valid_piece_movement(+Board, +X, +Y, -NewX, -NewY, +TowerHeight)
 % Returns the coordinates (NewX, NewY) of a valid move for the piece at (X, Y) with the given height.
@@ -191,8 +185,6 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   down_right(Board, X, Y, NewX, NewY).
 valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   down_left(Board, X, Y, NewX, NewY).
-
-
 
 % vertical_up(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, Y) to (X, 1)
@@ -279,7 +271,9 @@ down_left(Board, X, Y, OccupiedX, OccupiedY) :-
     OccupiedY is Y1, !
   ).
 
-iterate_board(Board, Top):-
+% check_winner(+Board, -Top)
+% Iterates through the board and returns the top piece of the first tower with more than 6 pieces.
+check_winner(Board, Top):-
   length(Board, Rows),
   between(1, Rows, Row),
   nth1(Row, Board, RowList),
@@ -288,38 +282,5 @@ iterate_board(Board, Top):-
   nth1(Col, RowList, Tower),
   Tower \= empty,
   length(Tower, L),
-  % L =:= 6,  %KING with only 6
   L >= 6,
   tower_top(Tower, Top).
-
-
-
-% choose_piece_and_move(+Board, -NewBoard)
-% Allows the user to select a piece to move and then choose a valid move for that piece.
-choose_piece_and_move(Board, NewBoard) :-
-  repeat,
-  write('Select the piece you want to move (X, Y): '),
-  get_coordinate(Board, X, Y),
-  get_tower(Board, X, Y, _Piece),
-  valid_moves(Board, X, Y, ValidMoves),
-  print_valid_moves(ValidMoves),
-  write('Choose a move (NewX, NewY): '),
-  get_coordinate(Board, NewX, NewY),
-  member([NewX, NewY], ValidMoves), % Ensure the selected move is valid
-  move_pieces(Board, X, Y, NewX, NewY, NewBoard), !.
-
-% print_valid_moves(+ValidMoves)
-% Prints the valid moves to the console for the user to choose from.
-print_valid_moves([]).
-print_valid_moves([[X, Y] | Rest]) :-
-  format('Valid move: (~d, ~d)\n', [X, Y]),
-  print_valid_moves(Rest).
-
-
-% ================================= GAME OVER =================================
-
-% game_over(+Board, -Winner)
-% Checks if there is any game winner.
-game_over(Board, Winner):-
-  iterate_board(Board, Top),
-  top_to_player(Top, Winner).

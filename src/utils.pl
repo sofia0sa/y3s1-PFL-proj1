@@ -1,10 +1,10 @@
-:- use_module(library(lists)).
+% ================== DYNAMIC FACTS ==================
 
 :- dynamic difficulty/2.
 :- dynamic name_of/2.
 
 
-% =============== GAME RELATED ===================
+% =============== GAME ===================
 
 % change_player(+CurrtPlayer,-NextPlayer)
 % Change the player's turn.
@@ -26,9 +26,15 @@ player_char(player2, o).
 tower_top(Tower, Top) :-
     last(Tower, Top).
   
-  
+% top_to_player(+Top, -Player)
+% Returns the player that owns the top piece.
 top_to_player(x, player1).
 top_to_player(o, player2).
+
+% board_pieces(+Size, -NPieces)
+% Returns the number of pieces allowed for the given board size.
+board_pieces(5,16).
+board_pieces(4,12).
 
 % ================== READ INPUT ==================
 

@@ -1,6 +1,3 @@
-:- use_module(library(lists)).
-:- use_module(library(between)).
-
 % ================ TRANSLATIONS ================ %
 
 % translate(+T, -X)
@@ -21,35 +18,6 @@ length_to_letter(4, b).
 length_to_letter(5, q).
 length_to_letter(X, k):-
     X > 5.
-
-% check_color(+Top, +Letter, -X)
-% Checks the color of the piece on top of the tower and returns the corresponding case.
-check_color(o, C, C).
-check_color(x, C, X):-
-    lowercase_to_uppercase(C, X).
-
-
-% replace_nth1(+Index, +List, +Value, -NewList)
-% Replaces the element at the specified Index in List with Value and returns the resulting NewList
-replace_nth1(1, [_|T], Value, [Value|T]).
-replace_nth1(N, [H|T], Value, [H|NewT]) :-
-    N > 1,
-    M is N - 1,
-    replace_nth1(M, T, Value, NewT).
-
-% get_tower(+Board, +X, +Y, -Tower)
-% Returns the tower at the specified X and Y coordinates on the Board
-get_tower(Board, X, Y, Tower) :-
-    nth1(Y, Board, Row),
-    nth1(X, Row, Tower),
-    Tower \= empty.
-
-% empty_cell(+Board, +X, +Y)
-% Checks if the cell at the specified X and Y coordinates on the Board is empty
-empty_cell(Board, X, Y) :-
-    nth1(Y, Board, Row),
-    nth1(X, Row, Tower),
-    Tower == empty.
 
 
 % ================= PRINTS ================= %
@@ -108,17 +76,11 @@ p_h(X, Y) :-
 % initial_state(+Size, -Board)
 % Returns the initial board of the specified Size
 % initial_state(4, [
-%     [[o,o], empty, [x], [x]],
+%     [empty, empty, empty, empty],
 %     [empty, empty, empty, empty],
 %     [empty, empty, empty, empty],
 %     [empty, empty, empty, empty]
 % ]).
-initial_state(4, [
-    [empty, empty, empty, empty],
-    [empty, empty, empty, empty],
-    [empty, empty, empty, empty],
-    [empty, empty, empty, empty]
-]).
 initial_state(5, [
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
@@ -126,6 +88,8 @@ initial_state(5, [
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty]
   ]).
+
+% !WARNING: for testing purposes only
 % initial_state(5, [
 %     [[x,o], [x], empty, empty, [x,o,o,x,o]],
 %     [empty, [x], [x,o,x], empty, [o]],
@@ -133,6 +97,18 @@ initial_state(5, [
 %     [[o,o], empty, empty, [x,x,x], empty],
 %     [empty, empty, empty, empty, empty]
 %   ]).
+% initial_state(4, [
+%     [[o,o], empty, [x], [x]],
+%     [empty, empty, empty, empty],
+%     [empty, empty, empty, empty],
+%     [empty, empty, empty, empty]
+% ]).
+initial_state(4, [
+    [[o], [x,o,o,o,x,x], empty, [o]],
+    [empty, empty, empty, empty],
+    [[o], empty, empty, empty],
+    [empty, [x], empty, empty]
+]).
 
 
 % display_game(+Size, +Board)
@@ -142,6 +118,7 @@ display_game(Size, Board):-
     p_m(Size, Board),
     write('\n').
 
+% ================== CHECKING ================== %
 
 % inside_board(+Board, +X, +Y)
 % Checks if the coordinates X and Y are inside the Board
@@ -150,12 +127,32 @@ inside_board(Board, X, Y) :-
     between(1, Size, X),
     between(1, Size, Y).
 
+% empty_cell(+Board, +X, +Y)
+% Checks if the cell at the specified X and Y coordinates on the Board is empty
+empty_cell(Board, X, Y) :-
+    nth1(Y, Board, Row),
+    nth1(X, Row, Tower),
+    Tower == empty.
 
-%---------------------------------%
+% check_color(+Top, +Letter, -X)
+% Checks the color of the piece on top of the tower and returns the corresponding case.
+check_color(o, C, C).
+check_color(x, C, X):-
+    lowercase_to_uppercase(C, X).
 
-% !WARNING: Isto não está de acordo com o enuncidado
-% initial_state(+Size,-Board)
-% !TODO: description
-% initial_state(Size, Board):-
-%     board(Size, Board).
-%     % display_game(Size, Board). % !WARNING: Apenas para testar
+% ================== CHANGES ================== %
+
+% replace_nth1(+Index, +List, +Value, -NewList)
+% Replaces the element at the specified Index in List with Value and returns the resulting NewList
+replace_nth1(1, [_|T], Value, [Value|T]).
+replace_nth1(N, [H|T], Value, [H|NewT]) :-
+    N > 1,
+    M is N - 1,
+    replace_nth1(M, T, Value, NewT).
+
+% get_tower(+Board, +X, +Y, -Tower)
+% Returns the tower at the specified X and Y coordinates on the Board
+get_tower(Board, X, Y, Tower) :-
+    nth1(Y, Board, Row),
+    nth1(X, Row, Tower),
+    Tower \= empty.

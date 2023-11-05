@@ -1,5 +1,4 @@
-
-% A move is of this type [MoveFlag, Player, X, Y, NewX, NewY, NPieces]
+% ============================== GAME LOGIC FOR COMPUTER ==============================
 
 % get_moves_by_type(+Board, +Player, -Moves, +MoveType)
 % Gets all the moves of type 1 (place pawn) for a given player and board.
@@ -53,7 +52,7 @@ get_all_moves(Board, Player, Moves) :-
   append(Moves12, Moves3, Moves).
 
  
-%======================= MOVES FOR COMPUTER EASY AND HARD ===========================================================================
+%======================= MOVES FOR COMPUTER - EASY AND HARD =======================
 
 % move_computer(+OldGameState, +GameState, -NewGameState, +Level)
 % Gets a move for the computer based on the level of difficulty. In this case, easy level.
@@ -80,6 +79,7 @@ move_computer(OldGameState, GameState, NewGameState, 2) :-
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
+% get_lowest_elements(+List, +MinValue, -LowestElements)
 % Helper predicate to collect elements with the lowest value
 get_lowest_elements([], _, []).
 get_lowest_elements([Delta-Board|Rest], MinValue, LowestElements) :-
@@ -91,6 +91,7 @@ get_lowest_elements([_|Rest], MinValue, LowestElements) :-
 
 
 % minimax(+OldBoard, +Board, +Player, +Moves, -FinalList, +Value1, +Depth, +Type)
+% Gets the best move for the computer based on the minimax algorithm.
 minimax(OldBoard, Board, Player, Moves, FinalList, Value1, 1, Type) :- 
   minimax(OldBoard, Board, Player, Moves, [], FinalList, Value1, 1, Type).
 
@@ -126,22 +127,28 @@ minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   NewAcc = [Delta-Board1 | Acc],
   minimax(OldBoard, Board, Player, T, NewAcc, FinalList, Depth, Type).
 
+% swap_min_max(+Type, -NewType)
+% Swaps the type of player to have his board valued in minimax algorithm.
 swap_min_max(min, max).
 swap_min_max(max, min).
 
+% max_or_min(+Type, +Value, -MinValue)
+% Swaps the type of board value in minimax algorithm depending on the player.
 max_or_min(min, Value, MinValue):- MinValue is -Value.
 max_or_min(max, Value, Value).
 
 
 
-%============================ GET BOARD VALUE ======================================================================
+%============================ GET BOARD VALUES ============================
 
 % value(+Board, +Player, -Value)
 % Calculates the value of a board for a given player. Used for the hard level in computer mode.
-value(Board, Player, Value) :-
+value(Board, player1, Value) :-
   iterate_board(Board, XValue, OValue),
-  (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
-
+  Value is XValue - OValue.
+value(Board, player2, Value) :-
+  iterate_board(Board, XValue, OValue),
+  Value is OValue - XValue.
 
 % iterate_board(+Board, -XValue, -OValue)
 % Iterates through the board and calculates the value of the board for each player based on tower heights and tops.
@@ -191,10 +198,7 @@ update_values(o, TowerHeight, XValue, OValue, XValue, NewOValue) :-
   TowerHeight < 6,
   NewOValue is OValue + (TowerHeight * TowerHeight).
 
-
-
-
-%=============================== TRANSLATE MOVES INTO BOARDS ===================================================================
+%=============================== TRANSLATE MOVES INTO BOARDS ===============================
 
 % translate_move(+Board, +Move, -NewBoard)
 % Translates a move into a board, depending on the move type:
@@ -207,15 +211,3 @@ translate_move(Board, [2, _Player, X, Y, NewX, NewY, _NPieces], NewBoard) :-
 % Moves of type 3 (separate tower).
 translate_move(Board, [3, _Player, X, Y, NewX, NewY, NPieces], NewBoard) :-
     separate_tower(Board, X, Y, NewX, NewY, NPieces, NewBoard).
-
-test_translate_move :-
-  Board = [
-    [[x,o], [x], empty, empty, empty],
-    [empty, empty, empty, empty, empty],
-    [empty, empty, [x,x], empty, empty],
-    [[o,o], empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty]
-  ],
-  translate_move(Board, [3, player1, 1, 1, 2, 1, 2], NewBoard),
-  length(NewBoard, Size),
-  display_game(Size, NewBoard).

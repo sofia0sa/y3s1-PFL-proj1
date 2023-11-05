@@ -1,11 +1,3 @@
-:- use_module(library(lists)).
-:- use_module(library(between)).
-:- use_module(library(system), [now/1]).
-:- consult(utils).
-:- consult(board).
-:- use_module(library(lists)).
-:- use_module(library(random)).
-
 % =============== MAIN MENU OPTIONS ========================== %
 
 % choose_main_option/0
@@ -33,28 +25,29 @@ main_option(2) :-
     write(' |   Six MaKING is played on a 5x5 board, where each                     |\n'),
     write(' |   player holds 16 disks - in case of a 4x4 board                      |\n'),
     write(' |   each player holds 12 disks. Players choose the color                |\n'),
-    write(' |   they play with and decide on the starting order.                    |\n'),
-    write(' |   The game  with an ard, and players                    |\n'),
+    write(' |   (letter case, in this project) they play with and decide            |\n'),
+    write(' |   on the starting order.                                              |\n'),
+    write(' |   The game starts with an empty board, and players                    |\n'),
     write(' |   alternate turns. The player whose turn is, may choose               |\n'),
     write(' |   whether to:                                                         |\n'),
     write(' |                                                                       |\n'),
-    write(' |   -> place a new diwn) on the board;                          |\n'),
+    write(' |   -> place a new disk (a Pawn) on the board;                          |\n'),
     write(' |   -> or move one of the towers or a part of a tower.                  |\n'),
     write(' |                                                                       |\n'),
     write(' |   For each number of disks in a board cell, the tower takes           |\n'),
     write(' |   different roles and can move differently.                           |\n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),
-    write(' |  1  - pawn - 1 cell horizontal or vertical                            |\n'), 
-    write(' |  2  - rook - any number of cells horizontal or vertical,              |\n'),
-    write(' |       until finding another piece                                     |\n'),
-    write(' |  3  - knight - 2 cells horizontal or vertical,                        |\n'),
-    write(' |       then 1 cell horizontal or vertical                              |\n'),
-    write(' |  4  - bishop - any number of cells diagonal,                          |\n'),
-    write(' |       until finding another piece                                     |\n'),
-    write(' |  5  - queen - any number of cells horizontal, vertical or             |\n'),
-    write(' |       diagonal, until finding another piece                           |\n'),
-    write(' |  6+ - king - wins                                                     |\n'),
+    write(' |    1  - pawn - 1 cell horizontal or vertical                          |\n'), 
+    write(' |    2  - rook - any number of cells horizontal or vertical,            |\n'),
+    write(' |         until finding another piece                                   |\n'),
+    write(' |    3  - knight - 2 cells horizontal or vertical,                      |\n'),
+    write(' |         then 1 cell horizontal or vertical                            |\n'),
+    write(' |    4  - bishop - any number of cells diagonal,                        |\n'),
+    write(' |         until finding another piece                                   |\n'),
+    write(' |    5  - queen - any number of cells horizontal, vertical or           |\n'),
+    write(' |         diagonal, until finding another piece                         |\n'),
+    write(' |    6+ - king - wins                                                   |\n'),
     write(' |                                                                       |\n'),
     write(' |                                                                       |\n'),
     write(' |   For more detailed information, consult the link below.              |\n'),
@@ -82,27 +75,8 @@ main_option(3):-
     write(' |_______________________________________________________________________|\n'),
     abort.
 
-% ==================== SHORT RULES BEFORE BOARD ====================
 
-% print_short_rules/0
-% Prints short set of game rules and it's present before the first board is printed.
-print_short_rules :-
-    write('\n=========================================\n'),
-    write('\nREMEMBER:\n'),
-    write('   1  - pawn - 1 cell horizontal or vertical                 \n'),
-    write('   2  - rook - any number of cells horizontal or vertical,   \n'),
-    write('        until finding another piece                          \n'),
-    write('   3  - knight - 2 cells horizontal or vertical,             \n'),
-    write('        then 1 cell horizontal or vertical                   \n'),
-    write('   4  - bishop - any number of cells diagonal,               \n'),
-    write('        until finding another piece                          \n'),
-    write('   5  - queen - any number of cells horizontal, vertical or  \n'),
-    write('        diagonal, until finding another piece                \n'),
-    write('   6+ - king - wins                                          \n'),
-    write('\nThese rules will stay here.\n\n').
-
-
-% =============== GAME MODES OPTIONS ========================== %
+% =============== GAME MODE OPTIONS ========================== %
 
 % choose_mode/0
 % Choice of game mode.
@@ -139,7 +113,7 @@ mode_option(3):-
     choose_difficulty(player1),
     choose_difficulty(player2).
 
-% Extra option: Go back to main menu.
+% Extra option: Go back to the main menu.
 mode_option(4):-
     clear_console,
     print_main_menu.
@@ -237,8 +211,26 @@ print_modes :-
     choose_mode.
 
 
+% print_short_rules/0
+% Prints short set of game rules and it's present before the first board is printed.
+print_short_rules :-
+    write('\n=========================================\n'),
+    write('\nREMEMBER:\n'),
+    write('   1  - pawn - 1 cell horizontal or vertical                 \n'),
+    write('   2  - rook - any number of cells horizontal or vertical,   \n'),
+    write('        until finding another piece                          \n'),
+    write('   3  - knight - 2 cells horizontal or vertical,             \n'),
+    write('        then 1 cell horizontal or vertical                   \n'),
+    write('   4  - bishop - any number of cells diagonal,               \n'),
+    write('        until finding another piece                          \n'),
+    write('   5  - queen - any number of cells horizontal, vertical or  \n'),
+    write('        diagonal, until finding another piece                \n'),
+    write('   6+ - king - wins                                          \n'),
+    write('\nThese rules will stay here.\n\n').
 
-% =============== MAIN MENU (called by play.) ========================== %
+
+
+% =============== MAIN MENU ========================== %
 
 % main(-NewGameState)
 % Calls configuration predicates and starts the game.

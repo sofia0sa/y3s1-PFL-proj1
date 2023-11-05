@@ -138,21 +138,28 @@ DONE:
 - vitoria da mais +100 pontos no value para ser evidente que um dado jogador ganharia com essa jogada
 - jogador pode dar vitoria ao adversario 
 
+- colocar o predicado minimax com a recursao (por poucas decimas) 
 
+------------------------------------------------------------
 
 FILES DOCUMENTADOS:
-- menu.pl
-- game.pl
-- utils.pl
-- board.pl
 
-FALTA:
+
+DOCUMENTADO E ORGANIZADO:
+- utils.pl
+- board.pl -> falta apagar uma coisa
+- game.pl
+- menu.pl
 - game_logic.pl
 - game_logic_computer.pl
 
+LIMPOS (revisto no final):
+
+------------------------------------------------------------
+
+
 The second clause does not perform any actions, but it prevents the program from crashing or producing unexpected behavior when the user leaves the game without making a selection. Instead, the program will simply fail and exit gracefully
 
-LIMPOS (revisto no final):
 
 SE NÃO DER MINIMAX:
 - computador faz algo +/- inteligente: procura a torre mais alta, ve se existe alguma torre que possa separar e mover para cima dessa torre, desde que o topo seja do proprio computador

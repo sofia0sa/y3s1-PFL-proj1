@@ -1,9 +1,16 @@
+:- use_module(library(lists)).
+:- use_module(library(between)).
+:- use_module(library(system), [now/1]).
+:- use_module(library(lists)).
+:- use_module(library(random)).
 :- consult('game_logic.pl').
 :- consult('game_logic_computer.pl').
 :- consult('menu.pl'). 
 :- consult('utils.pl').
+:- consult('board.pl').
 
 % ===================== PRINT NEXT PLAYER ==================
+
 % print_turn(+Player)
 % Prints message indicating the next player to play.
 print_turn(Player):-
@@ -28,12 +35,13 @@ get_move(OldGameState, GameState, NewGameState) :-
     write('3 - Separate tower\n'),
     choose_number(1, 3, '\nType a number', Option), %!,
     move_option(OldGameState, GameState, Option, NewGameState).
+
 % Predicate for choice of movement in case it's Easy Computer mode.
 get_move(OldGameState, GameState, NewGameState) :- 
     [_Board, Player] = GameState,
     difficulty(Player, 1), !,
-    % move_computer(GameState, NewGameState, 1). 
     move_computer(OldGameState, GameState, NewGameState, 1).
+
 % Predicate for choice of movement in case it's Hard Computer mode.
 get_move(OldGameState, GameState, NewGameState) :- 
     move_computer(OldGameState, GameState, NewGameState, 2).
@@ -47,14 +55,6 @@ check_if_tower_exists(Board, X, Y, L) :-
     length(Tower, L),
     L>1,
     !.
-
-% check_if_can_place_tower(+Board, +X1, +Y1, +NPieces)
-% Checks if a tower can be placed in the given coordinates.
-% check_if_can_place_tower(Board, X1, Y1, NPieces) :- 
-    % get_tower(Board, X1, Y1, Tower),
-    % length(Tower, L),
-    % L1 is L+NPieces,
-    % !.
 
 % move_option(+OldGameState, +GameState, +Option, -NewGameState)
 % Choice of move option.
@@ -75,7 +75,6 @@ move_option(_OldGameState, GameState, 2, NewGameState) :-
 
     write('\nWhich tower do you want to move?\n'),
     get_coordinate(Board, X, Y),
-    % \+ empty_cell(Board, X, Y),
     (empty_cell(Board, X, Y) -> 
         format('There is not a tower in position [~w,~w]!\n', [X, Y]),
         fail;
@@ -141,7 +140,6 @@ get_possible_moves(Board, Player, X, Y, ListOfMoves, L) :-
     format('No possible moves for the tower in [~d, ~d]!\n', [X, Y]),
     fail).
 
-
 % Possible moves for the "Separate tower" option.
 get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     valid_moves(Board, Player, X, Y, ListOfMoves, NPieces),
@@ -152,7 +150,6 @@ get_possible_moves(Board, Player, X, Y, NPieces, ListOfMoves, L) :-
     format('It`s not possible to move ~d disks of the tower in [~d, ~d]!\n', [NPieces, X, Y]),
     fail).
 
-
 % get_coordinate(+Board, -X, -Y)
 % Lets player choose coordinates based on the size of the board.
 get_coordinate(Board, X, Y):-
@@ -161,7 +158,15 @@ get_coordinate(Board, X, Y):-
     choose_number(1, Size, 'Choose row', Y).
 
 
-% ==================== PRINTING GAME WINNER ====================
+% ==================== GAME OVER ====================
+
+% game_over(+Board, -Winner)
+% Checks if there is any game winner.
+game_over(Board, Winner):-
+    check_winner(Board, Top),
+    top_to_player(Top, Winner).
+
+% ==================== GAME WINNER ====================
 
 % show_winner(+Winner)
 % Prints the winner of the game.
@@ -169,8 +174,7 @@ show_winner(Winner):-
     name_of(Winner, Name),
     format('Winner is ~a! Congrats!!\n', [Name]).
 
-
-% ============================== GAME CYCLE ====================
+% ==================== GAME CYCLE ====================
 
 % game_cycle(+OldGameState, +GameState)
 % Loop that keeps the game running and checks if the game is over. If it´s not, calls the get_move predicate to get the next move.
