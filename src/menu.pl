@@ -31,14 +31,14 @@ main_option(2) :-
     write(' |   with your own color in the top disk.                                |\n'),
     write(' |                                                                       |\n'),
     write(' |   Six MaKING is played on a 5x5 board, where each                     |\n'),
-    write(' |   player holds 16 wooden disks - in case of a 4x4 board               |\n'),
+    write(' |   player holds 16 disks - in case of a 4x4 board                      |\n'),
     write(' |   each player holds 12 disks. Players choose the color                |\n'),
     write(' |   they play with and decide on the starting order.                    |\n'),
-    write(' |   The game starts with an empty board, and players                    |\n'),
+    write(' |   The game  with an ard, and players                    |\n'),
     write(' |   alternate turns. The player whose turn is, may choose               |\n'),
     write(' |   whether to:                                                         |\n'),
     write(' |                                                                       |\n'),
-    write(' |   -> place a new disk (a Pawn) on the board;                          |\n'),
+    write(' |   -> place a new diwn) on the board;                          |\n'),
     write(' |   -> or move one of the towers or a part of a tower.                  |\n'),
     write(' |                                                                       |\n'),
     write(' |   For each number of disks in a board cell, the tower takes           |\n'),
@@ -250,10 +250,8 @@ main(NewGameState):-
     choose_board(Size), 
     clear_console,
     print_short_rules,
-    initial_state(Size, Board), %estado inicial da board
-    % display_game(Size, Board), %!WARNING: ver initial_state
+    initial_state(Size, Board),
+    display_game(Size, Board),
+    print_turn(Player),
     GameState = [Board, Player],
     get_move([[], _], GameState, NewGameState).
-
-% Used when game is exited.
-% main(_).

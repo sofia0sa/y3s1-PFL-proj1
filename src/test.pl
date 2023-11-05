@@ -2,6 +2,77 @@
 :- consult(board).
 :- consult(game).
 
+% !DELETE
+test_value:-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o,x]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  % value(Board, player2, Value),
+  value(Board, Value),
+  write('HERE Value: '), write(Value), nl.
+
+% !DELETE
+test_get_all_moves:-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  get_all_moves(Board, player2, Moves),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
+
+% !DELETE
+test_get_moves_by_type :-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+],
+  get_moves_by_type(Board, player2, Moves, 2),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
+
+
+% !DELETE
+test_get_moves_by_type :-
+  Board = [
+    [[x,o], [x], empty, empty, [x,o,o,x,o]],
+    [empty, empty, [x,o,x], empty, [o]],
+    [empty, empty, empty, empty, empty],
+    [[o,o], empty, empty, [x,x,x], empty],
+    [empty, empty, empty, empty, empty]
+  ],
+  % valid_moves(Board, player1, 2, 1, ListOfMovesMoves),
+  % write('HERE list: '), write(ListOfMovesMoves), nl,
+  get_moves_by_type(Board, player2, Moves, 3),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
+
+% !DELETE
+test_get_moves_by_type :-
+  Board = [
+    [empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [[x,x,x], empty, [x], [x], [x,x]],
+    [[x,x,x], [x], [x], [x], [x,x]]
+  ],
+  get_moves_by_type(Board, player1, Moves, 1),
+  length(Moves, L),
+  write('HERE Length: '), write(L), nl,
+  write(Moves).
 
 
 % !DELETE: apenas para testes

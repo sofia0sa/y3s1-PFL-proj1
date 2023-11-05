@@ -30,7 +30,6 @@ get_move(OldGameState, GameState, NewGameState) :-
     move_option(OldGameState, GameState, Option, NewGameState).
 % Predicate for choice of movement in case it's Easy Computer mode.
 get_move(OldGameState, GameState, NewGameState) :- 
-    write('HERE IN get_move dif 1'), nl,
     [_Board, Player] = GameState,
     difficulty(Player, 1), !,
     % move_computer(GameState, NewGameState, 1). 
@@ -188,13 +187,12 @@ game_cycle(_OldGameState, GameState):-
     show_winner(Winner).
 
 % Calls recursively the get_move predicate to get the next move, while there is no winner, changing players' turns.
-game_cycle(OldGameState, GameState):- % HERE in case nobody is winning atm
-    % write('NEW GAME CYCLE\n'),
+game_cycle(OldGameState, GameState):-
     [Board, Player] = GameState, 
     length(Board, Size),
     display_game(Size, Board),
     print_turn(Player),
-    get_move(OldGameState, GameState, NewGameState), %para player humano
+    get_move(OldGameState, GameState, NewGameState), 
     game_cycle(GameState, NewGameState).
 
 
@@ -206,5 +204,4 @@ play :-
     clear_console,
     main(GameState), !,
     game_cycle(GameState, GameState),
-    % game_cycle([[], _], GameState),
     clear_data.

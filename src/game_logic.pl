@@ -31,36 +31,21 @@ place_tower(Board, X, Y, Piece, NewBoard) :-
   replace_nth1(X, Row, Piece, NewRow),
   replace_nth1(Y, Board, NewRow, NewBoard).
 
-
 % place_pawn(+Board, +X, +Y, +Player, -NewBoard)
-% Places a pawn of the given player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-% place_pawn(Board, X, Y, player1, NewBoard) :-
-% (empty_cell(Board, X, Y) ->
-%   length(Board, Size),
-%   under_piece_limit(Board, Size, x),
-%   place_tower(Board, X, Y, [x], NewBoard);
-%   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
-%   fail).
-% place_pawn(Board, X, Y, player2, NewBoard) :-
-% (empty_cell(Board, X, Y) -> 
-%   length(Board, Size),
-%   under_piece_limit(Board, Size, o),
-%   place_tower(Board, X, Y, [o], NewBoard);
-%   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
-%   fail).
-
-place_pawn(Board, X, Y, Player, NewBoard) :-
+% Places a pawn of the given player on the Board, if possible, at the specified X and Y coordinates and returns the resulting NewBoard.
+% When cell's not empty, prints a feedback message and fails.
+place_pawn(Board, X, Y, _Player, _NewBoard) :-
   \+empty_cell(Board, X, Y),
   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]), !, fail.
-
-place_pawn(Board, X, Y, Player, NewBoard) :-
+% When cell's empty, checks if the number of pieces of the given player in the board is under the limit. If not, prints a feedback message and fails.
+place_pawn(Board, X, Y, Player, _NewBoard) :-
   empty_cell(Board, X, Y),
   length(Board, Size),
   player_char(Player, Char),
   \+under_piece_limit(Board, Size, Char), !,
   write('\nCannot place pawn! Limit of pawns reached!\n'),
   fail.
-
+% When cell's empty and the number of pieces of the given player in the board is under the limit, places the pawn and returns the resulting NewBoard.
 place_pawn(Board, X, Y, Player, NewBoard) :-
   empty_cell(Board, X, Y),
   length(Board, Size),
@@ -80,16 +65,6 @@ under_piece_limit(Board, Size, Char):-
 board_pieces(5,16).
 board_pieces(4,12).
 
-% under_piece_limit(Board, 5, Piece):-
-%   count_pieces(Board, Piece, Count), !,
-%   (Count < 16 ->
-%     true;
-%     write('\nCannot place pawn! Limit of 16 pawns reached!\n'),
-%     fail
-%   ).
-
-% board_pieces(Size, NPieces)^
-
 
 % count_pieces(+Board, +Piece, -Count)
 % Counts the number of occurrences of Piece in Board.
@@ -107,6 +82,8 @@ count(X, [Y|T], Count) :-
   X \= Y,
   count(X, T, Count).
 
+
+% ================================= VALID MOVES =================================
 
 % valid_moves(+Board, +Player, +X, +Y, -ListOfMoves)
 % Calculates all the valid moves for the tower at position (X, Y) for the given player.
@@ -128,7 +105,7 @@ valid_moves(Board, Player, X, Y, ListOfMoves, NPieces) :-
   ), ValidMoves),
   sort(ValidMoves, ListOfMoves).
   
-  
+% valid_move(+Board, +Player, +X, +Y, +NewX, +NewY, +Tower)
 % Checks if the move from (X, Y) to (NewX, NewY) is valid for the given piece and player.
 valid_move(Board, Player, X, Y, NewX, NewY, Tower) :-
   inside_board(Board, NewX, NewY),
@@ -215,7 +192,8 @@ valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
 valid_piece_movement(Board, X, Y, NewX, NewY, 5) :-
   down_left(Board, X, Y, NewX, NewY).
 
-% !TEST: after commenting second cut
+
+
 % vertical_up(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, Y) to (X, 1)
 vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
@@ -223,7 +201,7 @@ vertical_up(Board, X, Y, OccupiedX, OccupiedY) :-
   between_rev(1, Z, Y1),
   \+ empty_cell(Board, X, Y1), !,
   OccupiedX = X,
-  OccupiedY = Y1. %, !.
+  OccupiedY = Y1. 
 
 % vertical_down(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the vertical line from (X, Y) to (X, Size)
@@ -233,7 +211,7 @@ vertical_down(Board, X, Y, OccupiedX, OccupiedY) :-
   between(Z, Size, Y1), 
   \+ empty_cell(Board, X, Y1), !,
   OccupiedX = X,
-  OccupiedY = Y1. %, !.
+  OccupiedY = Y1. 
 
 % horizontal_left(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the horizontal line from (X, Y) to (1, Y)
@@ -242,7 +220,7 @@ horizontal_left(Board, X, Y, OccupiedX, OccupiedY) :-
   between_rev(1, Z, X1),
   \+ empty_cell(Board, X1, Y), !,
   OccupiedX = X1,
-  OccupiedY = Y. %, !.
+  OccupiedY = Y. 
   
 % horizontal_right(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the horizontal line from (X, Y) to (Size, Y)
@@ -252,7 +230,7 @@ horizontal_right(Board, X, Y, OccupiedX, OccupiedY) :-
   between(Z, Size, X1),
   \+ empty_cell(Board, X1, Y), !,
   OccupiedX = X1,
-  OccupiedY = Y. %, !.
+  OccupiedY = Y.
 
 % up_right(+Board, +X, +Y, -OccupiedX, -OccupiedY)
 % Checks if there are any occupied cells in the diagonal line from (X, Y) to the top right corner
@@ -301,9 +279,6 @@ down_left(Board, X, Y, OccupiedX, OccupiedY) :-
     OccupiedY is Y1, !
   ).
 
-
-
-% ====================
 iterate_board(Board, Top):-
   length(Board, Rows),
   between(1, Rows, Row),
@@ -317,12 +292,6 @@ iterate_board(Board, Top):-
   L >= 6,
   tower_top(Tower, Top).
 
-top_to_player(x, player1).
-top_to_player(o, player2).
-
-game_over(Board, Winner):-
-  iterate_board(Board, Top),
-  top_to_player(Top, Winner).
 
 
 % choose_piece_and_move(+Board, -NewBoard)
@@ -345,3 +314,12 @@ print_valid_moves([]).
 print_valid_moves([[X, Y] | Rest]) :-
   format('Valid move: (~d, ~d)\n', [X, Y]),
   print_valid_moves(Rest).
+
+
+% ================================= GAME OVER =================================
+
+% game_over(+Board, -Winner)
+% Checks if there is any game winner.
+game_over(Board, Winner):-
+  iterate_board(Board, Top),
+  top_to_player(Top, Winner).

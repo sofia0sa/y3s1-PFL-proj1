@@ -4,7 +4,7 @@
 :- dynamic name_of/2.
 
 
-% === GAME RELATED ===
+% =============== GAME RELATED ===================
 
 % change_player(+CurrtPlayer,-NextPlayer)
 % Change the player's turn.
@@ -16,8 +16,47 @@ change_player(player2, player1).
 player_case(player1, 'Uppercase').
 player_case(player2, 'lowercase').
 
+% player_char(+Player, -Char)
+% Returns the character of the player's pieces.
 player_char(player1, x).
 player_char(player2, o).
+
+% tower_top(+Tower, -Top)
+% Returns the top element of Tower.
+tower_top(Tower, Top) :-
+    last(Tower, Top).
+  
+  
+top_to_player(x, player1).
+top_to_player(o, player2).
+
+% ================== READ INPUT ==================
+
+% choose_number(+Min, +Max, +Context, -Value)
+% Checks if the value given by user input is between Min and Max or if it's exactly the only number that the user can type.
+% When there is no number interval, checks if it's the same number. 
+choose_number(SameN, SameN, Context, Value):-
+    repeat,
+    format('~a (can only be ~d): ', [Context, SameN]),
+    read_number(Value),
+    Value == SameN, !.
+% Checks if the number is between Min and Max.
+choose_number(Min, Max, Context, Value):-
+    repeat,
+    format('~a between ~d and ~d: ', [Context, Min, Max]),
+    read_number(Value),
+    between(Min, Max, Value), !.
+
+% read_number(-Number)
+% Unifies the Number with input number from console.
+read_number(X):-
+    read_number_aux(X,0).
+read_number_aux(X, Acc):- 
+    get_code(C),
+    between(48, 57, C), !,
+    Acc1 is 10*Acc + (C - 48),
+    read_number_aux(X,Acc1).
+read_number_aux(X, X).
 
 % get_name(+Player)
 % Asks and saves a player's name. Dynamically adds the name_of/2 fact to the base fact.
@@ -27,39 +66,7 @@ get_name(Player) :-
     atom_codes(Name, Codes),
     asserta(name_of(Player, Name)).
 
-% init_random_state/0
-% Responsible for initializing the random module.
-init_random_state :-
-    now(X),
-    setrand(X).
-
-% choose_number(+Min,+Max,+Context,-Value) antes era get_option
-% Checks if the value given by user input is between Min and Max or if it's exactly the only number that the user can type.
-% When there is no number interval, checks if it's the same number. 
-choose_number(SameN,SameN,Context,Value):-
-    repeat,
-    format('~a (can only be ~d): ', [Context, SameN]),
-    read_number(Value),
-    Value == SameN, !.
-% Checks if the number is between Min and Max.
-choose_number(Min,Max,Context,Value):-
-    repeat,
-    format('~a between ~d and ~d: ', [Context, Min, Max]),
-    read_number(Value),
-    between(Min, Max, Value), !.
-
-
-% read_number(-Number)
-% Unifies the Number with input number from console.
-read_number(X):-
-    read_number_aux(X,0).
-read_number_aux(X,Acc):- 
-    get_code(C),
-    between(48, 57, C), !,
-    Acc1 is 10*Acc + (C - 48),
-    read_number_aux(X,Acc1).
-read_number_aux(X,X).
-
+% ============== LIST UTILITIES ================
 
 % split_list(+List, -Part1, +Part2Length, -Part2)
 % Splits a list into two parts, Part1 and Part2, where Part2 has length Part2Length
@@ -76,6 +83,7 @@ flatten([H|T], FlatList) :-
   append(FlatH, FlatT, FlatList).
 flatten(X, [X]).
 
+% ================== PRINTING ==================
 
 % print_list(+List)
 % Prints the elements of List to the console in the format "1 - Element1"
@@ -118,33 +126,8 @@ print_tower_index(Height, Index) :-
     NextIndex is Index + 1,
     print_tower_index(Height, NextIndex). 
 
-% tower_top(+Tower, -Top)
-% Returns the top element of Tower
-tower_top(Tower, Top) :-
-  last(Tower, Top).
-
-% lowercase_to_uppercase(+LowercaseAtom, -UppercaseAtom)
-% Converts lowercase atom to uppercase atom. Used to differentiate players in board.
-lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
-  atom_chars(LowercaseAtom, [LowercaseChar]),
-  char_code(LowercaseChar, LowercaseCode),
-  UppercaseCode is LowercaseCode - 32,
-  char_code(UppercaseChar, UppercaseCode),
-  atom_chars(UppercaseAtom, [UppercaseChar]).
-
-
-%between_rev(+Lower, +Upper, -X)
-% X is a number between Lower and Upper, in descending order. Used to determine moves in certain directions.
-between_rev(Lower, Upper, Upper) :- 
-  Upper >= Lower.
-between_rev(Lower, Upper, X) :- 
-    Upper > Lower, 
-    NewUpper is Upper - 1, 
-    between_rev(Lower, NewUpper, X).
-
 
 % ================== CLEARING ==================
-
 
 % clear_data/0
 % Clears all names and difficulties, removing them from the fact base.
@@ -156,3 +139,31 @@ clear_data :-
 % Clears the console.
 clear_console :-
     write('\33\[2J').
+
+% ================== OTHERS ==================  
+
+% lowercase_to_uppercase(+LowercaseAtom, -UppercaseAtom)
+% Converts lowercase atom to uppercase atom. Used to differentiate players in board.
+lowercase_to_uppercase(LowercaseAtom, UppercaseAtom) :-
+    atom_chars(LowercaseAtom, [LowercaseChar]),
+    char_code(LowercaseChar, LowercaseCode),
+    UppercaseCode is LowercaseCode - 32,
+    char_code(UppercaseChar, UppercaseCode),
+    atom_chars(UppercaseAtom, [UppercaseChar]).
+  
+  
+%between_rev(+Lower, +Upper, -X)
+% X is a number between Lower and Upper, in descending order. Used to determine moves in certain directions.
+between_rev(Lower, Upper, Upper) :- 
+    Upper >= Lower.
+  between_rev(Lower, Upper, X) :- 
+      Upper > Lower, 
+      NewUpper is Upper - 1, 
+      between_rev(Lower, NewUpper, X).
+
+
+% init_random_state/0
+% Responsible for initializing the random module.
+init_random_state :-
+    now(X),
+    setrand(X).
