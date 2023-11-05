@@ -251,8 +251,9 @@ main(NewGameState):-
     clear_console,
     print_short_rules,
     initial_state(Size, Board), %estado inicial da board
+    % display_game(Size, Board), %!WARNING: ver initial_state
     GameState = [Board, Player],
-    get_move(GameState, NewGameState).
+    get_move([[], _], GameState, NewGameState).
 
 % Used when game is exited.
 % main(_).

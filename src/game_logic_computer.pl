@@ -191,47 +191,97 @@ second_level(Board1, Player, Value2) :-
 
 
 % Gets a move for the computer based on the level of difficulty. In this case, hard level.
-move_computer(_OldGameState, GameState, NewGameState, 2) :-
+move_computer(OldGameState, GameState, NewGameState, 2) :-
+  write('HERE in move_computer HARD (implemented)') , nl,
+  % write('HERE OldGameState: '), write(OldGameState), nl,
+  [OldBoard, _OldPlayer] = OldGameState,
   [Board, Player] = GameState,
-  get_all_moves(Board, Player, Moves),
-  calculate_value(Board, Player, Moves, List, 2),
+  get_all_moves(Board, Player, Moves), !,
+  % write('HERE Moves: '), write(Moves), nl,
+  minimax(OldBoard, Board, Player, Moves, List, 2, max),
   sort(List, SortedList),
   % write('HERE SortedList: '), write(SortedList), nl,
-  last(SortedList, _Delta-NewBoard),
+  last(SortedList, Delta-_Nbd),
+  write('HERE Delta: '), write(Delta), nl,
+  get_lowest_elements(SortedList, Delta, LowestElements),
+  random_member(Delta2-NewBoard, LowestElements),
+  write('HERE Delta2 '), write(Delta2), nl,
   % write('HERE Delta: '), write(Delta), nl,
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
+% Helper predicate to collect elements with the lowest value
+get_lowest_elements([], _, []).
+get_lowest_elements([Delta-Board|Rest], MinValue, LowestElements) :-
+  Delta =:= MinValue,
+  get_lowest_elements(Rest, MinValue, RestLowestElements),
+  LowestElements = [Delta-Board | RestLowestElements].
+get_lowest_elements([_|Rest], MinValue, LowestElements) :-
+  get_lowest_elements(Rest, MinValue, LowestElements).
 
-calculate_value(Board, Player, Moves, FinalList, Value1, 1) :- 
-  calculate_value(Board, Player, Moves, [], FinalList, Value1, 1).
-calculate_value(_, _, [], Acc, Acc, _, 1):- !.
-calculate_value(Board, Player, Moves, Acc, FinalList, MaxValue, 1) :-
+
+% minimax(+Board, +Player, +Moves, -FinalList, +Depth)
+minimax(OldBoard, Board, Player, Moves, FinalList, Value1, 1, Type) :- 
+  % write('HERE IN minimax depth 1 first clause') , nl,
+  minimax(OldBoard, Board, Player, Moves, [], FinalList, Value1, 1, Type).
+
+minimax(_OldBoard, _Board, _Player, [], Acc, Acc, _Value1, 1, _Type):- !.
+
+minimax(OldBoard, Board, Player, Moves, Acc, FinalList, MaxValue, 1, Type) :-
+  % write('HERE IN minimax depth 1') , nl,
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board2),
   value(Board2, Player, Value2),
-  max_or_min(min, Value2, MinValue),
+  % write('HERE Value2: '), write(Value2), nl,
+  max_or_min(Type, Value2, MinValue),
+  % write('HERE MinValue: '), write(MinValue), nl,
   Delta is MaxValue + MinValue,
   NewAcc = [Delta | Acc],
-  calculate_value(Board, Player, T, NewAcc, FinalList, MaxValue, 1).
-% calculate_value(+Board, +Player, +Moves, -FinalList, +Depth)
-calculate_value(Board, Player, Moves, FinalList, 2) :- 
-  calculate_value(Board, Player, Moves, [], FinalList, 2).
-calculate_value(_, _, [], Acc, Acc, 2):- !.
-calculate_value(Board, Player, Moves, Acc, FinalList, Depth) :-
+  minimax(OldBoard, Board, Player, T, NewAcc, FinalList, MaxValue, 1, Type).
+
+minimax(OldBoard, Board, Player, Moves, FinalList, 2, Type) :- 
+  % write('HERE IN minimax') , nl,
+  % write('HERE Type: '), write(Type), nl,
+  minimax(OldBoard, Board, Player, Moves, [], FinalList, 2, Type).
+
+minimax(_OldBoard, _Board, _Player, [], Acc, Acc, 2, _Type):- 
+  write('HERE IN minimax depth 2 base case') , nl,
+  !.
+
+minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
+  % write('HERE IN minimax') , nl,
   [CurrMove|T] = Moves,
+  % write('HERE T: '), write(T), nl,
+  % write('HERE CurrentMove: '), write(CurrMove), nl,
   translate_move(Board, CurrMove, Board1),
+  % (Board1 == OldBoard -> 
+  %   write('\n\n\n\n\n\n'),
+  %   write('HERE Board1 == OldBoard AAAAAAAAAAAAAAAAAAA'), nl,
+  %   write('\n\n\n\n\n\n'),
+  %   !,
+  %   minimax(OldBoard, Board, Player, T, Acc, FinalList, Depth, Type), fail;
+  % true),  
+  % Board1 \= OldBoard,
   value(Board1, Player, Value1),
+  % write('HERE Value1: '), write(Value1), nl,
+  max_or_min(Type, Value1, MaxValue),
+  % write('HERE MaxValue: '), write(MaxValue), nl,
   change_player(Player, NewPlayer),
   get_all_moves(Board1, NewPlayer, Moves2),
   \+ Moves2 = [],
   NewDepth is Depth - 1,
-  calculate_value(Board1, NewPlayer, Moves2, List2, Value1, NewDepth),
+  swap_min_max(Type, NewType),
+  % write('HERE NewType: '), write(NewType), nl,
+  minimax(Board, Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),
+  % write('HERE List2: '), write(List2), nl,
   sort(List2, SortedList2),
+  % write('HERE SortedList2: '), write(SortedList2), nl,
   [Delta | _] = SortedList2,
   NewAcc = [Delta-Board1 | Acc],
-  calculate_value(Board, Player, T, NewAcc, FinalList, Depth).
+  minimax(OldBoard, Board, Player, T, NewAcc, FinalList, Depth, Type).
 
+swap_min_max(min, max).
+swap_min_max(max, min).
 
 max_or_min(min, Value, MinValue):- MinValue is -Value.
 max_or_min(max, Value, Value).

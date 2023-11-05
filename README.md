@@ -81,5 +81,82 @@ O jogo termina quando a primeira torre com seis ou mais discos (o Rei) é constr
 Links de Referência:
 - https://www.boardspace.net/sixmaking/english/Six-MaKING-rules-Eng-Ger-Fra-Ro-Hu.pdf
 
-## Lógica do Jogo
 
+## Lógica do Jogo (285w por tópico)
+
+
+### Representação Interna do Estado do Jogo
+- codigo com as boards: listas de listas com x e o (falas dos 2 jogadores)
+
+### Visualização do Estado do Jogo
+- prints da board no sicstus
+- maiusculas e minusclas, letras para cada tamanho de torre
+- boards iniciais e as intermedias
+
+
+### Validação e Execução de Jogadas
+
+
+### Lista de Jogadas Válidas
+
+
+
+### Fim do Jogo
+
+No predicado do ciclo do jogo, é verificado se o jogo terminou, através do predicado game_over/2. Este predicado itera sobre todo o tabuleiro com o ``iterate_boad/2``, verificando se existe alguma torre com 6 ou mais discos, e em caso positivo, chamará  o predicado ``top_to_player/2``, para determinar o vencedor do jogo, analisando o disco presente no topo dessa torre. Caso contrário, o jogo continua no outro predicado do ``game_cycle/2``.
+
+```prolog
+game_cycle(_OldGameState, GameState):-
+    [Board, _Player] = GameState,
+    game_over(Board, Winner), !, 
+    
+    length(Board, Size),
+    display_game(Size, Board),
+    
+    write('GAME OVER\n'), nl,
+
+    show_winner(Winner).
+
+game_over(Board, Winner):-
+  iterate_board(Board, Top),
+  top_to_player(Top, Winner).
+```
+
+### Avaliação do Estado do Jogo -> MELHORAR
+Cada tabuleiro é avaliado tendo em conta a altura das torres presentes no tabuleiro atual e o topo dessas torres. 
+
+Para cada jogador, são consideradas as alturas de todas as torres cujo topo lhe pertence. Para cada uma das alturas dessas torres, é atribuído um peso diferente, somando o seu quadrado ao valor total. Por exemplo, para uma torre de altura 2, é somado 2\*2=4, enquanto que para uma torre de tamanho 5, é somado 5\*5=25. Se a altura for maior do que 6, são somados 100 pontos de bónus ao seu valor total, com o objetivo de tornar evidente que o jogador ganhou. 
+
+Os parâmetros altura e topo foram considerados devido à natureza do jogo e da caracterização do vencedor, uma vez que este será o primeiro a formar uma torre pelo menos 6 discos, com o topo seu.
+
+O valor final no algoritmo de Minimax terá em conta a diferença entre os valores obtidos para cada jogador, evidenciando assim a vantagem de um jogador sobre o outro.
+
+```
+value(Board, Player, Value) :-
+  iterate_board(Board, XValue, OValue),
+  (Player == player1 -> Value is XValue - OValue; Value is OValue - XValue).
+```
+
+
+### Jogadas do Computador
+
+
+## Conclusões -> DIMINUIR PALAVRAS (max 250w)
+O jogo SixMaking foi implementado, com sucesso, em Prolog, apresentando 2 tamanhos de tabuleiro (4x4 e 5x5) e os 3 modos de jogo esperados: Player vs. Player, Player vs. Computer e Computer vs. Computer.
+
+Simultaneamente, foi conseguida uma implementação do nível fácil e difícil do computador. Para este último nível, *greedy*, a implementação de um algoritmo Minimax mostrou ser bastante desafiante. Foi necessário delinear uma métrica de valorização dos tabuleiros, criar um algoritmo que tivesse em conta dois níveis de profundidade e a atribuição de “mínimo” e “máximo” ao valor, distinguindo o jogador. Nesta fase, uma possibilidade de aperfeiçoamento estaria nos níveis de profundidade a serem tidos em conta no algoritmo. Devido ao número elevadíssimo de possíveis jogadas em cada estado do jogo, a análise de apenas dois níveis mostrou ser uma opção eficiente e boa em diversos estados do jogo.
+
+No modo de jogo entre dois computadores difícil vs. difícil, permitimos uma escolha aleatória entre jogadas igualmente valorizadas, fazendo com que o jogo não seja sempre o mesmo.
+
+Todas as jogadas são também corretamente validadas e é impedido que a jogada escolhida pelo jogador atual desfaça a jogada anterior do oponente. O estado do jogo anterior é guardado e, desta forma, não ocorrrerá um ciclo infinito.
+
+Durante todo o projeto, os conceitos lecionados nas aulas práticas e teóricas foram aplicados e consolidados ao longo dos vários desafios.
+
+
+## Bibliografia
+
+As regras e funcionamento do jogo foram consultadas nos seguintes links:
+- https://www.boardspace.net/sixmaking/english/Six-MaKING-rules-Eng-Ger-Fra-Ro-Hu.pdf
+- https://silp.iiita.ac.in/wp-content/uploads/PROLOG.pdf
+- https://www.youtube.com/watch?v=FHdltzwaAJg
+- https://sicstus.sics.se/documentation.html

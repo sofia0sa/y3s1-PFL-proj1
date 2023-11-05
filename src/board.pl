@@ -112,6 +112,12 @@ p_h(X, Y) :-
 
 % board(+Size, -Board)
 % Returns a board of the specified Size
+% board(4, [
+%     [[o,o], empty, [x], [x]],
+%     [empty, empty, empty, empty],
+%     [empty, empty, empty, empty],
+%     [empty, empty, empty, empty]
+% ]).
 board(4, [
     [empty, empty, empty, empty],
     [empty, empty, empty, empty],

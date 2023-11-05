@@ -205,5 +205,6 @@ game_cycle(OldGameState, GameState):- % HERE in case nobody is winning atm
 play :-
     clear_console,
     main(GameState), !,
-    game_cycle([[], _], GameState),
+    game_cycle(GameState, GameState),
+    % game_cycle([[], _], GameState),
     clear_data.

@@ -125,15 +125,20 @@ BUGS:
 - PROF daniel => HA MELHOR MANEIRA DE FAZER SAIR DO JOGO? EU FIZ HALT E SAI DO SICSTUS, MAS QUERIA QUE PROLOG RETORNASSE 'YES'
 
 TO DO:
-- Relembrar ao utilizador se joga com maiúsculas ou minúsculas
-- KO rule
-- Melhorar Value 
-prof:
+- limite de peças
+
+
+DONE:
 - fazer um random select das jogadas IA possiveis quando o valor é igual -> pode levar a que o jogo entre duas IA hard seja diferente e nao sempre igual
+- Relembrar ao utilizador se joga com maiúsculas ou minúsculas
+- KO rule - devemos ter 3 gamestates para evitar loops -> fazer branch e testar se nao parte o jogo -> NO FIM!
+- Melhorar Value 
 - o abort funcionou para sair do jogo (seria melhor com yes mas nao é dito no enunciado. seria mover o resto do predicado main para apos o choose game mode = 2)
-- devemos ter 3 gamestates para evitar loops -> fazer branch e testar se nao parte o jogo -> NO FIM!
-- colocar o predicado minimax com a recursao (por poucas decimas)
+- colocar o predicado minimax com a recursao (por poucas decimas) --> meio que fizemos
 - vitoria da mais +100 pontos no value para ser evidente que um dado jogador ganharia com essa jogada
+- jogador pode dar vitoria ao adversario 
+
+
 
 FILES DOCUMENTADOS:
 - menu.pl
@@ -198,16 +203,16 @@ alternate turns. The player whose turn is, may choose
 whether to:
 
 l place a new disk (a Pawn) on the board;
-l or move one of the towers or a part of a tower.
-I., Placing a new disk on the board
-A player may place a single disk (a Pawn) on any
+l or move one of rs or a part of a tower.
+I., Placing a new dhe board
+A player may placle disk (a Pawn) on any
 empty square of the board.
 
 II., Moving the entire or a part of a tower
  1 A player may move the towers on the board
 regarding the movements of the corresponding chess
 pieces. A tower can only be moved on top of another,
-but not on empty squares (see Fig. 3.):
+but not on empty sq (see Fig. 3.):
 1 disk (Pawn) – moves a single square in all four
 directions on top of an adjoining tower.
 2 disks (Rook) – moves any number of squares
