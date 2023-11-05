@@ -34,37 +34,62 @@ place_tower(Board, X, Y, Piece, NewBoard) :-
 
 % place_pawn(+Board, +X, +Y, +Player, -NewBoard)
 % Places a pawn of the given player on the Board at the specified X and Y coordinates and returns the resulting NewBoard
-place_pawn(Board, X, Y, player1, NewBoard) :-
-(empty_cell(Board, X, Y) ->
+% place_pawn(Board, X, Y, player1, NewBoard) :-
+% (empty_cell(Board, X, Y) ->
+%   length(Board, Size),
+%   under_piece_limit(Board, Size, x),
+%   place_tower(Board, X, Y, [x], NewBoard);
+%   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
+%   fail).
+% place_pawn(Board, X, Y, player2, NewBoard) :-
+% (empty_cell(Board, X, Y) -> 
+%   length(Board, Size),
+%   under_piece_limit(Board, Size, o),
+%   place_tower(Board, X, Y, [o], NewBoard);
+%   format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
+%   fail).
+
+place_pawn(Board, X, Y, Player, NewBoard) :-
+  \+empty_cell(Board, X, Y),
+  format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]), !, fail.
+
+place_pawn(Board, X, Y, Player, NewBoard) :-
+  empty_cell(Board, X, Y),
   length(Board, Size),
-  under_piece_limit(Board, Size, x),
-  place_tower(Board, X, Y, [x], NewBoard);
-  format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
-  fail).
-place_pawn(Board, X, Y, player2, NewBoard) :-
-(empty_cell(Board, X, Y) -> 
+  player_char(Player, Char),
+  \+under_piece_limit(Board, Size, Char), !,
+  write('\nCannot place pawn! Limit of pawns reached!\n'),
+  fail.
+
+place_pawn(Board, X, Y, Player, NewBoard) :-
+  empty_cell(Board, X, Y),
   length(Board, Size),
-  under_piece_limit(Board, Size, o),
-  place_tower(Board, X, Y, [o], NewBoard);
-  format('\nCannot place pawn in cell [~w,~w]!\n', [X, Y]),
-  fail).
+  player_char(Player, Char),
+  under_piece_limit(Board, Size, Char),
+  place_tower(Board, X, Y, [Char], NewBoard).
 
 %under_piece_limit(+Board, +Size, +Piece)
 %Checks if the number of pieces of type Piece in Board is under the limit for the given board size.
-under_piece_limit(Board, 4, Piece):-
-  count_pieces(Board, Piece, Count), !,
-  (Count < 12 -> 
-    true;
-    write('\nCannot place pawn! Limit of 12 pawns reached!\n'),
-    fail
-  ).
-under_piece_limit(Board, 5, Piece):-
-  count_pieces(Board, Piece, Count), !,
-  (Count < 16 ->
-    true;
-    write('\nCannot place pawn! Limit of 16 pawns reached!\n'),
-    fail
-  ).
+under_piece_limit(Board, Size, Char):-
+  board_pieces(Size, NPieces),
+  count_pieces(Board, Char, Count), !,
+  Count < NPieces.
+
+% board_pieces(+Size, -NPieces)
+% Returns the number of pieces allowed for the given board size.
+board_pieces(5,16).
+board_pieces(4,12).
+
+% under_piece_limit(Board, 5, Piece):-
+%   count_pieces(Board, Piece, Count), !,
+%   (Count < 16 ->
+%     true;
+%     write('\nCannot place pawn! Limit of 16 pawns reached!\n'),
+%     fail
+%   ).
+
+% board_pieces(Size, NPieces)^
+
 
 % count_pieces(+Board, +Piece, -Count)
 % Counts the number of occurrences of Piece in Board.

@@ -97,7 +97,7 @@ p_hl(N):-
 
 
 % p_h(+X, +Y)
-% Prints the horizontal (X) coordinates of the board
+% Prints the header of the board
 p_h(1, Y) :-
     write('\n'),
     format('    ~d  ', [1] ), !,

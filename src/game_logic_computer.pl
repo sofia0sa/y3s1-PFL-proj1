@@ -11,22 +11,6 @@ get_moves_by_type(Board, Player, Moves, 1) :-
 under_piece_limit(Board, Size, Char)
     ), Moves).
 
-% !DELETE
-test_get_moves_by_type :-
-  Board = [
-    [empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty],
-    [empty, empty, empty, empty, empty],
-    [[x,x,x], [x], [x], [x], [x,x]],
-    [[x,x,x], [x], [x], [x], [x,x]]
-  ],
-  get_moves_by_type(Board, player1, Moves, 1),
-  length(Moves, L),
-  write('HERE Length: '), write(L), nl,
-  write(Moves).
- 
-    
-
 % Gets all the moves of type 2 (move tower) for a given player and board.
 get_moves_by_type(Board, Player, Moves, 2) :-
   length(Board, Size),
@@ -62,20 +46,34 @@ get_moves_by_type(Board, Player, Moves, 3) :-
     member([NewX, NewY], ListOfMoves)
     ), Moves).
 
-
 % !DELETE
 test_get_moves_by_type :-
   Board = [
-    [[x,o], [x], empty, empty, [x,o,o,x,o]],
-    [empty, empty, [x,o,x], empty, [o]],
     [empty, empty, empty, empty, empty],
-    [[o,o], empty, empty, [x,x,x], empty],
-    [empty, empty, empty, empty, empty]
-],
+    [empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty],
+    [[x,x,x], empty, [x], [x], [x,x]],
+    [[x,x,x], [x], [x], [x], [x,x]]
+  ],
   get_moves_by_type(Board, player1, Moves, 1),
   length(Moves, L),
   write('HERE Length: '), write(L), nl,
   write(Moves).
+
+
+% % !DELETE
+% test_get_moves_by_type :-
+%   Board = [
+%     [[x,o], [x], empty, empty, [x,o,o,x,o]],
+%     [empty, empty, [x,o,x], empty, [o]],
+%     [empty, empty, empty, empty, empty],
+%     [[o,o], empty, empty, [x,x,x], empty],
+%     [empty, empty, empty, empty, empty]
+% ],
+%   get_moves_by_type(Board, player1, Moves, 1),
+%   length(Moves, L),
+%   write('HERE Length: '), write(L), nl,
+%   write(Moves).
     
 
 

@@ -33,13 +33,13 @@ test_empty_cell :-
   empty_cell(Board, 1, 3).
 
 % !DELETE: Apenas para testar
-test_place_pawn(X,Y,P):-
-  board(4, Board),
-  display_game(4, Board),
-  write('board printed\n'),
-  place_pawn(Board, X, Y, P, NewBoard),
-  write('pawn placed\n'),
-  display_game(4, NewBoard).
+% test_place_pawn(X,Y,P):-
+%   board(4, Board),
+%   display_game(4, Board),
+%   write('board printed\n'),
+%   place_pawn(Board, X, Y, P, NewBoard),
+%   write('pawn placed\n'),
+%   display_game(4, NewBoard).
 
 
 % !DELETE: just for testing
@@ -175,7 +175,7 @@ test_place_pawn :-
     [[x], [x], [x], [x]],
     [[x], [x], [x], [x]]
   ],
-  place_pawn(Board, 1, 1, player1, NewBoard),
+  place_pawn(Board, 1, 1, player1, NewBoard), %se isto falha, nao passa para baixo
   length(NewBoard, Size),
   display_game(Size, NewBoard).
 
