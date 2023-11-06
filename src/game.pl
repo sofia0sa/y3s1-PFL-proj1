@@ -182,19 +182,14 @@ show_winner(Winner):-
 game_cycle(_OldGameState, GameState):-
     [Board, _Player] = GameState,
     game_over(Board, Winner), !, 
-    
-    length(Board, Size),
-    display_game(Size, Board),
-    
+    display_game(Board),
     write('GAME OVER\n'), nl,
-
     show_winner(Winner).
 
 % Calls recursively the get_move predicate to get the next move, while there is no winner, changing players' turns.
 game_cycle(OldGameState, GameState):-
     [Board, Player] = GameState, 
-    length(Board, Size),
-    display_game(Size, Board),
+    display_game(Board),
     print_turn(Player),
     get_move(OldGameState, GameState, NewGameState), 
     game_cycle(GameState, NewGameState).

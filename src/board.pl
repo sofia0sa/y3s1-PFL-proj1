@@ -75,12 +75,12 @@ p_h(X, Y) :-
 
 % initial_state(+Size, -Board)
 % Returns the initial board of the specified Size
-% initial_state(4, [
-%     [empty, empty, empty, empty],
-%     [empty, empty, empty, empty],
-%     [empty, empty, empty, empty],
-%     [empty, empty, empty, empty]
-% ]).
+initial_state(4, [
+    [empty, empty, empty, empty],
+    [empty, empty, empty, empty],
+    [empty, empty, empty, empty],
+    [empty, empty, empty, empty]
+]).
 initial_state(5, [
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
@@ -89,31 +89,11 @@ initial_state(5, [
     [empty, empty, empty, empty, empty]
   ]).
 
-% !WARNING: for testing purposes only
-% initial_state(5, [
-%     [[x,o], [x], empty, empty, [x,o,o,x,o]],
-%     [empty, [x], [x,o,x], empty, [o]],
-%     [empty, empty, empty, empty, empty],
-%     [[o,o], empty, empty, [x,x,x], empty],
-%     [empty, empty, empty, empty, empty]
-%   ]).
-% initial_state(4, [
-%     [[o,o], empty, [x], [x]],
-%     [empty, empty, empty, empty],
-%     [empty, empty, empty, empty],
-%     [empty, empty, empty, empty]
-% ]).
-initial_state(4, [
-    [[o], [x,o,o,o,x,x], empty, [o]],
-    [empty, empty, empty, empty],
-    [[o], empty, empty, empty],
-    [empty, [x], empty, empty]
-]).
 
-
-% display_game(+Size, +Board)
+% display_game(+Board)
 % Prints the board and it's  coordinates
-display_game(Size, Board):-
+display_game(Board):-
+    length(Board, Size),
     p_h(1, Size),
     p_m(Size, Board),
     write('\n').

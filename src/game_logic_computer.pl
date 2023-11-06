@@ -22,7 +22,6 @@ get_moves_by_type(Board, Player, Moves, 2) :-
     X is Row, Y is Col,
     valid_moves(Board, Player, Row, Col, ListOfMoves),
     member([NewX, NewY], ListOfMoves)
-    
     ), Moves).
 
 % Gets all the moves of type 3 (separate tower) for a given player and board.
@@ -94,9 +93,7 @@ get_lowest_elements([_|Rest], MinValue, LowestElements) :-
 % Gets the best move for the computer based on the minimax algorithm.
 minimax(OldBoard, Board, Player, Moves, FinalList, Value1, 1, Type) :- 
   minimax(OldBoard, Board, Player, Moves, [], FinalList, Value1, 1, Type).
-
 minimax(_OldBoard, _Board, _Player, [], Acc, Acc, _Value1, 1, _Type):- !.
-
 minimax(OldBoard, Board, Player, Moves, Acc, FinalList, MaxValue, 1, Type) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board2),
@@ -106,11 +103,11 @@ minimax(OldBoard, Board, Player, Moves, Acc, FinalList, MaxValue, 1, Type) :-
   NewAcc = [Delta | Acc],
   minimax(OldBoard, Board, Player, T, NewAcc, FinalList, MaxValue, 1, Type).
 
+% minimax(+OldBoard, +Board, +Player, +Moves, -FinalList, +Depth, +Type)
+% Gets the best move for the computer based on the minimax algorithm.
 minimax(OldBoard, Board, Player, Moves, FinalList, 2, Type) :- 
   minimax(OldBoard, Board, Player, Moves, [], FinalList, 2, Type).
-
 minimax(_OldBoard, _Board, _Player, [], Acc, Acc, 2, _Type):- !.
-
 minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board1),
@@ -118,7 +115,6 @@ minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   max_or_min(Type, Value1, MaxValue),
   change_player(Player, NewPlayer),
   get_all_moves(Board1, NewPlayer, Moves2),
-  \+ Moves2 = [],
   NewDepth is Depth - 1,
   swap_min_max(Type, NewType),
   minimax(Board, Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),

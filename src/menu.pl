@@ -243,7 +243,7 @@ main(NewGameState):-
     clear_console,
     print_short_rules,
     initial_state(Size, Board),
-    display_game(Size, Board),
+    display_game(Board),
     print_turn(Player),
     GameState = [Board, Player],
     get_move([[], _], GameState, NewGameState).
