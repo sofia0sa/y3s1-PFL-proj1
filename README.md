@@ -8,7 +8,7 @@
 
 ## Instalação e Execução
 
-Para executar o jogo, é necessário instalar o **SICStus Prolog** (de preferência, a versão 4.8.0), fazer *download* dos ficheiros presentes em **PFL_TP1_T06_SixMaking_7.zip** e descompactá-los. Dentro do diretório **src**, deve consultar o ficheiro **game.pl**, através de [File] -> [Consult] -> [game.pl] ou diretamente da linha de comandos do SICStus Prolog. Por fim, para iniciar o jogo, basta executar o comando **``play.``**. O jogo está disponível em ambientes Windows e Linux.
+Para executar o jogo, é necessário instalar o **SICStus Prolog** (de preferência, a [versão 4.8.0](https://sicstus.sics.se/download4.html#win32)), fazer *download* dos ficheiros presentes em **PFL_TP1_T06_SixMaking_7.zip** e descompactá-los. Dentro do diretório **src**, deve consultar o ficheiro **game.pl**, através de [File] -> [Consult] -> [game.pl] ou diretamente da linha de comandos do SICStus Prolog. Por fim, para iniciar o jogo, basta executar o comando **``play.``**. O jogo está disponível em ambientes Windows e Linux.
 
 Para a possibilidade de observar todo o jogo sem limpeza permatura da consola do SICStus, recomendamos aumentar o número de linhas da consola, por exemplo, para 1000, através de [Settings] -> [Window Settings] -> [Save lines] -> [1000]. Esta alteração é de maior importância para a observação de um jogo entre dois computadores. Desta forma, as pequenas regras impressas antes de cada jogo ficarão visíveis durante mais tempo também.
 
