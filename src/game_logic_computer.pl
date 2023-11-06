@@ -59,6 +59,7 @@ move_computer(OldGameState, GameState, NewGameState, 1) :-
   [OldBoard, _OldPlayer] = OldGameState,
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves),
+  repeat,
   random_member(Move, Moves),
   translate_move(Board, Move, NewBoard),
   OldBoard \= NewBoard,
@@ -66,11 +67,10 @@ move_computer(OldGameState, GameState, NewGameState, 1) :-
   NewGameState = [NewBoard, NewPlayer].
 
 % Gets a move for the computer based on the level of difficulty. In this case, hard level.
-move_computer(OldGameState, GameState, NewGameState, 2) :-
-  [OldBoard, _OldPlayer] = OldGameState,
+move_computer(_OldGameState, GameState, NewGameState, 2) :-
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves), !,
-  minimax(OldBoard, Board, Player, Moves, List, 2, max),
+  minimax(Board, Player, Moves, List, 2, max),
   sort(List, SortedList),
   last(SortedList, Delta-_Nbd),
   get_lowest_elements(SortedList, Delta, LowestElements),
@@ -89,26 +89,26 @@ get_lowest_elements([_|Rest], MinValue, LowestElements) :-
   get_lowest_elements(Rest, MinValue, LowestElements).
 
 
-% minimax(+OldBoard, +Board, +Player, +Moves, -FinalList, +Value1, +Depth, +Type)
+% minimax(+Board, +Player, +Moves, -FinalList, +Value1, +Depth, +Type)
 % Gets the best move for the computer based on the minimax algorithm.
-minimax(OldBoard, Board, Player, Moves, FinalList, Value1, 1, Type) :- 
-  minimax(OldBoard, Board, Player, Moves, [], FinalList, Value1, 1, Type).
-minimax(_OldBoard, _Board, _Player, [], Acc, Acc, _Value1, 1, _Type):- !.
-minimax(OldBoard, Board, Player, Moves, Acc, FinalList, MaxValue, 1, Type) :-
+minimax(Board, Player, Moves, FinalList, Value1, 1, Type) :- 
+  minimax(Board, Player, Moves, [], FinalList, Value1, 1, Type).
+minimax(_Board, _Player, [], Acc, Acc, _Value1, 1, _Type):- !.
+minimax(Board, Player, Moves, Acc, FinalList, MaxValue, 1, Type) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board2),
   value(Board2, Player, Value2),
   max_or_min(Type, Value2, MinValue),
   Delta is MaxValue + MinValue,
   NewAcc = [Delta | Acc],
-  minimax(OldBoard, Board, Player, T, NewAcc, FinalList, MaxValue, 1, Type).
+  minimax(Board, Player, T, NewAcc, FinalList, MaxValue, 1, Type).
 
-% minimax(+OldBoard, +Board, +Player, +Moves, -FinalList, +Depth, +Type)
+% minimax(+Board, +Player, +Moves, -FinalList, +Depth, +Type)
 % Gets the best move for the computer based on the minimax algorithm.
-minimax(OldBoard, Board, Player, Moves, FinalList, 2, Type) :- 
-  minimax(OldBoard, Board, Player, Moves, [], FinalList, 2, Type).
-minimax(_OldBoard, _Board, _Player, [], Acc, Acc, 2, _Type):- !.
-minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
+minimax(Board, Player, Moves, FinalList, 2, Type) :- 
+  minimax(Board, Player, Moves, [], FinalList, 2, Type).
+minimax(_Board, _Player, [], Acc, Acc, 2, _Type):- !.
+minimax(Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board1),
   value(Board1, Player, Value1),
@@ -117,11 +117,11 @@ minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   get_all_moves(Board1, NewPlayer, Moves2),
   NewDepth is Depth - 1,
   swap_min_max(Type, NewType),
-  minimax(Board, Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),
+  minimax(Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),
   sort(List2, SortedList2),
   [Delta | _] = SortedList2,
   NewAcc = [Delta-Board1 | Acc],
-  minimax(OldBoard, Board, Player, T, NewAcc, FinalList, Depth, Type).
+  minimax(Board, Player, T, NewAcc, FinalList, Depth, Type).
 
 % swap_min_max(+Type, -NewType)
 % Swaps the type of player to have his board valued in minimax algorithm.

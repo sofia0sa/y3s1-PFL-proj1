@@ -291,6 +291,7 @@ move_computer(OldGameState, GameState, NewGameState, 1) :-
   [OldBoard, _OldPlayer] = OldGameState,
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves),
+  repeat,
   random_member(Move, Moves),
   translate_move(Board, Move, NewBoard),
   OldBoard \= NewBoard,
@@ -313,11 +314,10 @@ Para a modo difícil, utilizamos um algoritmo *greedy* que utiliza a valorizaç�
 Começa por traduzir cada jogada da lista de jogadas válidas para o respetivo tabuleiro e avalia-o através do predicado `value/3`. De seguida, testa todas as respostas possíveis por parte do oponente, avaliando-as também. Calcula a diferença (Delta) entre os valores obtidos para a jogada do jogador e cada uma das respostas, guardando o menor Delta, ou seja, o que representa a melhor resposta do oponente (min). Por fim, de todas as jogadas possíveis escolhe aquela que tem um maior delta associado (max), garantindo assim que o computador escolhe a jogada que lhe dá mais vantagem, tendo em conta que o adversário também jogará da melhor forma possível.
 Se existirem mais do que uma jogada com a melhor avaliação, o computador escolherá aleatoriamente uma delas, para que o jogo não seja sempre o mesmo (especialmente no modo Computador difícil vs Computador difícil).
 ```prolog
-move_computer(OldGameState, GameState, NewGameState, 2) :-
-  [OldBoard, _OldPlayer] = OldGameState,
+move_computer(_OldGameState, GameState, NewGameState, 2) :-
   [Board, Player] = GameState,
   get_all_moves(Board, Player, Moves), !,
-  minimax(OldBoard, Board, Player, Moves, List, 2, max),
+  minimax(Board, Player, Moves, List, 2, max),
   sort(List, SortedList),
   last(SortedList, Delta-_Nbd),
   get_lowest_elements(SortedList, Delta, LowestElements),
@@ -325,10 +325,10 @@ move_computer(OldGameState, GameState, NewGameState, 2) :-
   change_player(Player, NewPlayer),
   NewGameState = [NewBoard, NewPlayer].
 
-minimax(OldBoard, Board, Player, Moves, FinalList, 2, Type) :- 
-  minimax(OldBoard, Board, Player, Moves, [], FinalList, 2, Type).
-minimax(_OldBoard, _Board, _Player, [], Acc, Acc, 2, _Type):- !.
-minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
+minimax(Board, Player, Moves, FinalList, 2, Type) :- 
+  minimax(Board, Player, Moves, [], FinalList, 2, Type).
+minimax(_Board, _Player, [], Acc, Acc, 2, _Type):- !.
+minimax(Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   [CurrMove|T] = Moves,
   translate_move(Board, CurrMove, Board1),
   value(Board1, Player, Value1),
@@ -337,11 +337,11 @@ minimax(OldBoard, Board, Player, Moves, Acc, FinalList, Depth, Type) :-
   get_all_moves(Board1, NewPlayer, Moves2),
   NewDepth is Depth - 1,
   swap_min_max(Type, NewType),
-  minimax(Board, Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),
+  minimax(Board1, NewPlayer, Moves2, List2, MaxValue, NewDepth, NewType),
   sort(List2, SortedList2),
   [Delta | _] = SortedList2,
   NewAcc = [Delta-Board1 | Acc],
-  minimax(OldBoard, Board, Player, T, NewAcc, FinalList, Depth, Type).
+  minimax(Board, Player, T, NewAcc, FinalList, Depth, Type).
 ```
 
 Existiram alguns problemas com a implementação da verificação da "KO rule" no modo difícil do computador, pelo que ela não está presente nesta dificuldade em específico. No entanto, o algoritmo Minimax, aliado com a variação na escolha das jogadas com maior avalição, mitigam bastante as chances de acontecer uma jogada que desfaça a jogada anterior do oponente. Durante a extensa fase de testes, não foi possível encontrar um caso em que isso acontecesse.
