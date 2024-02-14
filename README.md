@@ -1,6 +1,8 @@
 # SixMaking
 ## Grupo: SixMaking_7
 
+Nota: 19.43/20.0
+
 |Nome | Contribuição |
 |---------------------------------------------|-----|
 |Guilherme Brandão Monteiro (up202108668)     | 50% |
