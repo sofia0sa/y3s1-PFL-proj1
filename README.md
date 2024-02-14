@@ -1,6 +1,6 @@
 # SixMaking
 
-Nota: 19.43/20.0
+### Nota: 19.43/20
 
 ## Grupo: SixMaking_7
 
